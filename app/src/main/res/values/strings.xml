@@ -5,4 +5,6 @@
     <string name="make_visible">Make Visible</string>
     <string name="on_bluetooth">On Bluetooth</string>
     <string name="bluetooth_connection">Bluetooth Connection</string>
+    <string name="scan">Scan</string>
+    <string name="bluetooth_status">Bluetooth status:</string>
 </resources>
