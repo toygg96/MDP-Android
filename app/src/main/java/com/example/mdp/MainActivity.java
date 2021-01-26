@@ -33,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
     private DeviceListAdapter adapter;
     private ListView lv;
     private TextView bluetoothStatusTextView;
+    private bluetoothConnectionThread bluetoothThread;
+    private boolean pairingFlag = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,9 +108,19 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapter, View v, int position,
                                     long arg3)
             {
+                boolean result = true;
+                IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+                registerReceiver(receiver2, filter);
+                pairedDevices = BA.getBondedDevices();
                 // based on the item clicked go to the relevant activity
                 BluetoothDevice device = (BluetoothDevice) adapter.getItemAtPosition(position);
                 Log.d(TAG,"selected address :  " + device.getAddress());
+                if (!isDevicePaired(device))
+                    result = device.createBond();
+                Log.d(TAG,String.valueOf(result));
+                while (!pairingFlag) {}
+                bluetoothThread = new bluetoothConnectionThread(device,BA);
+                bluetoothThread.start();
             }
         });
     }
@@ -116,9 +128,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
+        //bluetoothThread.cancel();
         // Don't forget to unregister the ACTION_FOUND receiver.
         unregisterReceiver(receiver);
+        unregisterReceiver(receiver2);
     }
 
     public void displayBluetoothState(){
@@ -141,6 +154,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void offBluetooth(View v){
         BA.disable();
+        if (bluetoothThread != null)
+            bluetoothThread.cancel();
         bluetoothStatusTextView.setText("Bluetooth: Turned off\nBluetooth Device Name: " + BA.getName() + "\nBluetooth Address: " + BA.getAddress());
         Toast.makeText(getApplicationContext(), "Turned off" ,Toast.LENGTH_LONG).show();
         adapter.clear();
@@ -178,6 +193,16 @@ public class MainActivity extends AppCompatActivity {
         }
         return duplicateFlag;
     }
+
+    public boolean isDevicePaired(BluetoothDevice bd) {
+        for (BluetoothDevice device : pairedDevices) {
+            if (device.getAddress().equals(bd.getAddress())){
+                pairingFlag = true;
+                return true;
+            }
+        }
+        return false;
+    }
     // Create a BroadcastReceiver for ACTION_FOUND.
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
@@ -193,7 +218,6 @@ public class MainActivity extends AppCompatActivity {
                 // Discovery has found a device. Get the BluetoothDevice
                 // object and its info from the Intent.
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                String deviceName = device.getName();
                 String deviceHardwareAddress = device.getAddress(); // MAC addres
                 //Toast.makeText(context, "Found device: " + deviceName, Toast.LENGTH_LONG).show();
                 if (adapter.getCount() == 0) {
@@ -205,6 +229,24 @@ public class MainActivity extends AppCompatActivity {
                         addDataToAdapater(device);
                 }
 
+            }
+        }
+    };
+
+    // Create a BroadcastReceiver for ACTION_BOND_STATE_CHANGED.
+    private final BroadcastReceiver receiver2 = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            Log.d(TAG,"Does it reach receiver2?");
+            if (BluetoothDevice.ACTION_BOND_STATE_CHANGED.equals(action)) {
+                Log.d(TAG,"Does this reach here?");
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                int bondState = intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE,-1);
+                Log.d(TAG,String.valueOf(device.getBondState()));
+                if (device.getBondState() == BluetoothDevice.BOND_BONDED)
+                    pairingFlag = true;
+                Toast.makeText(context, "Paired to selected device! (First time only) Connecting now!" , Toast.LENGTH_LONG).show();
             }
         }
     };

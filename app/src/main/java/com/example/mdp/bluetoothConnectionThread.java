@@ -19,11 +19,12 @@ public class bluetoothConnectionThread extends Thread {
         private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
         private MyBluetoothService bs = new MyBluetoothService();
 
-    public bluetoothConnectionThread(BluetoothDevice device) {
+    public bluetoothConnectionThread(BluetoothDevice device,BluetoothAdapter adapter) {
         // Use a temporary object that is later assigned to mmSocket
         // because mmSocket is final.
         BluetoothSocket tmp = null;
         mmDevice = device;
+        bluetoothAdapter = adapter;
 
         try {
             // Get a BluetoothSocket to connect with the given BluetoothDevice.
@@ -43,6 +44,7 @@ public class bluetoothConnectionThread extends Thread {
                 // Connect to the remote device through the socket. This call blocks
                 // until it succeeds or throws an exception.
                 mmSocket.connect();
+                Log.d(TAG,"Connection succeeded");
             } catch (IOException connectException) {
                 // Unable to connect; close the socket and return.
                 try {
