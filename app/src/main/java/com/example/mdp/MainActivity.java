@@ -226,7 +226,7 @@ public class MainActivity extends AppCompatActivity {
                 //Toast.makeText(context, "Found device: " + deviceName, Toast.LENGTH_LONG).show();
                 if (adapter.getCount() == 0) {
                     addDataToAdapater(device);
-                    Log.d(TAG,String.valueOf(adapter.getCount()));
+                    //Log.d(TAG,String.valueOf(adapter.getCount()));
                 } else {
                     boolean duplicateFlag = isDeviceDuplicate(deviceHardwareAddress);
                     if (!duplicateFlag)
@@ -242,13 +242,13 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            Log.d(TAG,"Does it reach receiver2?");
+            //Log.d(TAG,"Does it reach receiver2?");
             if (BluetoothDevice.ACTION_BOND_STATE_CHANGED.equals(action)) {
-                Log.d(TAG,"Does this reach here?");
+                //Log.d(TAG,"Does this reach here?");
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 int bondState = intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE,-1);
                 int prevbondState = intent.getIntExtra(BluetoothDevice.EXTRA_PREVIOUS_BOND_STATE,-1);
-                Log.d(TAG,String.valueOf(bondState) + String.valueOf(prevbondState));
+                //Log.d(TAG,String.valueOf(bondState) + String.valueOf(prevbondState));
                 if (bondState == BluetoothDevice.BOND_BONDED && prevbondState == BluetoothDevice.BOND_BONDING) {
                     bluetoothThread = new bluetoothConnectionThread(device, BA);
                     bluetoothThread.start();
