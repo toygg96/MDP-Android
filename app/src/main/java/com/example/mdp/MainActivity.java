@@ -22,6 +22,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.*;
 import static android.content.ContentValues.TAG;
+import com.example.mdp.DeviceListAdapter;
 
 import java.util.*;
 
@@ -29,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private Button onBluetoothBtn,makeVisibleBtn,offBluetoothBtn,listDeviceBtn,scanBtn;
     private BluetoothAdapter BA;
     private Set<BluetoothDevice> pairedDevices;
-    private ArrayAdapter adapter;
+    private DeviceListAdapter adapter;
     private ListView lv;
     private TextView bluetoothStatusTextView;
 
@@ -47,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         scanBtn = (Button)findViewById(R.id.scanBtn);
         lv = (ListView)findViewById(R.id.listView);
         bluetoothStatusTextView = (TextView)findViewById(R.id.bluetoothConnectionStatus);
-
+        adapter = new DeviceListAdapter(this,R.layout.list_item);
         onBluetoothBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View r) {
@@ -98,8 +99,18 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         checkPermission();
-        adapter = new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_list_item_1);
         lv.setAdapter(adapter);
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> adapter, View v, int position,
+                                    long arg3)
+            {
+                // based on the item clicked go to the relevant activity
+                BluetoothDevice device = (BluetoothDevice) adapter.getItemAtPosition(position);
+                Log.d(TAG,"selected address :  " + device.getAddress());
+            }
+        });
     }
 
     @Override
@@ -112,16 +123,16 @@ public class MainActivity extends AppCompatActivity {
 
     public void displayBluetoothState(){
         if (BA.isEnabled())
-            bluetoothStatusTextView.setText("Bluetooth: Turned on");
+            bluetoothStatusTextView.setText("Bluetooth: Turned on\nBluetooth Device Name: " + BA.getName() + "\nBluetooth Address: " + BA.getAddress());
         else
-            bluetoothStatusTextView.setText("Bluetooth: Turned off");
+            bluetoothStatusTextView.setText("Bluetooth: Turned off\nBluetooth Device Name: " + BA.getName() + "\nBluetooth Address: " + BA.getAddress());
 
     }
 
     public void onBluetooth(View v){
         if (!BA.isEnabled()) {
             Toast.makeText(getApplicationContext(), "Turned on",Toast.LENGTH_LONG).show();
-            bluetoothStatusTextView.setText("Bluetooth: Turned on");
+            bluetoothStatusTextView.setText("Bluetooth: Turned on\nBluetooth Device Name: " + BA.getName() + "\nBluetooth Address: " + BA.getAddress());
             BA.enable();
         } else {
             Toast.makeText(getApplicationContext(), "Bluetooth already turned on", Toast.LENGTH_LONG).show();
@@ -130,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void offBluetooth(View v){
         BA.disable();
-        bluetoothStatusTextView.setText("Bluetooth: Turned off");
+        bluetoothStatusTextView.setText("Bluetooth: Turned off\nBluetooth Device Name: " + BA.getName() + "\nBluetooth Address: " + BA.getAddress());
         Toast.makeText(getApplicationContext(), "Turned off" ,Toast.LENGTH_LONG).show();
         adapter.clear();
     }
@@ -146,21 +157,21 @@ public class MainActivity extends AppCompatActivity {
         adapter.clear();
         pairedDevices = BA.getBondedDevices();
 
-        for(BluetoothDevice bt : pairedDevices) adapter.add(bt.getName());
+        for(BluetoothDevice bt : pairedDevices) adapter.add(bt);
         Toast.makeText(getApplicationContext(), "Showing Paired Devices",Toast.LENGTH_SHORT).show();
         adapter.notifyDataSetChanged();
     }
 
-    public void addDataToAdapater(String deviceName, String deviceHardwareAddress){
-        adapter.add("Device name : " + deviceName + "\nDevice Address : " + deviceHardwareAddress);
+    public void addDataToAdapater(BluetoothDevice bd){
+        adapter.add(bd);
         adapter.notifyDataSetChanged();
     }
 
     public boolean isDeviceDuplicate(String deviceHardwareAddress){
         boolean duplicateFlag = false;
         for (int i = 0; i < adapter.getCount(); i++) {
-            String temp = (String) adapter.getItem(i);
-            if (temp.contains(deviceHardwareAddress)) {
+            BluetoothDevice temp = adapter.getItem(i);
+            if (temp.getAddress().equals(deviceHardwareAddress)) {
                 duplicateFlag = true;
                 break;
             }
@@ -183,16 +194,15 @@ public class MainActivity extends AppCompatActivity {
                 // object and its info from the Intent.
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 String deviceName = device.getName();
-                if (deviceName == null)
-                    deviceName = "Unknown device";
                 String deviceHardwareAddress = device.getAddress(); // MAC addres
                 //Toast.makeText(context, "Found device: " + deviceName, Toast.LENGTH_LONG).show();
                 if (adapter.getCount() == 0) {
-                    addDataToAdapater(deviceName,deviceHardwareAddress);
+                    addDataToAdapater(device);
+                    Log.d(TAG,String.valueOf(adapter.getCount()));
                 } else {
                     boolean duplicateFlag = isDeviceDuplicate(deviceHardwareAddress);
                     if (!duplicateFlag)
-                        addDataToAdapater(deviceName,deviceHardwareAddress);
+                        addDataToAdapater(device);
                 }
 
             }
