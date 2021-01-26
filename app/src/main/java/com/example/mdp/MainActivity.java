@@ -34,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
     private ListView lv;
     private TextView bluetoothStatusTextView;
     private bluetoothConnectionThread bluetoothThread;
-    private boolean pairingFlag = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
                 if (!BA.isEnabled())
                     BA.enable();
                 while (BA.getState() != BA.STATE_ON) {}
-                Toast.makeText(getApplicationContext(), "Turned on",Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Scanning",Toast.LENGTH_LONG).show();
                 BA.startDiscovery();
                 Log.d(TAG, "Scanning for nearby bluetooth devices");
                 IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
@@ -117,10 +116,10 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG,"selected address :  " + device.getAddress());
                 if (!isDevicePaired(device))
                     result = device.createBond();
-                Log.d(TAG,String.valueOf(result));
-                while (!pairingFlag) {}
-                bluetoothThread = new bluetoothConnectionThread(device,BA);
-                bluetoothThread.start();
+                else {
+                    bluetoothThread = new bluetoothConnectionThread(device,BA);
+                    bluetoothThread.start();
+                }
             }
         });
     }
@@ -128,10 +127,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //bluetoothThread.cancel();
+        if (bluetoothThread != null)
+            bluetoothThread.cancel();
         // Don't forget to unregister the ACTION_FOUND receiver.
-        unregisterReceiver(receiver);
-        unregisterReceiver(receiver2);
+        try {
+            //Register or UnRegister your broadcast receiver here
+            unregisterReceiver(receiver);
+            unregisterReceiver(receiver2);
+        } catch(IllegalArgumentException e) {
+            Log.d(TAG,"Receiver not registered");
+        }
     }
 
     public void displayBluetoothState(){
@@ -197,7 +202,6 @@ public class MainActivity extends AppCompatActivity {
     public boolean isDevicePaired(BluetoothDevice bd) {
         for (BluetoothDevice device : pairedDevices) {
             if (device.getAddress().equals(bd.getAddress())){
-                pairingFlag = true;
                 return true;
             }
         }
@@ -243,10 +247,13 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG,"Does this reach here?");
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 int bondState = intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE,-1);
-                Log.d(TAG,String.valueOf(device.getBondState()));
-                if (device.getBondState() == BluetoothDevice.BOND_BONDED)
-                    pairingFlag = true;
-                Toast.makeText(context, "Paired to selected device! (First time only) Connecting now!" , Toast.LENGTH_LONG).show();
+                int prevbondState = intent.getIntExtra(BluetoothDevice.EXTRA_PREVIOUS_BOND_STATE,-1);
+                Log.d(TAG,String.valueOf(bondState) + String.valueOf(prevbondState));
+                if (bondState == BluetoothDevice.BOND_BONDED && prevbondState == BluetoothDevice.BOND_BONDING) {
+                    bluetoothThread = new bluetoothConnectionThread(device, BA);
+                    bluetoothThread.start();
+                    Toast.makeText(context, "Paired to selected device! (First time only) Connecting now!" , Toast.LENGTH_LONG).show();
+                }
             }
         }
     };
