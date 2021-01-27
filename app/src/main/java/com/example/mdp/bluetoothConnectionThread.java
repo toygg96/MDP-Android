@@ -8,6 +8,7 @@ import android.bluetooth.BluetoothSocket;
 import android.util.Log;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.UUID;
 
 import static android.content.ContentValues.TAG;
@@ -18,6 +19,7 @@ public class bluetoothConnectionThread extends Thread {
         private BluetoothAdapter bluetoothAdapter;
         private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
         private MyBluetoothService bs = new MyBluetoothService();
+        private String textytest = "hello world!";
 
     public bluetoothConnectionThread(BluetoothDevice device,BluetoothAdapter adapter) {
         // Use a temporary object that is later assigned to mmSocket
@@ -58,6 +60,7 @@ public class bluetoothConnectionThread extends Thread {
             // The connection attempt succeeded. Perform work associated with
             // the connection in a separate thread.
             MyBluetoothService.ConnectedThread ct = bs.new ConnectedThread(mmSocket);
+            ct.run();
         }
 
         // Closes the client socket and causes the thread to finish.

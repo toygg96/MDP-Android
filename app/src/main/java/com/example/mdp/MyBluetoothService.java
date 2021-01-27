@@ -9,6 +9,7 @@ import android.util.Log;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 
 public class MyBluetoothService {
     private static final String TAG = "MY_APP_DEBUG_TAG";
@@ -65,11 +66,10 @@ public class MyBluetoothService {
                 try {
                     // Read from the InputStream.
                     numBytes = mmInStream.read(mmBuffer);
+                    String message = new String(mmBuffer,0,numBytes);
+                    Log.d(TAG,message);
+                    write("Hello world!".getBytes(Charset.defaultCharset()));
                     // Send the obtained bytes to the UI activity.
-                    Message readMsg = handler.obtainMessage(
-                            MessageConstants.MESSAGE_READ, numBytes, -1,
-                            mmBuffer);
-                    readMsg.sendToTarget();
                 } catch (IOException e) {
                     Log.d(TAG, "Input stream was disconnected", e);
                     break;
@@ -80,23 +80,12 @@ public class MyBluetoothService {
         // Call this from the main activity to send data to the remote device.
         public void write(byte[] bytes) {
             try {
+                Log.d(TAG,"am i actually sending?");
                 mmOutStream.write(bytes);
-
-                // Share the sent message with the UI activity.
-                Message writtenMsg = handler.obtainMessage(
-                        MessageConstants.MESSAGE_WRITE, -1, -1, bytes);
-                writtenMsg.sendToTarget();
             } catch (IOException e) {
                 Log.e(TAG, "Error occurred when sending data", e);
-
-                // Send a failure message back to the activity.
-                Message writeErrorMsg =
-                        handler.obtainMessage(MessageConstants.MESSAGE_TOAST);
-                Bundle bundle = new Bundle();
-                bundle.putString("toast",
-                        "Couldn't send data to the other device");
-                writeErrorMsg.setData(bundle);
-                handler.sendMessage(writeErrorMsg);
+            } catch (Exception e) {
+                Log.d(TAG, String.valueOf(e.getStackTrace()));
             }
         }
 
