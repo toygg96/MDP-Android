@@ -68,7 +68,6 @@ public class MyBluetoothService {
                     numBytes = mmInStream.read(mmBuffer);
                     String message = new String(mmBuffer,0,numBytes);
                     Log.d(TAG,message);
-                    write("Hello world!".getBytes(Charset.defaultCharset()));
                     // Send the obtained bytes to the UI activity.
                 } catch (IOException e) {
                     Log.d(TAG, "Input stream was disconnected", e);
@@ -80,7 +79,6 @@ public class MyBluetoothService {
         // Call this from the main activity to send data to the remote device.
         public void write(byte[] bytes) {
             try {
-                Log.d(TAG,"am i actually sending?");
                 mmOutStream.write(bytes);
             } catch (IOException e) {
                 Log.e(TAG, "Error occurred when sending data", e);

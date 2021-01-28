@@ -60,7 +60,7 @@ public class bluetoothConnectionThread extends Thread {
             // The connection attempt succeeded. Perform work associated with
             // the connection in a separate thread.
             MyBluetoothService.ConnectedThread ct = bs.new ConnectedThread(mmSocket);
-            ct.run();
+            ct.start();
         }
 
         // Closes the client socket and causes the thread to finish.
