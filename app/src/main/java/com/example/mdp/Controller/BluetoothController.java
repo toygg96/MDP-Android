@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +22,7 @@ public class BluetoothController {
     private Set<BluetoothDevice> pairedDevices;
     private DeviceListAdapter adapter;
     private bluetoothConnectionThread bluetoothThread;
+    private String connectedDevice = "";
 
     public BluetoothController(Activity activity, BluetoothAdapter BA, DeviceListAdapter adapter){
         this.activity=activity;
@@ -30,7 +32,7 @@ public class BluetoothController {
     }
 
     public String getBluetoothStatus(){
-        return("Bluetooth: Turned " + getBluetoothState() +"\nBluetooth Device Name: " + BA.getName() + "\nBluetooth Address: " + BA.getAddress() + "\nConnected to: ");
+        return("Bluetooth: Turned " + getBluetoothState() +"\nBluetooth Device Name: " + BA.getName() + "\nBluetooth Address: " + BA.getAddress() + "\nConnected to: " + connectedDevice);
 
     }
 
@@ -39,11 +41,11 @@ public class BluetoothController {
             Toast.makeText(v.getContext(), "Turned on",Toast.LENGTH_LONG).show();
             Boolean result = BA.enable();
             String status = (result) ? "On" : "Off";
-           return("Bluetooth: Turned " + status +"\nBluetooth Device Name: " + BA.getName() + "\nBluetooth Address: " + BA.getAddress() + "\nConnected to: ");
+           return("Bluetooth: Turned " + status +"\nBluetooth Device Name: " + BA.getName() + "\nBluetooth Address: " + BA.getAddress() + "\nConnected to: " + connectedDevice);
         } else {
             Toast.makeText(v.getContext(), "Bluetooth already turned on", Toast.LENGTH_LONG).show();
         }
-        return("Bluetooth: Turned " + getBluetoothState() +"\nBluetooth Device Name: " + BA.getName() + "\nBluetooth Address: " + BA.getAddress() + "\nConnected to: ");
+        return("Bluetooth: Turned " + getBluetoothState() +"\nBluetooth Device Name: " + BA.getName() + "\nBluetooth Address: " + BA.getAddress() + "\nConnected to: " + connectedDevice);
     }
 
     public String offBluetooth(View v){
@@ -53,7 +55,8 @@ public class BluetoothController {
             bluetoothThread.cancel();
         Toast.makeText(activity.getApplicationContext(), "Turned off" ,Toast.LENGTH_LONG).show();
         adapter.clear();
-        return("Bluetooth: Turned " + status +"\nBluetooth Device Name: " + BA.getName() + "\nBluetooth Address: " + BA.getAddress() + "\nConnected to: ");
+        setConnectedDevice("");
+        return("Bluetooth: Turned " + status +"\nBluetooth Device Name: " + BA.getName() + "\nBluetooth Address: " + BA.getAddress() + "\nConnected to: " + connectedDevice);
     }
 
     public String getBluetoothState(){
@@ -103,7 +106,16 @@ public class BluetoothController {
         return false;
     }
 
+    public void setConnectedDevice(String status) {
+        connectedDevice = status;
+    }
     public void setBluetoothThread(BluetoothDevice device){
+        if (bluetoothThread != null) {
+            Log.d("LIMPEH VALUE",String.valueOf(bluetoothThread.isAlive()));
+            bluetoothThread.cancel();
+            bluetoothThread.setFinishedFlag(false);
+            bluetoothThread = null;
+        }
         bluetoothThread = new bluetoothConnectionThread(activity,device,BA);
         bluetoothThread.start();
     }

@@ -68,7 +68,7 @@ public class MyBluetoothService {
                     // Read from the InputStream.
                     numBytes = mmInStream.read(mmBuffer);
                     String incomingMessage = new String(mmBuffer,0,numBytes);
-                    Log.d(TAG,incomingMessage);
+                    //Log.d(TAG,incomingMessage);
                     //BROADCAST INCOMING MSG
                     Intent incomingMsgIntent = new Intent("IncomingMsg");
                     incomingMsgIntent.putExtra("receivingMsg", incomingMessage);
@@ -76,6 +76,9 @@ public class MyBluetoothService {
 
                     // Send the obtained bytes to the UI activity.
                 } catch (IOException e) {
+                    Intent disconnectedMsgIntent = new Intent("disconnectedMsg");
+                    activity.getApplicationContext().sendBroadcast(disconnectedMsgIntent);
+                    cancel();
                     Log.d(TAG, "Input stream was disconnected", e);
                     break;
                 }
@@ -91,6 +94,16 @@ public class MyBluetoothService {
             } catch (Exception e) {
                 Log.d(TAG, String.valueOf(e.getStackTrace()));
             }
+        }
+
+        public void cancel(){
+            try {
+                mmInStream.close();
+                mmOutStream.close();
+            } catch (Exception e) {
+                Log.d(TAG,e.getStackTrace().toString());
+            }
+
         }
     }
 }

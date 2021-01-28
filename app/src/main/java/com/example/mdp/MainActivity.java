@@ -18,6 +18,7 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.*;
@@ -28,11 +29,12 @@ import java.nio.charset.Charset;
 import java.util.*;
 
 public class MainActivity extends AppCompatActivity {
-    private Button onBluetoothBtn,makeVisibleBtn,offBluetoothBtn,listDeviceBtn,scanBtn;
+    private Button onBluetoothBtn,makeVisibleBtn,offBluetoothBtn,listDeviceBtn,scanBtn,sendBtn;
     private BluetoothAdapter BA;
     private DeviceListAdapter adapter;
     private ListView lv;
     private TextView bluetoothStatusTextView, incomingTextView;
+    private EditText sendMsgInputBox;
     private BluetoothController BC;
 
     @Override
@@ -42,25 +44,34 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setLogo(R.drawable.robot);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayUseLogoEnabled(true);
+
         onBluetoothBtn = (Button) findViewById(R.id.onBluetoothBtn);
         makeVisibleBtn=(Button)findViewById(R.id.makeVisibleBtn);
         offBluetoothBtn=(Button)findViewById(R.id.offBluetoothBtn);
         listDeviceBtn=(Button)findViewById(R.id.listDeviceBtn);
         scanBtn = (Button)findViewById(R.id.scanBtn);
+        sendBtn = (Button)findViewById(R.id.sendBtn);
         lv = (ListView)findViewById(R.id.listView);
         bluetoothStatusTextView = (TextView)findViewById(R.id.bluetoothConnectionStatus);
         incomingTextView = (TextView)findViewById(R.id.receiveTextView);
+        sendMsgInputBox = (EditText)findViewById(R.id.sendTextBox);
+        incomingTextView.setMovementMethod(new ScrollingMovementMethod());
+        // Instantiate the DeviceListAdapter, BluetoothAdapter, BluetoothController
         adapter = new DeviceListAdapter(this,R.layout.list_item);
         BA = BluetoothAdapter.getDefaultAdapter();
         BC = new BluetoothController(this,BA,adapter);
 
+        // Registering all the receivers
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         registerReceiver(receiver, filter);
         IntentFilter filter2 = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
         registerReceiver(receiver2, filter2);
         IntentFilter filter3 = new IntentFilter("IncomingMsg");
-        //REGISTER BROADCAST RECEIVER FOR IMCOMING MSG
         registerReceiver(incomingMsgReceiver, filter3);
+        IntentFilter filter4 = new IntentFilter("btConnectionStatus");
+        registerReceiver(btConnectionStatusReceiver, filter4);
+        IntentFilter filter5 = new IntentFilter("disconnectedMsg");
+        registerReceiver(disconnectedReceiver, filter5);
 
         onBluetoothBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,7 +103,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View r) {
                 //Log.d(TAG, "List Bluetooth devices");
                 BC.listPairedDevice(r);
-                BC.getBluetoothThread().write("hello world".getBytes(Charset.defaultCharset()));
             }
         });
         bluetoothStatusTextView.setText(BC.getBluetoothStatus());
@@ -129,6 +139,12 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        sendBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View r) {
+                BC.getBluetoothThread().write(sendMsgInputBox.getText().toString().getBytes(Charset.defaultCharset()));
+            }
+        });
     }
 
     @Override
@@ -141,6 +157,8 @@ public class MainActivity extends AppCompatActivity {
             //Register or UnRegister your broadcast receiver here
             unregisterReceiver(receiver);
             unregisterReceiver(receiver2);
+            unregisterReceiver(incomingMsgReceiver);
+            unregisterReceiver(btConnectionStatusReceiver);
         } catch(IllegalArgumentException e) {
             Log.d(TAG,"Receiver not registered");
         }
@@ -202,7 +220,23 @@ public class MainActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             String msg = intent.getStringExtra("receivingMsg");
             incomingTextView.setText(msg);
-            Log.d(TAG, "Receiving incomingMsg!" + msg);
+        }
+    };
+
+    public BroadcastReceiver btConnectionStatusReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String msg = intent.getStringExtra("Device");
+            BC.setConnectedDevice(msg);
+            bluetoothStatusTextView.setText(BC.getBluetoothStatus());
+        }
+    };
+
+    public BroadcastReceiver disconnectedReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            BC.setConnectedDevice("");
+            bluetoothStatusTextView.setText(BC.getBluetoothStatus());
         }
     };
 
