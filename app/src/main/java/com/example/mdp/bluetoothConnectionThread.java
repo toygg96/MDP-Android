@@ -1,6 +1,8 @@
 package com.example.mdp;
 
 import com.example.mdp.MyBluetoothService;
+
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
@@ -18,12 +20,15 @@ public class bluetoothConnectionThread extends Thread {
         private final BluetoothDevice mmDevice;
         private BluetoothAdapter bluetoothAdapter;
         private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-        private MyBluetoothService bs = new MyBluetoothService();
-        private String textytest = "hello world!";
+        private MyBluetoothService bs;
+        private  MyBluetoothService.ConnectedThread ct;
+        private Activity activity;
 
-    public bluetoothConnectionThread(BluetoothDevice device,BluetoothAdapter adapter) {
+    public bluetoothConnectionThread(Activity activity,BluetoothDevice device,BluetoothAdapter adapter) {
         // Use a temporary object that is later assigned to mmSocket
         // because mmSocket is final.
+        this.activity = activity;
+        bs = new MyBluetoothService(activity);
         BluetoothSocket tmp = null;
         mmDevice = device;
         bluetoothAdapter = adapter;
@@ -31,7 +36,8 @@ public class bluetoothConnectionThread extends Thread {
         try {
             // Get a BluetoothSocket to connect with the given BluetoothDevice.
             // MY_UUID is the app's UUID string, also used in the server code.
-            tmp = device.createRfcommSocketToServiceRecord(MY_UUID);
+            tmp = mmDevice.createRfcommSocketToServiceRecord(MY_UUID);
+
         } catch (IOException e) {
             Log.e(TAG, "Socket's create() method failed", e);
         }
@@ -59,7 +65,7 @@ public class bluetoothConnectionThread extends Thread {
 
             // The connection attempt succeeded. Perform work associated with
             // the connection in a separate thread.
-            MyBluetoothService.ConnectedThread ct = bs.new ConnectedThread(mmSocket);
+            ct = bs.new ConnectedThread(mmSocket);
             ct.start();
         }
 
@@ -70,5 +76,9 @@ public class bluetoothConnectionThread extends Thread {
             } catch (IOException e) {
                 Log.e(TAG, "Could not close the client socket", e);
             }
+        }
+
+        public void write(byte[] bytes) {
+            ct.write(bytes);
         }
 }

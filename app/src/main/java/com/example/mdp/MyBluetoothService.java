@@ -1,22 +1,23 @@
 package com.example.mdp;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothSocket;
-import android.os.Bundle;
+import android.content.Intent;
 import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.charset.Charset;
+
 
 public class MyBluetoothService {
     private static final String TAG = "MY_APP_DEBUG_TAG";
     private Handler handler; // handler that gets info from Bluetooth service
+    private Activity activity;
 
-    public MyBluetoothService(){
-
+    public MyBluetoothService(Activity activity){
+        this.activity = activity;
     }
 
     // Defines several constants used when transmitting messages between the
@@ -66,8 +67,13 @@ public class MyBluetoothService {
                 try {
                     // Read from the InputStream.
                     numBytes = mmInStream.read(mmBuffer);
-                    String message = new String(mmBuffer,0,numBytes);
-                    Log.d(TAG,message);
+                    String incomingMessage = new String(mmBuffer,0,numBytes);
+                    Log.d(TAG,incomingMessage);
+                    //BROADCAST INCOMING MSG
+                    Intent incomingMsgIntent = new Intent("IncomingMsg");
+                    incomingMsgIntent.putExtra("receivingMsg", incomingMessage);
+                    activity.getApplicationContext().sendBroadcast(incomingMsgIntent);
+
                     // Send the obtained bytes to the UI activity.
                 } catch (IOException e) {
                     Log.d(TAG, "Input stream was disconnected", e);
@@ -84,15 +90,6 @@ public class MyBluetoothService {
                 Log.e(TAG, "Error occurred when sending data", e);
             } catch (Exception e) {
                 Log.d(TAG, String.valueOf(e.getStackTrace()));
-            }
-        }
-
-        // Call this method from the main activity to shut down the connection.
-        public void cancel() {
-            try {
-                mmSocket.close();
-            } catch (IOException e) {
-                Log.e(TAG, "Could not close the connect socket", e);
             }
         }
     }

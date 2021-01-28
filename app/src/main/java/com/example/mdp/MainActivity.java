@@ -22,18 +22,18 @@ import android.util.Log;
 import android.view.View;
 import android.widget.*;
 import static android.content.ContentValues.TAG;
-import com.example.mdp.DeviceListAdapter;
+import com.example.mdp.Controller.BluetoothController;
 
+import java.nio.charset.Charset;
 import java.util.*;
 
 public class MainActivity extends AppCompatActivity {
     private Button onBluetoothBtn,makeVisibleBtn,offBluetoothBtn,listDeviceBtn,scanBtn;
     private BluetoothAdapter BA;
-    private Set<BluetoothDevice> pairedDevices;
     private DeviceListAdapter adapter;
     private ListView lv;
-    private TextView bluetoothStatusTextView;
-    private bluetoothConnectionThread bluetoothThread;
+    private TextView bluetoothStatusTextView, incomingTextView;
+    private BluetoothController BC;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,12 +49,25 @@ public class MainActivity extends AppCompatActivity {
         scanBtn = (Button)findViewById(R.id.scanBtn);
         lv = (ListView)findViewById(R.id.listView);
         bluetoothStatusTextView = (TextView)findViewById(R.id.bluetoothConnectionStatus);
+        incomingTextView = (TextView)findViewById(R.id.receiveTextView);
         adapter = new DeviceListAdapter(this,R.layout.list_item);
+        BA = BluetoothAdapter.getDefaultAdapter();
+        BC = new BluetoothController(this,BA,adapter);
+
+        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        registerReceiver(receiver, filter);
+        IntentFilter filter2 = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+        registerReceiver(receiver2, filter2);
+        IntentFilter filter3 = new IntentFilter("IncomingMsg");
+        //REGISTER BROADCAST RECEIVER FOR IMCOMING MSG
+        registerReceiver(incomingMsgReceiver, filter3);
+
         onBluetoothBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View r) {
                 //Log.d(TAG, "Turning bluetooth on");
-                onBluetooth(r);
+                String result = BC.onBluetooth(r);
+                bluetoothStatusTextView.setText(result);
 //                Intent i = new Intent(MapsActivity.this,ViewClinicActivity.class);
 //                MainActivity.this.startActivity(i);
             }
@@ -63,26 +76,26 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View r) {
                 //Log.d(TAG, "Make device visible");
-                visibleDevice(r);
+                BC.visibleDevice(r);
             }
         });
         offBluetoothBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View r) {
                 //Log.d(TAG, "Turning bluetooth off");
-                offBluetooth(r);
+                String result = BC.offBluetooth(r);
+                bluetoothStatusTextView.setText(result);
             }
         });
         listDeviceBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View r) {
                 //Log.d(TAG, "List Bluetooth devices");
-                listPairedDevice(r);
+                BC.listPairedDevice(r);
+                BC.getBluetoothThread().write("hello world".getBytes(Charset.defaultCharset()));
             }
         });
-
-        BA = BluetoothAdapter.getDefaultAdapter();
-        displayBluetoothState();
+        bluetoothStatusTextView.setText(BC.getBluetoothStatus());
         scanBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View r) {
@@ -94,9 +107,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Scanning",Toast.LENGTH_LONG).show();
                 BA.startDiscovery();
                 Log.d(TAG, "Scanning for nearby bluetooth devices");
-                IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-                registerReceiver(receiver, filter);
-                displayBluetoothState();
+                bluetoothStatusTextView.setText(BC.getBluetoothStatus());
             }
         });
         checkPermission();
@@ -108,17 +119,13 @@ public class MainActivity extends AppCompatActivity {
                                     long arg3)
             {
                 boolean result = true;
-                IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
-                registerReceiver(receiver2, filter);
-                pairedDevices = BA.getBondedDevices();
                 // based on the item clicked go to the relevant activity
                 BluetoothDevice device = (BluetoothDevice) adapter.getItemAtPosition(position);
                 Log.d(TAG,"selected address :  " + device.getAddress());
-                if (!isDevicePaired(device))
+                if (!BC.isDevicePaired(device))
                     result = device.createBond();
                 else {
-                    bluetoothThread = new bluetoothConnectionThread(device,BA);
-                    bluetoothThread.start();
+                    BC.setBluetoothThread(device);
                 }
             }
         });
@@ -127,8 +134,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (bluetoothThread != null)
-            bluetoothThread.cancel();
+        if (BC.getBluetoothThread() != null)
+            BC.getBluetoothThread().cancel();
         // Don't forget to unregister the ACTION_FOUND receiver.
         try {
             //Register or UnRegister your broadcast receiver here
@@ -139,74 +146,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void displayBluetoothState(){
-        if (BA.isEnabled())
-            bluetoothStatusTextView.setText("Bluetooth: Turned on\nBluetooth Device Name: " + BA.getName() + "\nBluetooth Address: " + BA.getAddress());
-        else
-            bluetoothStatusTextView.setText("Bluetooth: Turned off\nBluetooth Device Name: " + BA.getName() + "\nBluetooth Address: " + BA.getAddress());
-
-    }
-
-    public void onBluetooth(View v){
-        if (!BA.isEnabled()) {
-            Toast.makeText(getApplicationContext(), "Turned on",Toast.LENGTH_LONG).show();
-            bluetoothStatusTextView.setText("Bluetooth: Turned on\nBluetooth Device Name: " + BA.getName() + "\nBluetooth Address: " + BA.getAddress());
-            BA.enable();
-        } else {
-            Toast.makeText(getApplicationContext(), "Bluetooth already turned on", Toast.LENGTH_LONG).show();
-        }
-    }
-
-    public void offBluetooth(View v){
-        BA.disable();
-        if (bluetoothThread != null)
-            bluetoothThread.cancel();
-        bluetoothStatusTextView.setText("Bluetooth: Turned off\nBluetooth Device Name: " + BA.getName() + "\nBluetooth Address: " + BA.getAddress());
-        Toast.makeText(getApplicationContext(), "Turned off" ,Toast.LENGTH_LONG).show();
-        adapter.clear();
-    }
-
-
-    public  void visibleDevice(View v){
-        Intent getVisible = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-        startActivityForResult(getVisible, 0);
-    }
-
-
-    public void listPairedDevice(View v){
-        adapter.clear();
-        pairedDevices = BA.getBondedDevices();
-
-        for(BluetoothDevice bt : pairedDevices) adapter.add(bt);
-        Toast.makeText(getApplicationContext(), "Showing Paired Devices",Toast.LENGTH_SHORT).show();
-        adapter.notifyDataSetChanged();
-    }
-
-    public void addDataToAdapater(BluetoothDevice bd){
-        adapter.add(bd);
-        adapter.notifyDataSetChanged();
-    }
-
-    public boolean isDeviceDuplicate(String deviceHardwareAddress){
-        boolean duplicateFlag = false;
-        for (int i = 0; i < adapter.getCount(); i++) {
-            BluetoothDevice temp = adapter.getItem(i);
-            if (temp.getAddress().equals(deviceHardwareAddress)) {
-                duplicateFlag = true;
-                break;
-            }
-        }
-        return duplicateFlag;
-    }
-
-    public boolean isDevicePaired(BluetoothDevice bd) {
-        for (BluetoothDevice device : pairedDevices) {
-            if (device.getAddress().equals(bd.getAddress())){
-                return true;
-            }
-        }
-        return false;
-    }
     // Create a BroadcastReceiver for ACTION_FOUND.
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
@@ -225,12 +164,12 @@ public class MainActivity extends AppCompatActivity {
                 String deviceHardwareAddress = device.getAddress(); // MAC addres
                 //Toast.makeText(context, "Found device: " + deviceName, Toast.LENGTH_LONG).show();
                 if (adapter.getCount() == 0) {
-                    addDataToAdapater(device);
+                    BC.addDataToAdapater(device);
                     //Log.d(TAG,String.valueOf(adapter.getCount()));
                 } else {
-                    boolean duplicateFlag = isDeviceDuplicate(deviceHardwareAddress);
+                    boolean duplicateFlag = BC.isDeviceDuplicate(deviceHardwareAddress);
                     if (!duplicateFlag)
-                        addDataToAdapater(device);
+                        BC.addDataToAdapater(device);
                 }
 
             }
@@ -250,11 +189,20 @@ public class MainActivity extends AppCompatActivity {
                 int prevbondState = intent.getIntExtra(BluetoothDevice.EXTRA_PREVIOUS_BOND_STATE,-1);
                 //Log.d(TAG,String.valueOf(bondState) + String.valueOf(prevbondState));
                 if (bondState == BluetoothDevice.BOND_BONDED && prevbondState == BluetoothDevice.BOND_BONDING) {
-                    bluetoothThread = new bluetoothConnectionThread(device, BA);
-                    bluetoothThread.start();
+                    BC.setBluetoothThread(device);
                     Toast.makeText(context, "Paired to selected device! (First time only) Connecting now!" , Toast.LENGTH_LONG).show();
                 }
             }
+        }
+    };
+
+    // Create a BroadcastReceiver for Receive message.
+    public BroadcastReceiver incomingMsgReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String msg = intent.getStringExtra("receivingMsg");
+            incomingTextView.setText(msg);
+            Log.d(TAG, "Receiving incomingMsg!" + msg);
         }
     };
 
