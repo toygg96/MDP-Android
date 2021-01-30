@@ -1,4 +1,4 @@
-package com.example.mdp;
+package com.example.mdp.Controller;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothSocket;

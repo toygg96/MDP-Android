@@ -1,18 +1,14 @@
-package com.example.mdp;
-
-import com.example.mdp.MyBluetoothService;
+package com.example.mdp.Controller;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.os.ParcelUuid;
 import android.util.Log;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.UUID;
 
 import static android.content.ContentValues.TAG;
@@ -75,7 +71,7 @@ public class bluetoothConnectionThread extends Thread {
             Intent connectionStatusIntent = new Intent("btConnectionStatus");
             connectionStatusIntent.putExtra("Device", mmDevice.getName());
             activity.getApplicationContext().sendBroadcast(connectionStatusIntent);
-            while (finishedFlag) {}
+            //while (finishedFlag) {}
         }
 
         // Closes the client socket and causes the thread to finish.
@@ -89,9 +85,9 @@ public class bluetoothConnectionThread extends Thread {
             }
         }
 
-        public void setFinishedFlag(boolean value) {
-            this.finishedFlag = value;
-        }
+        //public void setFinishedFlag(boolean value) {
+        //    this.finishedFlag = value;
+        //}
         public void write(byte[] bytes) {
             ct.write(bytes);
         }

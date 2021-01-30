@@ -1,4 +1,4 @@
-package com.example.mdp;
+package com.example.mdp.Controller;
 
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+
+import com.example.mdp.R;
 
 import java.util.ArrayList;
 

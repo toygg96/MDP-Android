@@ -24,9 +24,9 @@ import android.view.View;
 import android.widget.*;
 import static android.content.ContentValues.TAG;
 import com.example.mdp.Controller.BluetoothController;
+import com.example.mdp.Controller.DeviceListAdapter;
 
 import java.nio.charset.Charset;
-import java.util.*;
 
 public class MainActivity extends AppCompatActivity {
     private Button onBluetoothBtn,makeVisibleBtn,offBluetoothBtn,listDeviceBtn,scanBtn,sendBtn;
@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
         listDeviceBtn=(Button)findViewById(R.id.listDeviceBtn);
         scanBtn = (Button)findViewById(R.id.scanBtn);
         sendBtn = (Button)findViewById(R.id.sendBtn);
+        sendBtn.setEnabled(false);
         lv = (ListView)findViewById(R.id.listView);
         bluetoothStatusTextView = (TextView)findViewById(R.id.bluetoothConnectionStatus);
         incomingTextView = (TextView)findViewById(R.id.receiveTextView);
@@ -63,6 +64,11 @@ public class MainActivity extends AppCompatActivity {
 
         // Registering all the receivers
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        filter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
+        filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED);
+        filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         registerReceiver(receiver, filter);
         IntentFilter filter2 = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
         registerReceiver(receiver2, filter2);
@@ -109,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
         scanBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View r) {
+                scanBtn.setEnabled(false);
                 locationEnabled();
                 adapter.clear();
                 if (!BA.isEnabled())
@@ -116,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
                 while (BA.getState() != BA.STATE_ON) {}
                 Toast.makeText(getApplicationContext(), "Scanning",Toast.LENGTH_LONG).show();
                 BA.startDiscovery();
-                Log.d(TAG, "Scanning for nearby bluetooth devices");
+                //Log.d(TAG, "Scanning for nearby bluetooth devices");
                 bluetoothStatusTextView.setText(BC.getBluetoothStatus());
             }
         });
@@ -141,7 +148,8 @@ public class MainActivity extends AppCompatActivity {
         sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View r) {
-                BC.getBluetoothThread().write(sendMsgInputBox.getText().toString().getBytes(Charset.defaultCharset()));
+                if (BC.getBluetoothThread() != null)
+                    BC.getBluetoothThread().write(sendMsgInputBox.getText().toString().getBytes(Charset.defaultCharset()));
             }
         });
     }
@@ -158,6 +166,7 @@ public class MainActivity extends AppCompatActivity {
             unregisterReceiver(receiver2);
             unregisterReceiver(incomingMsgReceiver);
             unregisterReceiver(btConnectionStatusReceiver);
+            unregisterReceiver(disconnectedReceiver);
         } catch(IllegalArgumentException e) {
             Log.d(TAG,"Receiver not registered");
         }
@@ -168,11 +177,13 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
+            Log.d(TAG,action);
             if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
                 //discovery starts, we can show progress dialog or perform other tasks
                 Toast.makeText(context, "Starting scan", Toast.LENGTH_LONG).show();
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
                 //discovery finishes, dismis progress dialog
+                scanBtn.setEnabled(true);
                 Toast.makeText(context, "Scan completed", Toast.LENGTH_LONG).show();
             } else if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 // Discovery has found a device. Get the BluetoothDevice
@@ -198,7 +209,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            Log.d(TAG,"Does it reach receiver2?");
             if (BluetoothDevice.ACTION_BOND_STATE_CHANGED.equals(action)) {
                 //Log.d(TAG,"Does this reach here?");
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
@@ -215,18 +225,20 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+
     // Create a BroadcastReceiver for Receive message.
     public BroadcastReceiver incomingMsgReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String msg = intent.getStringExtra("receivingMsg");
-            incomingTextView.setText(msg);
+            incomingTextView.append(msg + "\n");
         }
     };
 
     public BroadcastReceiver btConnectionStatusReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            sendBtn.setEnabled(true);
             String msg = intent.getStringExtra("Device");
             BC.setConnectedDevice(msg);
             bluetoothStatusTextView.setText(BC.getBluetoothStatus());
@@ -238,6 +250,7 @@ public class MainActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             BC.setConnectedDevice("");
             bluetoothStatusTextView.setText(BC.getBluetoothStatus());
+            sendBtn.setEnabled(false);
         }
     };
 
