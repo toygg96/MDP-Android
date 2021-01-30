@@ -134,9 +134,8 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG,"selected address :  " + device.getAddress());
                 if (!BC.isDevicePaired(device))
                     result = device.createBond();
-                else {
+                else
                     BC.setBluetoothThread(device);
-                }
             }
         });
         sendBtn.setOnClickListener(new View.OnClickListener() {
@@ -199,12 +198,14 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            //Log.d(TAG,"Does it reach receiver2?");
+            Log.d(TAG,"Does it reach receiver2?");
             if (BluetoothDevice.ACTION_BOND_STATE_CHANGED.equals(action)) {
                 //Log.d(TAG,"Does this reach here?");
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 int bondState = intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE,-1);
+                Log.d(TAG,String.valueOf(bondState));
                 int prevbondState = intent.getIntExtra(BluetoothDevice.EXTRA_PREVIOUS_BOND_STATE,-1);
+                Log.d(TAG,String.valueOf(prevbondState));
                 //Log.d(TAG,String.valueOf(bondState) + String.valueOf(prevbondState));
                 if (bondState == BluetoothDevice.BOND_BONDED && prevbondState == BluetoothDevice.BOND_BONDING) {
                     BC.setBluetoothThread(device);
@@ -241,7 +242,7 @@ public class MainActivity extends AppCompatActivity {
     };
 
     public void checkPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && checkSelfPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 Log.d(TAG,"Location permissions granted previously");
             } else {

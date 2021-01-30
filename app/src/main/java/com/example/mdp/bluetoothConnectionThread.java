@@ -36,6 +36,7 @@ public class bluetoothConnectionThread extends Thread {
         mmDevice = device;
         bluetoothAdapter = adapter;
         ParcelUuid[] uuids = device.getUuids();
+        Log.d(TAG, String.valueOf(uuids[0].getUuid()));
 
         try {
             // Get a BluetoothSocket to connect with the given BluetoothDevice.
@@ -81,7 +82,8 @@ public class bluetoothConnectionThread extends Thread {
         public void cancel() {
             try {
                 mmSocket.close();
-                ct.cancel();
+                if(ct != null)
+                    ct.cancel();
             } catch (IOException e) {
                 Log.e(TAG, "Could not close the client socket", e);
             }

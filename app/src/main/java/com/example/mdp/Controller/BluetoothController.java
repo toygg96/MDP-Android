@@ -109,6 +109,7 @@ public class BluetoothController {
     public void setConnectedDevice(String status) {
         connectedDevice = status;
     }
+
     public void setBluetoothThread(BluetoothDevice device){
         if (bluetoothThread != null) {
             Log.d("LIMPEH VALUE",String.valueOf(bluetoothThread.isAlive()));
