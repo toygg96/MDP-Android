@@ -3,6 +3,7 @@ package com.example.mdp.Controller;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.os.ParcelUuid;
@@ -14,15 +15,18 @@ import java.util.UUID;
 import static android.content.ContentValues.TAG;
 
 public class bluetoothConnectionThread extends Thread {
-        private final BluetoothSocket mmSocket;
-        private final BluetoothDevice mmDevice;
+        private BluetoothSocket mmSocket;
+        private BluetoothDevice mmDevice;
         private BluetoothAdapter bluetoothAdapter;
-        private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+        private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");
         private MyBluetoothService bs;
         private  MyBluetoothService.ConnectedThread ct;
         private Activity activity;
-        private boolean finishedFlag = true;
 
+    public bluetoothConnectionThread(Activity activity){
+        this.activity = activity;
+        bs = new MyBluetoothService(activity);
+    }
     public bluetoothConnectionThread(Activity activity,BluetoothDevice device,BluetoothAdapter adapter) {
         // Use a temporary object that is later assigned to mmSocket
         // because mmSocket is final.
@@ -32,7 +36,6 @@ public class bluetoothConnectionThread extends Thread {
         mmDevice = device;
         bluetoothAdapter = adapter;
         ParcelUuid[] uuids = device.getUuids();
-        Log.d(TAG, String.valueOf(uuids[0].getUuid()));
 
         try {
             // Get a BluetoothSocket to connect with the given BluetoothDevice.
@@ -71,7 +74,6 @@ public class bluetoothConnectionThread extends Thread {
             Intent connectionStatusIntent = new Intent("btConnectionStatus");
             connectionStatusIntent.putExtra("Device", mmDevice.getName());
             activity.getApplicationContext().sendBroadcast(connectionStatusIntent);
-            //while (finishedFlag) {}
         }
 
         // Closes the client socket and causes the thread to finish.
@@ -91,4 +93,59 @@ public class bluetoothConnectionThread extends Thread {
         public void write(byte[] bytes) {
             ct.write(bytes);
         }
+
+    public class AcceptThread extends Thread {
+        private final BluetoothServerSocket mmServerSocket;
+        BluetoothSocket socket = null;
+
+        public AcceptThread(Activity activity, BluetoothAdapter adapter) {
+            // Use a temporary object that is later assigned to mmServerSocket
+            // because mmServerSocket is final.
+            BluetoothServerSocket tmp = null;
+            try {
+                // MY_UUID is the app's UUID string, also used by the client code.
+                tmp = adapter.listenUsingRfcommWithServiceRecord("RPI Server", MY_UUID);
+            } catch (IOException e) {
+                Log.e(TAG, "Socket's listen() method failed", e);
+            }
+            mmServerSocket = tmp;
+        }
+
+        public void run() {
+            // Keep listening until exception occurs or a socket is returned.
+            Log.d(TAG,"RUNNING");
+            while (true) {
+                try {
+                    socket = mmServerSocket.accept();
+                } catch (IOException e) {
+                    Log.e(TAG, "Socket's accept() method failed", e);
+                    break;
+                }
+
+                if (socket != null) {
+                    // A connection was accepted. Perform work associated with
+                    // the connection in a separate thread.
+                    ct = bs.new ConnectedThread(socket);
+                    ct.start();
+                    Intent connectionStatusIntent = new Intent("btConnectionStatus");
+                    connectionStatusIntent.putExtra("Device", socket.getRemoteDevice().getName());
+                    activity.getApplicationContext().sendBroadcast(connectionStatusIntent);
+                    break;
+                }
+            }
+        }
+
+        // Closes the connect socket and causes the thread to finish.
+        public void cancel() {
+            try {
+                mmServerSocket.close();
+            } catch (IOException e) {
+                Log.e(TAG, "Could not close the connect socket", e);
+            }
+        }
+
+        public void write(byte[] bytes) {
+            ct.write(bytes);
+        }
+    }
 }

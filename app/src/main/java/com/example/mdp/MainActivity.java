@@ -238,18 +238,23 @@ public class MainActivity extends AppCompatActivity {
     public BroadcastReceiver btConnectionStatusReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            adapter.clear();
+            adapter.notifyDataSetChanged();
             sendBtn.setEnabled(true);
             String msg = intent.getStringExtra("Device");
             BC.setConnectedDevice(msg);
             bluetoothStatusTextView.setText(BC.getBluetoothStatus());
+
         }
     };
 
     public BroadcastReceiver disconnectedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            BC.rerunBluetoothServer();
             BC.setConnectedDevice("");
             bluetoothStatusTextView.setText(BC.getBluetoothStatus());
+            BC.getAcceptedThread().cancel();
             sendBtn.setEnabled(false);
         }
     };
@@ -292,6 +297,7 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace() ;
         }
         if (!gps_enabled && !network_enabled) {
+            scanBtn.setEnabled(true);
             new AlertDialog.Builder(MainActivity. this )
                     .setMessage( "Please enable your GPS before scanning (Only applicable for Android v10)!" )
                     .setPositiveButton( "Settings" , new

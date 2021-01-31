@@ -16,17 +16,27 @@ public class BluetoothController {
     private DeviceListAdapter adapter;
     private bluetoothConnectionThread bluetoothThread;
     private String connectedDevice = "";
+    private bluetoothConnectionThread.AcceptThread at;
 
     public BluetoothController(Activity activity, BluetoothAdapter BA, DeviceListAdapter adapter){
         this.activity=activity;
         this.BA = BA;
         this.adapter = adapter;
         pairedDevices = BA.getBondedDevices();
+        at = new bluetoothConnectionThread(activity).new AcceptThread(activity,BA);
+        at.start();
     }
 
     public String getBluetoothStatus(){
         return("Bluetooth: Turned " + getBluetoothState() +"\nBluetooth Device Name: " + BA.getName() + "\nBluetooth Address: " + getAddress(BA.getName()) + "\nConnected to: " + connectedDevice);
 
+    }
+
+    public void rerunBluetoothServer(){
+        at.cancel();
+        at = null;
+        at = new bluetoothConnectionThread(activity).new AcceptThread(activity,BA);
+        at.start();
     }
 
     public String onBluetooth(View v){
@@ -46,7 +56,7 @@ public class BluetoothController {
         String status = (result) ? "Off" : "On";
         if (bluetoothThread != null)
             bluetoothThread.cancel();
-        Toast.makeText(activity.getApplicationContext(), "Turned off" ,Toast.LENGTH_LONG).show();
+        Toast.makeText(v.getContext(), "Turned off" ,Toast.LENGTH_LONG).show();
         adapter.clear();
         setConnectedDevice("");
         return("Bluetooth: Turned " + status +"\nBluetooth Device Name: " + BA.getName() + "\nBluetooth Address: " + getAddress(BA.getName()) + "\nConnected to: " + connectedDevice);
@@ -79,7 +89,7 @@ public class BluetoothController {
         pairedDevices = BA.getBondedDevices();
 
         for(BluetoothDevice bt : pairedDevices) adapter.add(bt);
-        Toast.makeText(activity.getApplicationContext(), "Showing Paired Devices",Toast.LENGTH_SHORT).show();
+        Toast.makeText(v.getContext(), "Showing Paired Devices",Toast.LENGTH_SHORT).show();
         adapter.notifyDataSetChanged();
     }
 
@@ -128,5 +138,7 @@ public class BluetoothController {
     public bluetoothConnectionThread getBluetoothThread(){
         return bluetoothThread;
     }
+
+    public bluetoothConnectionThread.AcceptThread getAcceptedThread() { return at; }
 
 }

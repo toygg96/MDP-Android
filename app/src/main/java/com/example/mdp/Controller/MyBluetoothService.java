@@ -1,6 +1,7 @@
 package com.example.mdp.Controller;
 
 import android.app.Activity;
+import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.os.Handler;
@@ -36,7 +37,7 @@ public class MyBluetoothService {
         private final OutputStream mmOutStream;
         private byte[] mmBuffer; // mmBuffer store for the stream
 
-        public ConnectedThread(BluetoothSocket socket) {
+        protected ConnectedThread(BluetoothSocket socket) {
             mmSocket = socket;
             InputStream tmpIn = null;
             OutputStream tmpOut = null;
@@ -44,12 +45,12 @@ public class MyBluetoothService {
             // Get the input and output streams; using temp objects because
             // member streams are final.
             try {
-                tmpIn = socket.getInputStream();
+                tmpIn = mmSocket.getInputStream();
             } catch (IOException e) {
                 Log.e(TAG, "Error occurred when creating input stream", e);
             }
             try {
-                tmpOut = socket.getOutputStream();
+                tmpOut = mmSocket.getOutputStream();
             } catch (IOException e) {
                 Log.e(TAG, "Error occurred when creating output stream", e);
             }
