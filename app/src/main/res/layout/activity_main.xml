@@ -29,6 +29,48 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
+    <TextView
+        android:id="@+id/receiveTextLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/receiveTextLabel"
+        app:layout_constraintTop_toBottomOf="@+id/bluetoothConnectionStatus"
+        app:layout_constraintStart_toStartOf="@+id/bluetoothConnectionStatus"/>
+
+    <TextView
+        android:id="@+id/receiveTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:height="180dp"
+        android:maxHeight="180dp"
+        android:scrollbars = "vertical"
+        android:background="@drawable/textview_border"
+        app:layout_constraintTop_toBottomOf="@+id/receiveTextLabel"
+        app:layout_constraintStart_toStartOf="@+id/receiveTextLabel"
+        app:layout_constraintEnd_toEndOf="@+id/receiveTextLabel"/>
+
+    <EditText
+        android:id="@+id/sendTextBox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:maxWidth="215dp"
+        android:maxHeight="50dp"
+        app:layout_constraintTop_toBottomOf="@+id/receiveTextView"
+        app:layout_constraintStart_toStartOf="@+id/offBluetoothBtn"
+        app:layout_constraintEnd_toStartOf="@+id/sendBtn"/>
+
+    <Button
+        android:id="@+id/sendBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp"
+        android:text="@string/sendBtnText"
+        app:layout_constraintTop_toBottomOf="@+id/receiveTextView"
+        app:layout_constraintEnd_toEndOf="@+id/listDeviceBtn"/>
+
     <Button
         android:id="@+id/onBluetoothBtn"
         android:layout_width="wrap_content"
@@ -39,7 +81,7 @@
         android:text="@string/on_bluetooth"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bluetoothConnectionStatus" />
+        app:layout_constraintTop_toBottomOf="@+id/sendTextBox" />
 
     <Button
         android:id="@+id/makeVisibleBtn"
@@ -51,7 +93,7 @@
         android:text="@string/make_visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bluetoothConnectionStatus" />
+        app:layout_constraintTop_toBottomOf="@+id/sendBtn" />
 
     <Button
         android:id="@+id/offBluetoothBtn"
@@ -89,48 +131,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/offBluetoothBtn" />
 
-    <TextView
-        android:id="@+id/receiveTextLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/receiveTextLabel"
-        app:layout_constraintTop_toBottomOf="@+id/scanBtn"
-        app:layout_constraintStart_toStartOf="@+id/offBluetoothBtn"/>
-
-    <TextView
-        android:id="@+id/receiveTextView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:height="180dp"
-        android:maxHeight="180dp"
-        android:scrollbars = "vertical"
-        android:background="@drawable/textview_border"
-        app:layout_constraintTop_toBottomOf="@+id/receiveTextLabel"
-        app:layout_constraintStart_toStartOf="@+id/offBluetoothBtn"
-        app:layout_constraintEnd_toEndOf="@+id/receiveTextLabel"/>
-
-    <EditText
-        android:id="@+id/sendTextBox"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:maxWidth="215dp"
-        android:maxHeight="50dp"
-        app:layout_constraintTop_toBottomOf="@+id/receiveTextView"
-        app:layout_constraintStart_toStartOf="@+id/offBluetoothBtn"
-        app:layout_constraintEnd_toStartOf="@+id/sendBtn"/>
-
-    <Button
-        android:id="@+id/sendBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="20dp"
-        android:text="@string/sendBtnText"
-        app:layout_constraintTop_toBottomOf="@+id/receiveTextView"
-        app:layout_constraintEnd_toEndOf="@+id/listDeviceBtn"/>
-
     <ListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
@@ -138,7 +138,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/listDeviceBtn"
         app:layout_constraintStart_toStartOf="@+id/offBluetoothBtn"
-        app:layout_constraintTop_toBottomOf="@+id/sendBtn">
+        app:layout_constraintTop_toBottomOf="@+id/scanBtn">
 
     </ListView>
 

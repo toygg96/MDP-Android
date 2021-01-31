@@ -14,7 +14,7 @@ public class BluetoothController {
     private BluetoothAdapter BA;
     private Set<BluetoothDevice> pairedDevices;
     private DeviceListAdapter adapter;
-    private bluetoothConnectionThread bluetoothThread;
+    private bluetoothConnectionThread.connectThread ct;
     private String connectedDevice = "";
     private bluetoothConnectionThread.AcceptThread at;
 
@@ -23,7 +23,7 @@ public class BluetoothController {
         this.BA = BA;
         this.adapter = adapter;
         pairedDevices = BA.getBondedDevices();
-        at = new bluetoothConnectionThread(activity).new AcceptThread(activity,BA);
+        at = new bluetoothConnectionThread().new AcceptThread(activity,BA);
         at.start();
     }
 
@@ -35,7 +35,7 @@ public class BluetoothController {
     public void rerunBluetoothServer(){
         at.cancel();
         at = null;
-        at = new bluetoothConnectionThread(activity).new AcceptThread(activity,BA);
+        at = new bluetoothConnectionThread().new AcceptThread(activity,BA);
         at.start();
     }
 
@@ -54,8 +54,8 @@ public class BluetoothController {
     public String offBluetooth(View v){
         boolean result = BA.disable();
         String status = (result) ? "Off" : "On";
-        if (bluetoothThread != null)
-            bluetoothThread.cancel();
+        if (ct != null)
+            ct.cancel();
         Toast.makeText(v.getContext(), "Turned off" ,Toast.LENGTH_LONG).show();
         adapter.clear();
         setConnectedDevice("");
@@ -124,19 +124,23 @@ public class BluetoothController {
         connectedDevice = status;
     }
 
-    public void setBluetoothThread(BluetoothDevice device){
-        if (bluetoothThread != null) {
+    public void attemptConnection(BluetoothDevice device){
+        if (ct != null) {
             //Log.d("LIMPEH VALUE",String.valueOf(bluetoothThread.isAlive()));
-            bluetoothThread.cancel();
+            ct.cancel();
             //bluetoothThread.setFinishedFlag(false);
-            bluetoothThread = null;
+            ct = null;
         }
-        bluetoothThread = new bluetoothConnectionThread(activity,device,BA);
-        bluetoothThread.start();
+        ct = new bluetoothConnectionThread().new connectThread(activity,device,BA);
+        ct.start();
     }
 
-    public bluetoothConnectionThread getBluetoothThread(){
-        return bluetoothThread;
+    public void setConnectThreadToNull() {
+        ct = null;
+    }
+
+    public bluetoothConnectionThread.connectThread getBluetoothThread(){
+        return ct;
     }
 
     public bluetoothConnectionThread.AcceptThread getAcceptedThread() { return at; }

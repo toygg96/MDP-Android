@@ -11,6 +11,7 @@
         android:icon="@drawable/robot"
         android:label="MDP - Android"
         android:roundIcon="@drawable/robot"
+        android:configChanges="orientation|screenSize"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar">
         <activity android:name=".MainActivity">

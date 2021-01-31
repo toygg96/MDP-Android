@@ -135,14 +135,38 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapter, View v, int position,
                                     long arg3)
             {
-                boolean result = true;
+                AlertDialog alert;
                 // based on the item clicked go to the relevant activity
                 BluetoothDevice device = (BluetoothDevice) adapter.getItemAtPosition(position);
                 Log.d(TAG,"selected address :  " + device.getAddress());
-                if (!BC.isDevicePaired(device))
-                    result = device.createBond();
-                else
-                    BC.setBluetoothThread(device);
+                Log.d(TAG,String.valueOf(v.getContext()));
+                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                //Uncomment the below code to Set the message and title from the strings.xml file
+                builder.setMessage("Do you want to connect to this device?" + device.getName() +"\n" + device.getAddress()).setTitle("Outgoing bluetooth connection request");
+
+                //Setting message manually and performing action on button click
+                builder.setCancelable(true)
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                boolean result = true;
+                                if (!BC.isDevicePaired(device))
+                                        result = device.createBond();
+                                else
+                                        BC.attemptConnection(device);
+                                dialog.dismiss();
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                //  Action for 'NO' Button
+                                dialog.cancel();
+                                Toast.makeText(getApplicationContext(),"Operation cancelled!",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                //Creating dialog box
+                alert = builder.create();
+                alert.show();
             }
         });
         sendBtn.setOnClickListener(new View.OnClickListener() {
@@ -150,6 +174,9 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View r) {
                 if (BC.getBluetoothThread() != null)
                     BC.getBluetoothThread().write(sendMsgInputBox.getText().toString().getBytes(Charset.defaultCharset()));
+                else
+                    BC.getAcceptedThread().write(sendMsgInputBox.getText().toString().getBytes(Charset.defaultCharset()));
+                sendMsgInputBox.setText("");
             }
         });
     }
@@ -218,7 +245,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG,String.valueOf(prevbondState));
                 //Log.d(TAG,String.valueOf(bondState) + String.valueOf(prevbondState));
                 if (bondState == BluetoothDevice.BOND_BONDED && prevbondState == BluetoothDevice.BOND_BONDING) {
-                    BC.setBluetoothThread(device);
+                    BC.attemptConnection(device);
                     Toast.makeText(context, "Paired to selected device! (First time only) Connecting now!" , Toast.LENGTH_LONG).show();
                 }
             }
@@ -241,6 +268,7 @@ public class MainActivity extends AppCompatActivity {
             adapter.clear();
             adapter.notifyDataSetChanged();
             sendBtn.setEnabled(true);
+            sendMsgInputBox.setEnabled(true);
             String msg = intent.getStringExtra("Device");
             BC.setConnectedDevice(msg);
             bluetoothStatusTextView.setText(BC.getBluetoothStatus());
@@ -251,11 +279,13 @@ public class MainActivity extends AppCompatActivity {
     public BroadcastReceiver disconnectedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            BC.getAcceptedThread().cancel();
             BC.rerunBluetoothServer();
+            BC.setConnectThreadToNull();
             BC.setConnectedDevice("");
             bluetoothStatusTextView.setText(BC.getBluetoothStatus());
-            BC.getAcceptedThread().cancel();
             sendBtn.setEnabled(false);
+            sendMsgInputBox.setEnabled(false);
         }
     };
 
