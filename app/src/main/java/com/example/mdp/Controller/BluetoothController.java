@@ -17,20 +17,20 @@ public class BluetoothController {
     private static bluetoothConnectionThread.connectThread ct;
     private static String connectedDevice = "";
     private static bluetoothConnectionThread.AcceptThread at;
-    private static boolean startedFlag = false;
+    private static boolean activeFlag = false;
 
     public static void init(Activity activity1, BluetoothAdapter bAdapter, DeviceListAdapter dlAdapter) {
         activity= activity1;
         BA = bAdapter;
         adapter = dlAdapter;
         pairedDevices = BA.getBondedDevices();
-        if (!startedFlag) {
+        if (!activeFlag) {
             startBluetoothServer();
-            startedFlag = true;
-        } else
-            restartBluetoothServer();
+        }
 
     }
+
+    public static DeviceListAdapter getAdapter() { return adapter; }
 
     public static String getBluetoothStatus(){
         return("Bluetooth: Turned " + getBluetoothState() +"\nBluetooth Device Name: " + BA.getName() + "\nBluetooth Address: " + getAddress(BA.getName()) + "\nConnected to: " + connectedDevice);
@@ -38,15 +38,17 @@ public class BluetoothController {
     }
 
     public static void startBluetoothServer(){
+        if (at != null) {
+            at.cancel();
+            at = null;
+        }
         at = new bluetoothConnectionThread().new AcceptThread(activity,BA);
         at.start();
+        activeFlag = true;
     }
 
-    public static void restartBluetoothServer(){
-        at.cancel();
-        at = null;
-        at = new bluetoothConnectionThread().new AcceptThread(activity,BA);
-        at.start();
+    public static void setActiveFlag(boolean flag) {
+        activeFlag = flag;
     }
 
     public static String onBluetooth(View v){
@@ -132,6 +134,10 @@ public class BluetoothController {
 
     public static void setConnectedDevice(String status) {
         connectedDevice = status;
+    }
+
+    public static String getConnectedDevice() {
+        return connectedDevice;
     }
 
     public static void attemptConnection(BluetoothDevice device){

@@ -30,7 +30,7 @@ import com.example.mdp.R;
 
 import java.nio.charset.Charset;
 
-public class MainActivity extends AppCompatActivity {
+public class BluetoothSettingsActivity extends AppCompatActivity {
     private Button onBluetoothBtn,makeVisibleBtn,offBluetoothBtn,listDeviceBtn,scanBtn,sendBtn;
     private BluetoothAdapter BA;
     private DeviceListAdapter adapter;
@@ -53,7 +53,10 @@ public class MainActivity extends AppCompatActivity {
         listDeviceBtn=(Button)findViewById(R.id.listDeviceBtn);
         scanBtn = (Button)findViewById(R.id.scanBtn);
         sendBtn = (Button)findViewById(R.id.sendBtn);
-        sendBtn.setEnabled(false);
+        if (BluetoothController.getConnectedDevice().equalsIgnoreCase(""))
+            sendBtn.setEnabled(false);
+        else
+            sendBtn.setEnabled(true);
         lv = (ListView)findViewById(R.id.listView);
         bluetoothStatusTextView = (TextView)findViewById(R.id.bluetoothConnectionStatus);
         incomingTextView = (TextView)findViewById(R.id.receiveTextView);
@@ -174,6 +177,7 @@ public class MainActivity extends AppCompatActivity {
         sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View r) {
+                //Log.d(TAG + "bluetooth",String.valueOf(BluetoothController.getAcceptedThread() == null));
                 if (BluetoothController.getBluetoothThread() != null)
                     BluetoothController.getBluetoothThread().write(sendMsgInputBox.getText().toString().getBytes(Charset.defaultCharset()));
                 else {
@@ -292,7 +296,6 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-
     // Create a BroadcastReceiver for Receive message.
     public BroadcastReceiver incomingMsgReceiver = new BroadcastReceiver() {
         @Override
@@ -311,6 +314,7 @@ public class MainActivity extends AppCompatActivity {
             sendMsgInputBox.setEnabled(true);
             String msg = intent.getStringExtra("Device");
             BluetoothController.setConnectedDevice(msg);
+            BluetoothController.setActiveFlag(true);
             bluetoothStatusTextView.setText(BluetoothController.getBluetoothStatus());
 
         }
@@ -320,9 +324,10 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             BluetoothController.getAcceptedThread().cancel();
-            BluetoothController.restartBluetoothServer();
+            BluetoothController.startBluetoothServer();
             BluetoothController.setConnectThreadToNull();
             BluetoothController.setConnectedDevice("");
+            BluetoothController.setActiveFlag(false);
             bluetoothStatusTextView.setText(BluetoothController.getBluetoothStatus());
             sendBtn.setEnabled(false);
             sendMsgInputBox.setEnabled(false);
@@ -332,7 +337,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            Intent i = new Intent(MainActivity.this,MainPanelActivity.class);
+            Intent i = new Intent(BluetoothSettingsActivity.this, RobotPanelActivity.class);
             startActivity(i);
             return true;
         }
@@ -378,7 +383,7 @@ public class MainActivity extends AppCompatActivity {
         }
         if (!gps_enabled && !network_enabled) {
             scanBtn.setEnabled(true);
-            new AlertDialog.Builder(MainActivity. this )
+            new AlertDialog.Builder(BluetoothSettingsActivity. this )
                     .setMessage( "Please enable your GPS before scanning (Only applicable for Android v10)!" )
                     .setPositiveButton( "Settings" , new
                             DialogInterface.OnClickListener() {

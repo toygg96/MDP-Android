@@ -16,9 +16,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar">
         <activity
-            android:name=".Activity.MainPanelActivity"
+            android:name=".Activity.RobotPanelActivity"
             android:label="@string/title_activity_main_panel" />
-        <activity android:name=".Activity.MainActivity">
+        <activity android:name=".Activity.BluetoothSettingsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

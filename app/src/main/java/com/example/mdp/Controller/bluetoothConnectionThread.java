@@ -70,9 +70,6 @@ public class bluetoothConnectionThread {
             // the connection in a separate thread.
             ct = bs.new ConnectedThread(mmSocket);
             ct.start();
-            Intent connectionStatusIntent = new Intent("btConnectionStatus");
-            connectionStatusIntent.putExtra("Device", mmDevice.getName());
-            activity.getApplicationContext().sendBroadcast(connectionStatusIntent);
         }
 
         // Closes the client socket and causes the thread to finish.
@@ -136,10 +133,6 @@ public class bluetoothConnectionThread {
                     } catch (Exception e){
                         Log.e(TAG,"Creating connected thread failed",e);
                     }
-                    Intent connectionStatusIntent = new Intent("btConnectionStatus");
-                    connectionStatusIntent.putExtra("Device", socket.getRemoteDevice().getName());
-                    activity.getApplicationContext().sendBroadcast(connectionStatusIntent);
-                    break;
                 }
             }
         }
@@ -156,6 +149,8 @@ public class bluetoothConnectionThread {
         public void write(byte[] bytes) {
             if (ct != null)
                 ct.write(bytes);
+            else
+                Log.d(TAG,"NOT RUNNING");
         }
     }
 }

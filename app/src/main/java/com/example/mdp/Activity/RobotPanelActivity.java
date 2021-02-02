@@ -1,5 +1,6 @@
 package com.example.mdp.Activity;
 
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -21,7 +22,7 @@ import com.example.mdp.R;
 
 import java.nio.charset.Charset;
 
-public class MainPanelActivity extends AppCompatActivity {
+public class RobotPanelActivity extends AppCompatActivity {
     private Button sendF1btn,sendF2btn,setF1btn,setF2btn;
     private TextView F1textbox,F2textbox;
     private String F1text, F2text;
@@ -54,6 +55,8 @@ public class MainPanelActivity extends AppCompatActivity {
         F1textbox.setText(F1text);
         F2textbox.setText(F2text);
 
+        BluetoothController.init(this, BluetoothAdapter.getDefaultAdapter(),BluetoothController.getAdapter());
+
         setF1btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) { onClickLogicF1F2(v,true); }
@@ -72,8 +75,13 @@ public class MainPanelActivity extends AppCompatActivity {
                 Log.d(TAG,String.valueOf(BluetoothController.getAcceptedThread() == null));
                 if (BluetoothController.getBluetoothThread() != null)
                     BluetoothController.getBluetoothThread().write(F1textbox.getText().toString().getBytes(Charset.defaultCharset()));
-                else
-                    BluetoothController.getAcceptedThread().write(F1textbox.getText().toString().getBytes(Charset.defaultCharset()));
+                else {
+                    try {
+                        BluetoothController.getAcceptedThread().write(F1textbox.getText().toString().getBytes(Charset.defaultCharset()));
+                    } catch (Exception e) {
+                        Log.e(TAG, "Crashed here", e);
+                    }
+                }
             }
         });
 
@@ -105,13 +113,13 @@ public class MainPanelActivity extends AppCompatActivity {
                 if (!F1) {
                     F2text = editText.getText().toString();
                     F2textbox.setText(F2text);
-                    editor.putString("F1String", F2text);
+                    editor.putString("F2String", F2text);
                     editor.commit();
 
                 } else {
                     F1text = editText.getText().toString();
                     F1textbox.setText(F1text);
-                    editor.putString("F2String", F1text);
+                    editor.putString("F1String", F1text);
                     editor.commit();
                 }
                 dialogBuilder.dismiss();
@@ -133,7 +141,7 @@ public class MainPanelActivity extends AppCompatActivity {
         if (item.getItemId() == android.R.id.home) {
             //Do stuff
             //Log.d(TAG, "Clicked main page");
-            Intent i = new Intent(MainPanelActivity.this,MainActivity.class);
+            Intent i = new Intent(RobotPanelActivity.this, BluetoothSettingsActivity.class);
             startActivity(i);
             return true;
         }

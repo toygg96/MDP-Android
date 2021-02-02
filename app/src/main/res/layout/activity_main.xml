@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activity.MainActivity">
+    tools:context=".Activity.BluetoothSettingsActivity">
 
     <TextView
         android:id="@+id/textView"
@@ -48,7 +48,7 @@
         android:background="@drawable/textview_border"
         app:layout_constraintTop_toBottomOf="@+id/receiveTextLabel"
         app:layout_constraintStart_toStartOf="@+id/receiveTextLabel"
-        app:layout_constraintEnd_toEndOf="@+id/receiveTextLabel"/>
+        app:layout_constraintEnd_toEndOf="@+id/makeVisibleBtn"/>
 
     <EditText
         android:id="@+id/sendTextBox"

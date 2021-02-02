@@ -42,6 +42,10 @@ public class MyBluetoothService {
             InputStream tmpIn = null;
             OutputStream tmpOut = null;
 
+            Intent connectionStatusIntent = new Intent("btConnectionStatus");
+            connectionStatusIntent.putExtra("Device", socket.getRemoteDevice().getName());
+            activity.getApplicationContext().sendBroadcast(connectionStatusIntent);
+
             // Get the input and output streams; using temp objects because
             // member streams are final.
             try {
