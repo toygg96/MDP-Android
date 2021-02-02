@@ -16,9 +16,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar">
         <activity
-            android:name=".MainPanel"
+            android:name=".Activity.MainPanelActivity"
             android:label="@string/title_activity_main_panel" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".Activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

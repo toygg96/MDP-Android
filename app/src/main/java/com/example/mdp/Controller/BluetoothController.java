@@ -10,36 +10,40 @@ import android.widget.Toast;
 import java.util.Set;
 
 public class BluetoothController {
-    private Activity activity;
-    private BluetoothAdapter BA;
-    private Set<BluetoothDevice> pairedDevices;
-    private DeviceListAdapter adapter;
-    private bluetoothConnectionThread.connectThread ct;
-    private String connectedDevice = "";
-    private bluetoothConnectionThread.AcceptThread at;
+    private static Activity activity;
+    private static BluetoothAdapter BA;
+    private static Set<BluetoothDevice> pairedDevices;
+    private static DeviceListAdapter adapter;
+    private static bluetoothConnectionThread.connectThread ct;
+    private static String connectedDevice = "";
+    private static bluetoothConnectionThread.AcceptThread at;
 
-    public BluetoothController(Activity activity, BluetoothAdapter BA, DeviceListAdapter adapter){
-        this.activity=activity;
-        this.BA = BA;
-        this.adapter = adapter;
+    public static void init(Activity activity1, BluetoothAdapter bAdapter, DeviceListAdapter dlAdapter) {
+        activity= activity1;
+        BA = bAdapter;
+        adapter = dlAdapter;
         pairedDevices = BA.getBondedDevices();
-        at = new bluetoothConnectionThread().new AcceptThread(activity,BA);
-        at.start();
+        startBluetoothServer();
     }
 
-    public String getBluetoothStatus(){
+    public static String getBluetoothStatus(){
         return("Bluetooth: Turned " + getBluetoothState() +"\nBluetooth Device Name: " + BA.getName() + "\nBluetooth Address: " + getAddress(BA.getName()) + "\nConnected to: " + connectedDevice);
 
     }
 
-    public void rerunBluetoothServer(){
+    public static void startBluetoothServer(){
+        at = new bluetoothConnectionThread().new AcceptThread(activity,BA);
+        at.start();
+
+    }
+    public static void restartBluetoothServer(){
         at.cancel();
         at = null;
         at = new bluetoothConnectionThread().new AcceptThread(activity,BA);
         at.start();
     }
 
-    public String onBluetooth(View v){
+    public static String onBluetooth(View v){
         if (!BA.isEnabled()) {
             Toast.makeText(v.getContext(), "Turned on",Toast.LENGTH_LONG).show();
             Boolean result = BA.enable();
@@ -51,7 +55,7 @@ public class BluetoothController {
         return("Bluetooth: Turned " + getBluetoothState() +"\nBluetooth Device Name: " + BA.getName() + "\nBluetooth Address: " + getAddress(BA.getName()) + "\nConnected to: " + connectedDevice);
     }
 
-    public String offBluetooth(View v){
+    public static String offBluetooth(View v){
         boolean result = BA.disable();
         String status = (result) ? "Off" : "On";
         if (ct != null)
@@ -62,17 +66,17 @@ public class BluetoothController {
         return("Bluetooth: Turned " + status +"\nBluetooth Device Name: " + BA.getName() + "\nBluetooth Address: " + getAddress(BA.getName()) + "\nConnected to: " + connectedDevice);
     }
 
-    public String getBluetoothState(){
+    public static String getBluetoothState(){
         return (BA.isEnabled()) ? "On" : "Off";
     }
 
 
-    public  void visibleDevice(View v){
+    public static void visibleDevice(View v){
         Intent getVisible = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
         activity.startActivityForResult(getVisible, 0);
     }
 
-    public String getAddress(String name){
+    public static String getAddress(String name){
         if (name.equalsIgnoreCase("galaxy a70")) {
             return "A8:34:6A:DD:BD:6D";
         }
@@ -84,7 +88,7 @@ public class BluetoothController {
 
     }
 
-    public void listPairedDevice(View v){
+    public static void listPairedDevice(View v){
         adapter.clear();
         pairedDevices = BA.getBondedDevices();
 
@@ -93,12 +97,12 @@ public class BluetoothController {
         adapter.notifyDataSetChanged();
     }
 
-    public void addDataToAdapater(BluetoothDevice bd){
+    public static void addDataToAdapater(BluetoothDevice bd){
         adapter.add(bd);
         adapter.notifyDataSetChanged();
     }
 
-    public boolean isDeviceDuplicate(String deviceHardwareAddress){
+    public static boolean isDeviceDuplicate(String deviceHardwareAddress){
         boolean duplicateFlag = false;
         for (int i = 0; i < adapter.getCount(); i++) {
             BluetoothDevice temp = adapter.getItem(i);
@@ -110,7 +114,7 @@ public class BluetoothController {
         return duplicateFlag;
     }
 
-    public boolean isDevicePaired(BluetoothDevice bd) {
+    public static boolean isDevicePaired(BluetoothDevice bd) {
         pairedDevices = BA.getBondedDevices();
         for (BluetoothDevice device : pairedDevices) {
             if (device.getAddress().equals(bd.getAddress())){
@@ -120,11 +124,11 @@ public class BluetoothController {
         return false;
     }
 
-    public void setConnectedDevice(String status) {
+    public static void setConnectedDevice(String status) {
         connectedDevice = status;
     }
 
-    public void attemptConnection(BluetoothDevice device){
+    public static void attemptConnection(BluetoothDevice device){
         if (ct != null) {
             //Log.d("LIMPEH VALUE",String.valueOf(bluetoothThread.isAlive()));
             ct.cancel();
@@ -135,14 +139,15 @@ public class BluetoothController {
         ct.start();
     }
 
-    public void setConnectThreadToNull() {
+    public static void setConnectThreadToNull() {
         ct = null;
     }
 
-    public bluetoothConnectionThread.connectThread getBluetoothThread(){
+    public static bluetoothConnectionThread.connectThread getBluetoothThread(){
         return ct;
     }
 
-    public bluetoothConnectionThread.AcceptThread getAcceptedThread() { return at; }
+    public static bluetoothConnectionThread.AcceptThread getAcceptedThread() { return at; }
+
 
 }

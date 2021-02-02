@@ -1,16 +1,7 @@
-# Compiled class file
 *.class
-
-# Log file
 *.log
-
-# BlueJ files
 *.ctxt
-
-# Mobile Tools for Java (J2ME)
 .mtj.tmp/
-
-# Package Files #
 *.jar
 *.war
 *.nar
@@ -18,43 +9,63 @@
 *.zip
 *.tar.gz
 *.rar
-
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
-
-#built application files
 *.apk
 *.ap_
 *.aab
-                           
-# files for the dex VM
 *.dex
-                            
-# generated files
 bin/
 gen/
-                            
-# Local configuration file (sdk path, etc)
 local.properties
-                        
-# Windows thumbnail db
 Thumbs.db
-                
-# OSX files
 .DS_Store
-                            
-# Android Studio
 *.iml
 .idea
-#.idea/workspace.xml - remove # and delete .idea if it better suit your needs.
 .gradle/
 build/
 .navigation
 captures/
 output.json 
-    
-#NDK
 obj/
 .externalNativeBuild
 *.bin
-*.bin
+.gradle/6.5/executionHistory/executionHistory.bin
+.gradle/6.5/executionHistory/executionHistory.lock
+.gradle/6.5/fileHashes/fileHashes.bin
+.gradle/6.5/fileHashes/fileHashes.lock
+.gradle/6.5/fileHashes/resourceHashesCache.bin
+.gradle/6.5/javaCompile/classAnalysis.bin
+.gradle/6.5/javaCompile/jarAnalysis.bin
+.gradle/6.5/javaCompile/javaCompile.lock
+.gradle/6.5/javaCompile/taskHistory.bin
+.gradle/buildOutputCleanup/buildOutputCleanup.lock
+.gradle/6.5/executionHistory/executionHistory.bin
+.gradle/6.5/executionHistory/executionHistory.lock
+.gradle/6.5/fileHashes/fileHashes.bin
+.gradle/6.5/fileHashes/fileHashes.lock
+.gradle/6.5/fileHashes/resourceHashesCache.bin
+.gradle/6.5/javaCompile/classAnalysis.bin
+.gradle/6.5/javaCompile/jarAnalysis.bin
+.gradle/6.5/javaCompile/javaCompile.lock
+.gradle/6.5/javaCompile/taskHistory.bin
+.gradle/buildOutputCleanup/buildOutputCleanup.lock
+.gradle/6.5/executionHistory/executionHistory.bin
+.gradle/6.5/executionHistory/executionHistory.lock
+.gradle/6.5/fileHashes/fileHashes.bin
+.gradle/6.5/fileHashes/fileHashes.lock
+.gradle/6.5/fileHashes/resourceHashesCache.bin
+.gradle/6.5/javaCompile/classAnalysis.bin
+.gradle/6.5/javaCompile/jarAnalysis.bin
+.gradle/6.5/javaCompile/javaCompile.lock
+.gradle/6.5/javaCompile/taskHistory.bin
+.gradle/buildOutputCleanup/buildOutputCleanup.lock
+.gradle/6.5/executionHistory/executionHistory.bin
+.gradle/6.5/executionHistory/executionHistory.lock
+.gradle/6.5/fileHashes/fileHashes.bin
+.gradle/6.5/fileHashes/fileHashes.lock
+.gradle/6.5/fileHashes/resourceHashesCache.bin
+.gradle/6.5/javaCompile/classAnalysis.bin
+.gradle/6.5/javaCompile/jarAnalysis.bin
+.gradle/6.5/javaCompile/javaCompile.lock
+.gradle/6.5/javaCompile/taskHistory.bin
+.gradle/buildOutputCleanup/buildOutputCleanup.lock

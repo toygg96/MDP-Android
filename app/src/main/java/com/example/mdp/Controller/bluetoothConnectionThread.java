@@ -35,7 +35,6 @@ public class bluetoothConnectionThread {
             bs = new MyBluetoothService(activity);
             BluetoothSocket tmp = null;
             mmDevice = device;
-            ParcelUuid[] uuids = device.getUuids();
             try {
                 // Get a BluetoothSocket to connect with the given BluetoothDevice.
                 // MY_UUID is the app's UUID string, also used in the server code.

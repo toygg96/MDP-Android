@@ -12,4 +12,6 @@
     <string name="receiveText">Incoming Text Messages</string>
     <string name="title_activity_main_panel">MainPanel</string>
     <string name="main_page">Main Page</string>
+    <string name="f1btn">Send F1</string>
+    <string name="f2btn">Send F2</string>
 </resources>
