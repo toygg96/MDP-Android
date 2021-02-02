@@ -39,7 +39,7 @@ public class bluetoothConnectionThread {
             try {
                 // Get a BluetoothSocket to connect with the given BluetoothDevice.
                 // MY_UUID is the app's UUID string, also used in the server code.
-                tmp = mmDevice.createInsecureRfcommSocketToServiceRecord(MY_UUID);
+                tmp = mmDevice.createRfcommSocketToServiceRecord(MY_UUID);
 
             } catch (IOException e) {
                 Log.e(TAG, "Socket's create() method failed", e);
@@ -60,7 +60,6 @@ public class bluetoothConnectionThread {
             } catch (IOException connectException) {
                 // Unable to connect; close the socket and return.
                 try {
-                    Log.e(TAG,"What is this bug ", connectException);
                     mmSocket.close();
                 } catch (IOException closeException) {
                     Log.e(TAG, "Could not close the client socket", closeException);
