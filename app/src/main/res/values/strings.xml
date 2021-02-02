@@ -10,4 +10,6 @@
     <string name="receiveTextLabel">Received text messages will be shown in this box</string>
     <string name="sendBtnText">Send</string>
     <string name="receiveText">Incoming Text Messages</string>
+    <string name="title_activity_main_panel">MainPanel</string>
+    <string name="main_page">Main Page</string>
 </resources>

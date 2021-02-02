@@ -29,7 +29,7 @@ import com.example.mdp.Controller.DeviceListAdapter;
 import java.nio.charset.Charset;
 
 public class MainActivity extends AppCompatActivity {
-    private Button onBluetoothBtn,makeVisibleBtn,offBluetoothBtn,listDeviceBtn,scanBtn,sendBtn;
+    private Button onBluetoothBtn,makeVisibleBtn,offBluetoothBtn,listDeviceBtn,scanBtn,sendBtn,mainPageBtn;
     private BluetoothAdapter BA;
     private DeviceListAdapter adapter;
     private ListView lv;
@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
         adapter = new DeviceListAdapter(this,R.layout.list_item);
         BA = BluetoothAdapter.getDefaultAdapter();
         BC = new BluetoothController(this,BA,adapter);
+        mainPageBtn = (Button)findViewById(R.id.mainPageBtn);
 
         // Registering all the receivers
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
@@ -79,6 +80,15 @@ public class MainActivity extends AppCompatActivity {
         IntentFilter filter5 = new IntentFilter("disconnectedMsg");
         registerReceiver(disconnectedReceiver, filter5);
 
+        mainPageBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View r) {
+                //Log.d(TAG, "Clicked main page");
+                Intent i = new Intent(MainActivity.this,MainPanel.class);
+                startActivity(i);
+            }
+        });
+
         onBluetoothBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View r) {
@@ -89,6 +99,17 @@ public class MainActivity extends AppCompatActivity {
 //                MainActivity.this.startActivity(i);
             }
         });
+        onBluetoothBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View r) {
+                //Log.d(TAG, "Turning bluetooth on");
+                String result = BC.onBluetooth(r);
+                bluetoothStatusTextView.setText(result);
+//                Intent i = new Intent(MapsActivity.this,ViewClinicActivity.class);
+//                MainActivity.this.startActivity(i);
+            }
+        });
+
         makeVisibleBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View r) {
@@ -96,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
                 BC.visibleDevice(r);
             }
         });
+
         offBluetoothBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View r) {
@@ -104,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
                 bluetoothStatusTextView.setText(result);
             }
         });
+
         listDeviceBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View r) {
@@ -111,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
                 BC.listPairedDevice(r);
             }
         });
+
         bluetoothStatusTextView.setText(BC.getBluetoothStatus());
         scanBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,6 +151,7 @@ public class MainActivity extends AppCompatActivity {
                 bluetoothStatusTextView.setText(BC.getBluetoothStatus());
             }
         });
+
         checkPermission();
         lv.setAdapter(adapter);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener()
@@ -169,6 +194,7 @@ public class MainActivity extends AppCompatActivity {
                 alert.show();
             }
         });
+
         sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View r) {
