@@ -17,13 +17,19 @@ public class BluetoothController {
     private static bluetoothConnectionThread.connectThread ct;
     private static String connectedDevice = "";
     private static bluetoothConnectionThread.AcceptThread at;
+    private static boolean startedFlag = false;
 
     public static void init(Activity activity1, BluetoothAdapter bAdapter, DeviceListAdapter dlAdapter) {
         activity= activity1;
         BA = bAdapter;
         adapter = dlAdapter;
         pairedDevices = BA.getBondedDevices();
-        startBluetoothServer();
+        if (!startedFlag) {
+            startBluetoothServer();
+            startedFlag = true;
+        }
+        else
+            restartBluetoothServer();
     }
 
     public static String getBluetoothStatus(){
@@ -34,8 +40,8 @@ public class BluetoothController {
     public static void startBluetoothServer(){
         at = new bluetoothConnectionThread().new AcceptThread(activity,BA);
         at.start();
-
     }
+
     public static void restartBluetoothServer(){
         at.cancel();
         at = null;

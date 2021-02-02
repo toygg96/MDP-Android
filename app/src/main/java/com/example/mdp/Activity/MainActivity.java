@@ -37,10 +37,12 @@ public class MainActivity extends AppCompatActivity {
     private ListView lv;
     private TextView bluetoothStatusTextView, incomingTextView;
     private EditText sendMsgInputBox;
+    private IntentFilter filter, filter2, filter3, filter4, filter5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG,"onCreate()");
         setContentView(R.layout.activity_main);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -61,24 +63,7 @@ public class MainActivity extends AppCompatActivity {
         adapter = new DeviceListAdapter(this,R.layout.list_item);
         BA = BluetoothAdapter.getDefaultAdapter();
         BluetoothController.init(this,BA,adapter);
-
-        // Registering all the receivers
-        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-        filter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
-        filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED);
-        filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
-        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
-        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-        registerReceiver(receiver, filter);
-        IntentFilter filter2 = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
-        registerReceiver(receiver2, filter2);
-        IntentFilter filter3 = new IntentFilter("IncomingMsg");
-        registerReceiver(incomingMsgReceiver, filter3);
-        IntentFilter filter4 = new IntentFilter("btConnectionStatus");
-        registerReceiver(btConnectionStatusReceiver, filter4);
-        IntentFilter filter5 = new IntentFilter("disconnectedMsg");
-        registerReceiver(disconnectedReceiver, filter5);
-
+        registerReceivers();
 
         onBluetoothBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -191,46 +176,29 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View r) {
                 if (BluetoothController.getBluetoothThread() != null)
                     BluetoothController.getBluetoothThread().write(sendMsgInputBox.getText().toString().getBytes(Charset.defaultCharset()));
-                else
-                    BluetoothController.getAcceptedThread().write(sendMsgInputBox.getText().toString().getBytes(Charset.defaultCharset()));
+                else {
+                    try {
+                        BluetoothController.getAcceptedThread().write(sendMsgInputBox.getText().toString().getBytes(Charset.defaultCharset()));
+                    } catch (Exception e) {
+                        Log.e(TAG,"Crashed here", e);
+                    }
+                }
                 sendMsgInputBox.setText("");
             }
         });
     }
+
     @Override
     protected void onResume() {
+        Log.d(TAG,"onResume()");
         // Registering all the receivers
-        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-        filter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
-        filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED);
-        filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
-        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
-        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-        registerReceiver(receiver, filter);
-        IntentFilter filter2 = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
-        registerReceiver(receiver2, filter2);
-        IntentFilter filter3 = new IntentFilter("IncomingMsg");
-        registerReceiver(incomingMsgReceiver, filter3);
-        IntentFilter filter4 = new IntentFilter("btConnectionStatus");
-        registerReceiver(btConnectionStatusReceiver, filter4);
-        IntentFilter filter5 = new IntentFilter("disconnectedMsg");
-        registerReceiver(disconnectedReceiver, filter5);
         super.onResume();
     }
 
     @Override
     protected void onPause() {
+        Log.d(TAG,"onPause()");
         super.onPause();
-        try {
-            //Register or UnRegister your broadcast receiver here
-            unregisterReceiver(receiver);
-            unregisterReceiver(receiver2);
-            unregisterReceiver(incomingMsgReceiver);
-            unregisterReceiver(btConnectionStatusReceiver);
-            unregisterReceiver(disconnectedReceiver);
-        } catch(IllegalArgumentException e) {
-            Log.d(TAG,"Receiver not registered");
-        }
     }
 
     @Override
@@ -248,6 +216,26 @@ public class MainActivity extends AppCompatActivity {
             unregisterReceiver(disconnectedReceiver);
         } catch(IllegalArgumentException e) {
             Log.d(TAG,"Receiver not registered");
+        }
+    }
+
+    public void registerReceivers(){
+        if ((filter == null) || (filter2 == null) || (filter3 == null) || (filter4 == null) || (filter5 == null)) {
+            filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+            filter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
+            filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED);
+            filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
+            filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
+            filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+            registerReceiver(receiver, filter);
+            filter2 = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+            registerReceiver(receiver2, filter2);
+            filter3 = new IntentFilter("IncomingMsg");
+            registerReceiver(incomingMsgReceiver, filter3);
+            filter4 = new IntentFilter("btConnectionStatus");
+            registerReceiver(btConnectionStatusReceiver, filter4);
+            filter5 = new IntentFilter("disconnectedMsg");
+            registerReceiver(disconnectedReceiver, filter5);
         }
     }
 

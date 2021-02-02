@@ -127,12 +127,15 @@ public class bluetoothConnectionThread {
                     Log.e(TAG, "Socket's accept() method failed", e);
                     break;
                 }
-
                 if (socket != null) {
                     // A connection was accepted. Perform work associated with
                     // the connection in a separate thread.
-                    ct = bs.new ConnectedThread(socket);
-                    ct.start();
+                    try {
+                        ct = bs.new ConnectedThread(socket);
+                        ct.start();
+                    } catch (Exception e){
+                        Log.e(TAG,"Creating connected thread failed",e);
+                    }
                     Intent connectionStatusIntent = new Intent("btConnectionStatus");
                     connectionStatusIntent.putExtra("Device", socket.getRemoteDevice().getName());
                     activity.getApplicationContext().sendBroadcast(connectionStatusIntent);
@@ -151,7 +154,8 @@ public class bluetoothConnectionThread {
         }
 
         public void write(byte[] bytes) {
-            ct.write(bytes);
+            if (ct != null)
+                ct.write(bytes);
         }
     }
 }
