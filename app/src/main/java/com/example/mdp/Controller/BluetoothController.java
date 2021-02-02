@@ -27,9 +27,9 @@ public class BluetoothController {
         if (!startedFlag) {
             startBluetoothServer();
             startedFlag = true;
-        }
-        else
+        } else
             restartBluetoothServer();
+
     }
 
     public static String getBluetoothStatus(){

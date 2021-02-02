@@ -1,13 +1,17 @@
 package com.example.mdp.Activity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import static android.content.ContentValues.TAG;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,6 +25,9 @@ public class MainPanelActivity extends AppCompatActivity {
     private Button sendF1btn,sendF2btn,setF1btn,setF2btn;
     private TextView F1textbox,F2textbox;
     private String F1text, F2text;
+    private SharedPreferences sharedpreferences;
+    private SharedPreferences.Editor editor;
+    private static final String MyPREFERENCES = "MyPrefs" ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,12 +43,20 @@ public class MainPanelActivity extends AppCompatActivity {
         sendF2btn =(Button)findViewById(R.id.F2btn);
         F1textbox = (TextView)findViewById(R.id.F1textBox);
         F2textbox = (TextView)findViewById(R.id.F2textBox);
+        SharedPreferences sh = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+
+        // The value will be default as empty string because for
+        // the very first time when the app is opened, there is nothing to show
+        String F1text = sh.getString("F1String", "");
+        String F2text = sh.getString("F2String", "");
+
+        // We can then use the data
+        F1textbox.setText(F1text);
+        F2textbox.setText(F2text);
 
         setF1btn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                onClickLogicF1F2(v,true);
-            }
+            public void onClick(View v) { onClickLogicF1F2(v,true); }
         });
 
         setF2btn.setOnClickListener(new View.OnClickListener() {
@@ -54,6 +69,7 @@ public class MainPanelActivity extends AppCompatActivity {
         sendF1btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View r) {
+                Log.d(TAG,String.valueOf(BluetoothController.getAcceptedThread() == null));
                 if (BluetoothController.getBluetoothThread() != null)
                     BluetoothController.getBluetoothThread().write(F1textbox.getText().toString().getBytes(Charset.defaultCharset()));
                 else
@@ -84,12 +100,19 @@ public class MainPanelActivity extends AppCompatActivity {
         okBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+                editor = sharedpreferences.edit();
                 if (!F1) {
                     F2text = editText.getText().toString();
                     F2textbox.setText(F2text);
+                    editor.putString("F1String", F2text);
+                    editor.commit();
+
                 } else {
                     F1text = editText.getText().toString();
                     F1textbox.setText(F1text);
+                    editor.putString("F2String", F1text);
+                    editor.commit();
                 }
                 dialogBuilder.dismiss();
             }
