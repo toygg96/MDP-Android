@@ -66,7 +66,6 @@ public class BluetoothSettingsActivity extends AppCompatActivity {
         adapter = new DeviceListAdapter(this,R.layout.list_item);
         BA = BluetoothAdapter.getDefaultAdapter();
         BluetoothController.init(this,BA,adapter);
-        registerReceivers();
 
         onBluetoothBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -196,12 +195,18 @@ public class BluetoothSettingsActivity extends AppCompatActivity {
     protected void onResume() {
         Log.d(TAG,"onResume()");
         // Registering all the receivers
+        registerReceivers();
         super.onResume();
     }
 
     @Override
     protected void onPause() {
         Log.d(TAG,"onPause()");
+        unregisterReceiver(receiver);
+        unregisterReceiver(receiver2);
+        unregisterReceiver(incomingMsgReceiver);
+        unregisterReceiver(btConnectionStatusReceiver);
+        unregisterReceiver(disconnectedReceiver);
         super.onPause();
     }
 
