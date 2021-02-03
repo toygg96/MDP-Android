@@ -130,6 +130,7 @@ public class bluetoothConnectionThread {
                     try {
                         ct = bs.new ConnectedThread(socket);
                         ct.start();
+                        mmServerSocket.close();
                     } catch (Exception e){
                         Log.e(TAG,"Creating connected thread failed",e);
                     }
