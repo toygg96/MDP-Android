@@ -14,4 +14,11 @@
     <string name="main_page">Main Page</string>
     <string name="f1btn">Send F1</string>
     <string name="f2btn">Send F2</string>
+    <string name="robot_status">Robot Status:</string>
+    <string name="set_waypoint">Set Waypoint</string>
+    <string name="set_origin">Set Origin</string>
+    <string name="fastest_path">Fastest Path</string>
+    <string name="start">Start</string>
+    <string name="connected_to_n">Connected to: \n</string>
+    <string name="exploration">Exploration</string>
 </resources>
