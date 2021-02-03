@@ -93,13 +93,13 @@
         android:background="@drawable/textview_border"
         app:layout_constraintTop_toBottomOf="@+id/robotStatusLabel"
         app:layout_constraintStart_toStartOf="@+id/robotStatusLabel"
-        app:layout_constraintEnd_toEndOf="@+id/robotStatusLabel"/>
+        app:layout_constraintEnd_toEndOf="@+id/fastestPathBtn"/>
 
     <Button
         android:id="@+id/setOriginBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="100dp"
+        android:layout_marginLeft="60dp"
         android:text="@string/set_origin"
         app:layout_constraintTop_toBottomOf="@+id/robotStatusLabel"
         app:layout_constraintStart_toEndOf="@+id/robotStatusTxtbox"/>

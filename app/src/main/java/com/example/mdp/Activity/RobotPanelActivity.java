@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -15,9 +16,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import static android.content.ContentValues.TAG;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -25,11 +28,14 @@ import com.example.mdp.Controller.BluetoothController;
 import com.example.mdp.R;
 
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Locale;
 
 public class RobotPanelActivity extends AppCompatActivity {
+    private static final int REQUEST_CODE_SPEECH_INPUT = 1000;
     private Button sendF1btn,sendF2btn,setF1btn,setF2btn, fastestPathBtn,explorationBtn, imageRecogBtn;
-    private ImageButton upBtn,downBtn,leftBtn,rightBtn;
-    private TextView F1txtbox, F2txtbox,bluetoothConnectionTxtbox;
+    private ImageButton upBtn,downBtn,leftBtn,rightBtn, micBtn;
+    private TextView F1txtbox, F2txtbox,bluetoothConnectionTxtbox, robotStatusTxtbox;
     private String F1text, F2text;
     private SharedPreferences sharedpreferences;
     private SharedPreferences.Editor editor;
@@ -54,10 +60,12 @@ public class RobotPanelActivity extends AppCompatActivity {
         F1txtbox = (TextView)findViewById(R.id.F1textBox);
         F2txtbox = (TextView)findViewById(R.id.F2textBox);
         bluetoothConnectionTxtbox = (TextView)findViewById(R.id.bluetoothConnectionTxtbox);
+        robotStatusTxtbox = (TextView)findViewById(R.id.robotStatusTxtbox);
         upBtn = (ImageButton)findViewById(R.id.upBtn);
         downBtn = (ImageButton)findViewById(R.id.downBtn);
-        leftBtn = (ImageButton) findViewById(R.id.leftBtn);
+        leftBtn = (ImageButton)findViewById(R.id.leftBtn);
         rightBtn = (ImageButton)findViewById(R.id.rightBtn);
+        micBtn = (ImageButton)findViewById(R.id.micBtn);
         SharedPreferences sh = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         bluetoothConnectionTxtbox.setText("Connected to:\n"+ BluetoothController.getConnectedDevice());
 
@@ -146,6 +154,13 @@ public class RobotPanelActivity extends AppCompatActivity {
                 sendCmd("cmd:Recognition");
             }
         });
+
+        micBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View r) {
+                speak();
+            }
+        });
     }
 
     @Override
@@ -153,12 +168,16 @@ public class RobotPanelActivity extends AppCompatActivity {
         unregisterReceiver(incomingMsgReceiver);
         unregisterReceiver(btConnectionStatusReceiver);
         unregisterReceiver(disconnectedReceiver);
+        filter3 = null;
+        filter4 = null;
+        filter5 = null;
         super.onPause();
 
     }
 
     @Override
     protected void onResume() {
+        Log.d(TAG,"resume called");
         registerReceivers();
         super.onResume();
 
@@ -250,6 +269,17 @@ public class RobotPanelActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             String msg = intent.getStringExtra("receivingMsg");
             Log.d("RobotPanelActivity",msg);
+            if (msg.equalsIgnoreCase("MOVING:ROTATINGRIGHT")) {
+                robotStatusTxtbox.setText("Rotating Right");
+            } else if (msg.equalsIgnoreCase("MOVING:ROTATINGLEFT")) {
+                robotStatusTxtbox.setText("Rotating Left");
+            } else if (msg.equalsIgnoreCase("MOVING:FORWARD")) {
+                robotStatusTxtbox.setText("Moving Forward");
+            } else if (msg.equalsIgnoreCase("MOVING:REVERSE")) {
+                robotStatusTxtbox.setText("Reversing");
+            } else if (msg.equalsIgnoreCase("IDLE")) {
+                robotStatusTxtbox.setText("Idle");
+            }
         }
     };
 
@@ -305,6 +335,44 @@ public class RobotPanelActivity extends AppCompatActivity {
                 BluetoothController.getAcceptedThread().write(cmdString.getBytes(Charset.defaultCharset()));
             } catch (Exception e) {
                 Log.e(TAG, "Crashed here", e);
+            }
+        }
+    }
+
+    public void speak(){
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Please say something!");
+
+        try{
+
+            startActivityForResult(intent, REQUEST_CODE_SPEECH_INPUT);
+        } catch (Exception e) {
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode){
+            case REQUEST_CODE_SPEECH_INPUT:{
+                if (resultCode == RESULT_OK && data != null) {
+                    ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                    if (result.get(0).toLowerCase().contains("up") || result.get(0).toLowerCase().contains("forward"))
+                        sendCmd("cmd:MoveForward");
+                    else if (result.get(0).toLowerCase().contains("backward") || result.get(0).toLowerCase().contains("reverse"))
+                        sendCmd("cmd:MoveBackward");
+                    else if (result.get(0).toLowerCase().contains("left"))
+                        sendCmd("cmd:RotateLeft");
+                    else if (result.get(0).toLowerCase().contains("right"))
+                        sendCmd("cmd:RotateRight");
+                    else
+                        Toast.makeText(this, "Cant understand your speech", Toast.LENGTH_SHORT).show();
+                }
+                break;
             }
         }
     }
