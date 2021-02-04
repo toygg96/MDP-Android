@@ -62,6 +62,7 @@ public class BluetoothSettingsActivity extends AppCompatActivity {
         incomingTextView = (TextView)findViewById(R.id.receiveTextView);
         sendMsgInputBox = (EditText)findViewById(R.id.sendTextBox);
         incomingTextView.setMovementMethod(new ScrollingMovementMethod());
+        incomingTextView.setText(BluetoothController.getMsgLog());
         // Instantiate the DeviceListAdapter, BluetoothAdapter, BluetoothController
         adapter = new DeviceListAdapter(this,R.layout.list_item);
         BA = BluetoothAdapter.getDefaultAdapter();
@@ -196,6 +197,7 @@ public class BluetoothSettingsActivity extends AppCompatActivity {
         Log.d(TAG,"onResume()");
         // Registering all the receivers
         registerReceivers();
+        incomingTextView.setText(BluetoothController.getMsgLog());
         super.onResume();
     }
 
@@ -207,6 +209,7 @@ public class BluetoothSettingsActivity extends AppCompatActivity {
         unregisterReceiver(incomingMsgReceiver);
         unregisterReceiver(btConnectionStatusReceiver);
         unregisterReceiver(disconnectedReceiver);
+        BluetoothController.saveMsgLog(incomingTextView.getText().toString());
         super.onPause();
     }
 

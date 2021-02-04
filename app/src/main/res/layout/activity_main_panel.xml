@@ -6,73 +6,75 @@
     android:layout_height="match_parent"
     tools:context=".Activity.RobotPanelActivity">
 
+    <view
+        android:id="@+id/mapView"
+        class="com.example.mdp.Activity.MazeView"
+        android:layout_width="350dp"
+        android:layout_height="350dp"
+        android:layout_marginTop="5dp"
+        android:text="Fake map"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/F1textBox"
         android:layout_width="180dp"
         android:layout_height="40dp"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="7dp"
         android:maxWidth="120dp"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/mapView"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/setF1btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
         android:text="Set F1"
-        app:layout_constraintEnd_toStartOf="@+id/F1btn"
-        app:layout_constraintStart_toEndOf="@+id/F1textBox"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintStart_toEndOf="@+id/mapView"
+        app:layout_constraintTop_toBottomOf="@id/F1textBox"/>
 
     <Button
         android:id="@+id/F1btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="290dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
         android:text="@string/f1btn"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toEndOf="@id/setF1btn"
+        app:layout_constraintTop_toBottomOf="@id/F1textBox" />
 
     <TextView
         android:id="@+id/F2textBox"
         android:layout_width="180dp"
         android:layout_height="40dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="7dp"
         android:maxWidth="120dp"
-        app:layout_constraintStart_toStartOf="@+id/F1textBox"
-        app:layout_constraintTop_toBottomOf="@+id/F1textBox" />
+        app:layout_constraintStart_toEndOf="@id/mapView"
+        app:layout_constraintTop_toBottomOf="@id/setF1btn"  />
 
     <Button
         android:id="@+id/setF2btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="5dp"
         android:text="Set F2"
-        app:layout_constraintTop_toBottomOf="@+id/F1btn"
-        app:layout_constraintStart_toStartOf="@+id/setF1btn"/>
+        app:layout_constraintTop_toBottomOf="@+id/F2textBox"
+        app:layout_constraintStart_toEndOf="@+id/mapView"/>
 
     <Button
         android:id="@+id/F2btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/f2btn"
-        app:layout_constraintStart_toStartOf="@+id/F1btn"
-        app:layout_constraintTop_toBottomOf="@+id/F1btn"/>
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="0dp"
-        android:layout_height="250dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
-        android:text="Fake map"
-        app:layout_constraintEnd_toEndOf="@+id/F2btn"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/F1textBox"
-        app:layout_constraintTop_toBottomOf="@+id/F2textBox" />
+        android:text="@string/f2btn"
+        app:layout_constraintStart_toEndOf="@id/setF2btn"
+        app:layout_constraintTop_toBottomOf="@+id/F2textBox"/>
 
     <TextView
         android:id="@+id/robotStatusLabel"
@@ -80,8 +82,9 @@
         android:layout_height="wrap_content"
         android:text="@string/robot_status"
         android:layout_marginTop="10dp"
-        app:layout_constraintStart_toStartOf="@+id/textView2"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+        android:layout_marginLeft="5dp"
+        app:layout_constraintStart_toStartOf="@+id/mapView"
+        app:layout_constraintTop_toBottomOf="@+id/mapView" />
 
     <TextView
         android:id="@+id/robotStatusTxtbox"
@@ -108,11 +111,10 @@
         android:id="@+id/setWaypointBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="72dp"
+        android:layout_marginLeft="55dp"
         android:text="@string/set_waypoint"
         app:layout_constraintTop_toBottomOf="@+id/robotStatusLabel"
-        app:layout_constraintStart_toEndOf="@+id/setOriginBtn"
-        app:layout_constraintEnd_toEndOf="@+id/textView2" />
+        app:layout_constraintStart_toEndOf="@+id/setOriginBtn" />
 
     <Button
         android:id="@+id/fastestPathBtn"

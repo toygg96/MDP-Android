@@ -41,6 +41,7 @@ public class RobotPanelActivity extends AppCompatActivity {
     private SharedPreferences.Editor editor;
     private static final String MyPREFERENCES = "MyPrefs" ;
     private IntentFilter filter3, filter4, filter5;
+    private MazeView myMaze;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +67,8 @@ public class RobotPanelActivity extends AppCompatActivity {
         leftBtn = (ImageButton)findViewById(R.id.leftBtn);
         rightBtn = (ImageButton)findViewById(R.id.rightBtn);
         micBtn = (ImageButton)findViewById(R.id.micBtn);
+        myMaze = new MazeView(findViewById(R.id.mapView).getContext(),null);
+
         SharedPreferences sh = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         bluetoothConnectionTxtbox.setText("Connected to:\n"+ BluetoothController.getConnectedDevice());
 
@@ -201,7 +204,7 @@ public class RobotPanelActivity extends AppCompatActivity {
 
     public void registerReceivers(){
         if ((filter3 == null) || (filter4 == null) || (filter5 == null)) {
-            Log.d(TAG,"is this called");
+            //Log.d(TAG,"is this called");
             filter3 = new IntentFilter("IncomingMsg");
             registerReceiver(incomingMsgReceiver, filter3);
             filter4 = new IntentFilter("btConnectionStatus");
@@ -267,6 +270,7 @@ public class RobotPanelActivity extends AppCompatActivity {
     public BroadcastReceiver incomingMsgReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            String log = BluetoothController.getMsgLog();
             String msg = intent.getStringExtra("receivingMsg");
             Log.d("RobotPanelActivity",msg);
             if (msg.equalsIgnoreCase("MOVING:ROTATINGRIGHT")) {
@@ -280,6 +284,7 @@ public class RobotPanelActivity extends AppCompatActivity {
             } else if (msg.equalsIgnoreCase("IDLE")) {
                 robotStatusTxtbox.setText("Idle");
             }
+            BluetoothController.saveMsgLog(log + "\n" + msg);
         }
     };
 

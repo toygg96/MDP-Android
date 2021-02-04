@@ -18,6 +18,7 @@ public class BluetoothController {
     private static String connectedDevice = "";
     private static bluetoothConnectionThread.AcceptThread at;
     private static boolean activeFlag = false;
+    private static String msgLog = "";
 
     public static void init(Activity activity1, BluetoothAdapter bAdapter, DeviceListAdapter dlAdapter) {
         activity= activity1;
@@ -161,5 +162,11 @@ public class BluetoothController {
 
     public static bluetoothConnectionThread.AcceptThread getAcceptedThread() { return at; }
 
+    public static void saveMsgLog(String log) {
+        msgLog = log;
+
+    }
+
+    public static String getMsgLog() { return msgLog; }
 
 }
