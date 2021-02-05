@@ -1,9 +1,12 @@
 package com.example.mdp.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -13,6 +16,7 @@ import android.view.View;
 import androidx.annotation.Nullable;
 
 import com.example.mdp.Model.Cell;
+import com.example.mdp.R;
 
 public class MazeView extends View {
 
@@ -181,11 +185,11 @@ public class MazeView extends View {
     }
 
     public void drawEverything(Canvas canvas){
+        //DRAW EACH INDIVIDUAL CELL
+        drawCell(canvas);
+
         //DRAW BORDER FOR EACH CELL
         drawBorder(canvas);
-
-        //DRAW EACH INDIVIDUAL CELL
-        //drawCell(canvas);
 
         //DRAW GRID NUMBER
         drawGridNumber(canvas);
@@ -234,58 +238,89 @@ public class MazeView extends View {
             for (int y = 0; y < ROWS; y++) {
                 Log.d(TAG, String.valueOf("X: " + x));
                 Log.d(TAG, String.valueOf("Y: " + y));
-                //DRAW LINE FOR TOPWALL OF CELL
-//                canvas.drawLine(cells[x][y].startY,
-//                        cells[x][y].startX,
-//                        cells[x][y].endY,
-//                        cells[x][y].startX, wallPaint);
+                //DRAW VERTICAL LINES
+                canvas.drawLine(cells[x][y].startX,
+                        cells[x][y].startY,
+                        cells[x][y].startX,
+                        cells[x][y].endY, wallPaint);
+
+                //DRAW HORIZONTAL LINES
                 canvas.drawLine(
                         cells[x][y].startX,
                         cells[x][y].startY,
                         cells[x][y].endX,
                         cells[x][y].startY, wallPaint);
-                if (y == 19)
-                    canvas.drawLine(
-                            cells[x][19].startX,
-                            cells[x][19].endY,
-                            cells[x][19].endX,
-                            cells[x][19].endY, wallPaint);
             }
+        }
+
+        for (int x = 0; x < COLS; x++) {
+                canvas.drawLine(
+                        cells[x][19].startX,
+                        cells[x][19].endY,
+                        cells[x][19].endX,
+                        cells[x][19].endY, wallPaint);
+        }
+
+        for (int y = 0; y < ROWS; y++) {
+            canvas.drawLine(
+                    cells[14][y].endX,
+                    cells[14][y].startY,
+                    cells[14][y].endX,
+                    cells[14][y].endY, wallPaint);
         }
     }
 
     //DRAW ROBOT ON THE CANVAS
     private void drawRobot(Canvas canvas) {
+        //Rect rec =
+        Bitmap robot = BitmapFactory.decodeResource(
+                getContext().getResources(),
+                R.drawable.robot2
+        );
+
+//        canvas.drawBitmap(robot, null   , new Rect((int) (COLS * cellSizeX), (int) (ROWS * cellSizeY), (int)((COLS + 1) * cellSizeX), (int) ((ROWS + 1) * cellSizeY)), null);
+
+        int xCoord = (int) cells[robotCols-1][robotRow+1].startX;
+        int yCoord = (int) cells[robotCols-1][robotRow+1].startY;
+        int x2Coord = (int) cells[robotCols-1][robotRow+1].endX;
+        int y2Coord = (int) cells[robotCols-1][robotRow+1].endY;
+        Rect rec = new Rect(xCoord, (int)(yCoord-(2*cellSizeY)),(int)(x2Coord+(2*cellSizeX)),y2Coord);
+        canvas.drawBitmap(robot, null, rec, null);
+//
+//        // DRAW COLOR FOR MIDDLE OF ROBOT
+//        canvas.drawRect(cells[robotCols][robotRow].startX, cells[robotCols][robotRow].startY, cells[robotCols][robotRow].endX, cells[robotCols][robotRow].endY, robotPaint);
+//
+//        // DRAW COLOR FOR THE RECT LEFT OF MID POINT
+//        canvas.drawRect(cells[robotCols - 1][robotRow].startX, cells[robotCols - 1][robotRow].startY, cells[robotCols - 1][robotRow].endX, cells[robotCols - 1][robotRow].endY, robotPaint);
+//
+//        //  DRAW COLOR FOR THE RECT RIGHT OF MID POINT
+//        canvas.drawRect(cells[robotCols + 1][robotRow].startX, cells[robotCols + 1][robotRow].startY, cells[robotCols + 1][robotRow].endX, cells[robotCols + 1][robotRow].endY, robotPaint);
+//
+//        //  DRAW COLOR FOR THE RECT BELOW MID POINT
+//        canvas.drawRect(cells[robotCols][robotRow - 1].startX, cells[robotCols][robotRow - 1].startY, cells[robotCols][robotRow - 1].endX, cells[robotCols][robotRow - 1].endY, robotPaint);
+//
+//        //  DRAW COLOR FOR THE RECT ABOVE MID POINT
+//        canvas.drawRect(cells[robotCols][robotRow + 1].startX, cells[robotCols][robotRow + 1].startY, cells[robotCols][robotRow + 1].endX, cells[robotCols][robotRow + 1].endY, robotPaint);
+//
+//        // DRAW COLOR FOR LOWER LEFT EDGE
+//        canvas.drawRect(cells[robotCols - 1][robotRow - 1].startX, cells[robotCols - 1][robotRow - 1].startY, cells[robotCols - 1][robotRow - 1].endX, cells[robotCols - 1][robotRow - 1].endY, robotPaint);
+//
+//        // DRAW COLOR FOR UPPER LEFT EDGE
+//        canvas.drawRect(cells[robotCols - 1][robotRow + 1].startX, cells[robotCols - 1][robotRow + 1].startY, cells[robotCols - 1][robotRow + 1].endX, cells[robotCols - 1][robotRow + 1].endY, robotPaint);
+//
+//        // DRAW COLOR FOR UPPER RIGHT EDGE
+//        canvas.drawRect(cells[robotCols + 1][robotRow + 1].startX, cells[robotCols + 1][robotRow + 1].startY, cells[robotCols + 1][robotRow + 1].endX, cells[robotCols + 1][robotRow + 1].endY, robotPaint);
+//
+//        // DRAW COLOR FOR LOWER RIGHT EDGE
+//        canvas.drawRect(cells[robotCols + 1][robotRow - 1].startX, cells[robotCols + 1][robotRow - 1].startY, cells[robotCols + 1][robotRow - 1].endX, cells[robotCols + 1][robotRow - 1].endY, robotPaint);
+
+        drawDirectionArrow(canvas);
+
+    }
+
+    private void drawDirectionArrow(Canvas canvas) {
 
         float halfWidth = (cells[robotCols][robotRow - 1].endX - cells[robotCols][robotRow - 1].startX) / 2;
-
-        // DRAW COLOR FOR MIDDLE OF ROBOT
-        canvas.drawRect(cells[robotCols][robotRow].startX, cells[robotCols][robotRow].startY, cells[robotCols][robotRow].endX, cells[robotCols][robotRow].endY, robotPaint);
-
-        // DRAW COLOR FOR THE RECT LEFT OF MID POINT
-        canvas.drawRect(cells[robotCols - 1][robotRow].startX, cells[robotCols - 1][robotRow].startY, cells[robotCols - 1][robotRow].endX, cells[robotCols - 1][robotRow].endY, robotPaint);
-
-        //  DRAW COLOR FOR THE RECT RIGHT OF MID POINT
-        canvas.drawRect(cells[robotCols + 1][robotRow].startX, cells[robotCols + 1][robotRow].startY, cells[robotCols + 1][robotRow].endX, cells[robotCols + 1][robotRow].endY, robotPaint);
-
-        //  DRAW COLOR FOR THE RECT BELOW MID POINT
-        canvas.drawRect(cells[robotCols][robotRow - 1].startX, cells[robotCols][robotRow - 1].startY, cells[robotCols][robotRow - 1].endX, cells[robotCols][robotRow - 1].endY, robotPaint);
-
-        //  DRAW COLOR FOR THE RECT ABOVE MID POINT
-        canvas.drawRect(cells[robotCols][robotRow + 1].startX, cells[robotCols][robotRow + 1].startY, cells[robotCols][robotRow + 1].endX, cells[robotCols][robotRow + 1].endY, robotPaint);
-
-        // DRAW COLOR FOR LOWER LEFT EDGE
-        canvas.drawRect(cells[robotCols - 1][robotRow - 1].startX, cells[robotCols - 1][robotRow - 1].startY, cells[robotCols - 1][robotRow - 1].endX, cells[robotCols - 1][robotRow - 1].endY, robotPaint);
-
-        // DRAW COLOR FOR UPPER LEFT EDGE
-        canvas.drawRect(cells[robotCols - 1][robotRow + 1].startX, cells[robotCols - 1][robotRow + 1].startY, cells[robotCols - 1][robotRow + 1].endX, cells[robotCols - 1][robotRow + 1].endY, robotPaint);
-
-
-        // DRAW COLOR FOR UPPER RIGHT EDGE
-        canvas.drawRect(cells[robotCols + 1][robotRow + 1].startX, cells[robotCols + 1][robotRow + 1].startY, cells[robotCols + 1][robotRow + 1].endX, cells[robotCols + 1][robotRow + 1].endY, robotPaint);
-
-        // DRAW COLOR FOR LOWER RIGHT EDGE
-        canvas.drawRect(cells[robotCols + 1][robotRow - 1].startX, cells[robotCols + 1][robotRow - 1].startY, cells[robotCols + 1][robotRow - 1].endX, cells[robotCols + 1][robotRow - 1].endY, robotPaint);
 
         //TRIANGLE FOR ROBOT DIRECTION
         Path path = new Path();
@@ -322,7 +357,6 @@ public class MazeView extends View {
         path.close();
         canvas.drawPath(path, directionPaint);
     }
-
     //DRAW ROBOT ON THE CANVAS
     private void drawWayPoint(Canvas canvas) {
 
@@ -366,20 +400,16 @@ public class MazeView extends View {
         //FIND COLS OF THE MAZE BASED ON ONTOUCH
         for (int i = 0; i < COLS; i++) {
 
-            if (x <= cells[i][0].endX && x >=  cells[i][0].startX) {
+            if ((x - 40) <= cells[i][0].endX && (x - 40) >= cells[i][0].startX) {
                 cols = i;
-                Log.d(TAG, "X = " + String.valueOf(x));
-
                 break;
             }
         }
         //FIND ROW OF THE MAZE BASED ON ONTOUCH
         for (int j = 0; j < ROWS; j++) {
 
-            if (y <= cells[0][j].endY && y >=  cells[0][j].startY) {
+            if (y <= cells[0][j].endY && y >= cells[0][j].startY) {
                 row = (j-19)*-1;
-                Log.d(TAG, "Y = " + String.valueOf(y));
-
                 break;
             }
 
