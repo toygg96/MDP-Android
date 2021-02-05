@@ -52,8 +52,8 @@ public class MazeView extends View {
         int height = getHeight();
         Log.d(TAG,"Width: " + String.valueOf(width));
         Log.d(TAG,"Height: " + String.valueOf(height));
-        cellSizeX = (float) 420 / COLS;
-        cellSizeY = (float) 440 / ROWS;
+        cellSizeX = (float) 453 / COLS;
+        cellSizeY = (float) 465 / ROWS;
 
         //CALCULATE MARGIN SIZE FOR THE CANVAS
         hMargin = (width - COLS * cellSizeX) / 11;
@@ -173,7 +173,7 @@ public class MazeView extends View {
         for (int x = 0; x < COLS; x++) {
             for (int y = 0; y < ROWS; y++) {
 
-                cells[x][y] = new Cell(x * cellSizeX + (cellSizeX / 30), y * cellSizeY + (cellSizeY / 30), (x + 1) * cellSizeX - (cellSizeX / 40), (y + 1) * cellSizeY - (cellSizeY / 60), unexploredPaint);
+                cells[x][y] = new Cell(x * cellSizeX, y * cellSizeY, (x + 1) * cellSizeX, (y + 1) * cellSizeY, unexploredPaint);
 
             }
         }
@@ -185,7 +185,7 @@ public class MazeView extends View {
         drawBorder(canvas);
 
         //DRAW EACH INDIVIDUAL CELL
-        drawCell(canvas);
+        //drawCell(canvas);
 
         //DRAW GRID NUMBER
         drawGridNumber(canvas);
@@ -232,31 +232,24 @@ public class MazeView extends View {
         //DRAW BORDER FOR EACH CELL
         for (int x = 0; x < COLS; x++) {
             for (int y = 0; y < ROWS; y++) {
-
+                Log.d(TAG, String.valueOf("X: " + x));
+                Log.d(TAG, String.valueOf("Y: " + y));
                 //DRAW LINE FOR TOPWALL OF CELL
+//                canvas.drawLine(cells[x][y].startY,
+//                        cells[x][y].startX,
+//                        cells[x][y].endY,
+//                        cells[x][y].startX, wallPaint);
                 canvas.drawLine(
-                        x * cellSizeX,
-                        y * cellSizeY,
-                        (x + 1) * cellSizeX,
-                        y * cellSizeY, wallPaint);
-                //DRAW LINE FOR RIGHTWALL OF CELL
-                canvas.drawLine(
-                        (x + 1) * cellSizeX,
-                        y * cellSizeY,
-                        (x + 1) * cellSizeX,
-                        (y + 1) * cellSizeY, wallPaint);
-                //DRAW LINE FOR LEFTWALL OF CELL
-                canvas.drawLine(
-                        x * cellSizeX,
-                        y * cellSizeY,
-                        x * cellSizeX,
-                        (y + 1) * cellSizeY, wallPaint);
-                //DRAW LINE FOR BOTTOMWALL OF CELL
-                canvas.drawLine(
-                        x * cellSizeX,
-                        (y + 1) * cellSizeY,
-                        (x + 1) * cellSizeX,
-                        (y + 1) * cellSizeY, wallPaint);
+                        cells[x][y].startX,
+                        cells[x][y].startY,
+                        cells[x][y].endX,
+                        cells[x][y].startY, wallPaint);
+                if (y == 19)
+                    canvas.drawLine(
+                            cells[x][19].startX,
+                            cells[x][19].endY,
+                            cells[x][19].endX,
+                            cells[x][19].endY, wallPaint);
             }
         }
     }

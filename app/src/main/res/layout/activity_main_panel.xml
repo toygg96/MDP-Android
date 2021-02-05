@@ -9,8 +9,8 @@
     <view
         android:id="@+id/mapView"
         class="com.example.mdp.Activity.MazeView"
-        android:layout_width="350dp"
-        android:layout_height="350dp"
+        android:layout_width="370dp"
+        android:layout_height="370dp"
         android:layout_marginTop="5dp"
         android:text="Fake map"
         app:layout_constraintTop_toTopOf="parent"
@@ -178,20 +178,20 @@
 
     <ImageButton
         android:id="@+id/upBtn"
-        android:layout_width="84dp"
-        android:layout_height="84dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         app:srcCompat="@drawable/uparrow"
         android:layout_marginTop="4dp"
-        android:layout_marginLeft='102dp'
+        android:layout_marginLeft='10dp'
         android:scaleType="fitCenter"
         app:layout_constraintTop_toBottomOf="@+id/explorationBtn"
-        app:layout_constraintStart_toStartOf="@+id/explorationBtn"
+        app:layout_constraintStart_toEndOf="@+id/leftBtn"
         android:background="@null"/>
 
     <ImageButton
         android:id="@+id/leftBtn"
-        android:layout_width="84dp"
-        android:layout_height="84dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         app:srcCompat="@drawable/leftarrow"
         android:layout_marginTop="5dp"
         android:layout_marginLeft='20dp'
@@ -202,11 +202,11 @@
 
     <ImageButton
         android:id="@+id/rightBtn"
-        android:layout_width="84dp"
-        android:layout_height="84dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         app:srcCompat="@drawable/rightarrow"
         android:layout_marginTop="5dp"
-        android:layout_marginLeft='78dp'
+        android:layout_marginLeft='63dp'
         android:scaleType="fitCenter"
         app:layout_constraintTop_toBottomOf="@+id/upBtn"
         app:layout_constraintStart_toEndOf="@+id/leftBtn"
@@ -214,8 +214,8 @@
 
     <ImageButton
         android:id="@+id/downBtn"
-        android:layout_width="84dp"
-        android:layout_height="84dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         app:srcCompat="@drawable/downarrow"
         android:layout_marginTop="5dp"
         android:layout_marginLeft='0dp'
@@ -226,8 +226,8 @@
 
     <ImageButton
         android:id="@+id/micBtn"
-        android:layout_width="84dp"
-        android:layout_height="84dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         app:srcCompat="@drawable/microphone"
         android:layout_marginTop="82dp"
         android:scaleType="fitCenter"
