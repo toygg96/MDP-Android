@@ -36,6 +36,7 @@ public class ArenaView extends View {
     private static String robotDirection = "east";
     private static boolean setRobotPostition = false, setWayPointPosition = false;
     private static boolean createCellStatus = false;
+    private Canvas canvas;
 
     //CONSTRUCTOR
     public ArenaView(Context context, @Nullable AttributeSet attrs) {
@@ -83,6 +84,8 @@ public class ArenaView extends View {
         canvas.translate(40, 0);
         drawEverything(canvas);
         setRobotPostition = false;
+
+        this.canvas = canvas;
     }
 
     //ON TOUCH METHOD
@@ -102,7 +105,7 @@ public class ArenaView extends View {
                 if ((coordinates[0] != 0 && coordinates[0] != 14) && (coordinates[1] != 0 && coordinates[1] != 19)) {
                     robotCols = coordinates[0];
                     robotRow = getInverseYCoord(coordinates[1]);
-                    invalidate();
+                    refreshMap();
                     BluetoothController.sendCmd("Android|Algo|SetOrigin|(" + String.valueOf(coordinates[0]) + "," + String.valueOf(coordinates[1]) + ")");
                     setRobotPostition = false;
                     // send start point to RPI
@@ -116,7 +119,7 @@ public class ArenaView extends View {
 
                 wayPointCols = coordinates[0];
                 wayPointRow = getInverseYCoord(coordinates[1]);
-                invalidate();
+                refreshMap();
                 BluetoothController.sendCmd("Android|Algo|SetWayPoint|(" + String.valueOf(coordinates[0]) + "," + String.valueOf(coordinates[1]) + ")");
                 setWayPointPosition = false;
                 // send waypoint to RPI
@@ -144,6 +147,7 @@ public class ArenaView extends View {
 
         //COLOR FOR ROBOT DIRECTION
         directionPaint = new Paint();
+
         directionPaint.setColor(Color.BLACK);
 
         //COLOR FOR WAY POINT
@@ -207,6 +211,8 @@ public class ArenaView extends View {
 
         //DRAW WAY POINT ON MAZE
         drawWayPoint(canvas);
+
+        drawDiscoveredImg(canvas,1,4,5);
     }
 
     private void drawEndPoint(Canvas canvas) {
@@ -362,6 +368,24 @@ public class ArenaView extends View {
         }
     }
 
+    public void drawDiscoveredImg(Canvas canvas, int imgID, int XCoord, int YCoord){
+        if (canvas != null) {
+            Bitmap discoveredImg = BitmapFactory.decodeResource(
+                    getContext().getResources(),
+                    R.drawable.num0
+            );
+
+            int xCoord = (int) cells[XCoord][getInverseYCoord(YCoord)].startX;
+            int yCoord = (int) cells[XCoord][getInverseYCoord(YCoord)].startY;
+            int x2Coord = (int) cells[XCoord][getInverseYCoord(YCoord)].endX;
+            int y2Coord = (int) cells[XCoord][getInverseYCoord(YCoord)].endY;
+            Rect rec = new Rect(xCoord, yCoord, x2Coord, y2Coord);
+            canvas.drawBitmap(discoveredImg, null, rec, null);
+        }
+
+        //refreshMap();
+    }
+
     private int[] findCoordinatesOnMap(float x, float y) {
 
         int row = -1, cols = -1;
@@ -426,7 +450,7 @@ public class ArenaView extends View {
 
         //ENSURE AUTO UPDATE TOGGLE BUTTON IS ON
         if(autoUpdate) {
-            invalidate();
+            refreshMap();
         }
         //Log.d(TAG, "Stage 4: ");
 
@@ -436,6 +460,8 @@ public class ArenaView extends View {
     public void refreshMap(){
         invalidate();
     }
+
+    public Canvas getcanvas(){ return canvas; }
 
 
 

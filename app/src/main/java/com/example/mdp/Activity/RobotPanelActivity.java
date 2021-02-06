@@ -309,6 +309,8 @@ public class RobotPanelActivity extends AppCompatActivity {
             } else if (msg.equalsIgnoreCase("IDLE")) {
                 robotStatusTxtbox.setText("Idle");
             }
+            myMaze.drawDiscoveredImg(myMaze.getcanvas(),1,4,5);
+
             BluetoothController.saveMsgLog(log + "\n" + msg);
         }
     };
