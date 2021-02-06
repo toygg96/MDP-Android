@@ -21,4 +21,5 @@
     <string name="start">Start</string>
     <string name="connected_to_n">Connected to: \n</string>
     <string name="exploration">Exploration</string>
+    <string name="set_f1">Set F1</string>
 </resources>

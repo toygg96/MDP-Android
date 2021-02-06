@@ -205,7 +205,7 @@ public class RobotPanelActivity extends AppCompatActivity {
     protected void onResume() {
         Log.d(TAG,"resume called");
         if (myMaze == null)
-            myMaze = new ArenaView(findViewById(R.id.mapView).getContext(),null);
+            myMaze = findViewById(R.id.mapView);
         registerReceivers();
         super.onResume();
 
@@ -309,8 +309,14 @@ public class RobotPanelActivity extends AppCompatActivity {
             } else if (msg.equalsIgnoreCase("IDLE")) {
                 robotStatusTxtbox.setText("Idle");
             }
-            myMaze.drawDiscoveredImg(myMaze.getcanvas(),1,4,5);
-
+            if (msg.toLowerCase().contains("img:")) {
+                String [] arrOfStr = msg.split(":");
+                arrOfStr[1] = arrOfStr[1].replace("(", "");
+                arrOfStr[1] = arrOfStr[1].replace(")", "");
+                String [] strippedMsg = arrOfStr[1].split(",");
+                myMaze.setDiscoveredImgOnCell(Integer.parseInt(strippedMsg[0]),Integer.parseInt(strippedMsg[1]),Integer.parseInt(strippedMsg[2]));
+                myMaze.refreshMap();
+            }
             BluetoothController.saveMsgLog(log + "\n" + msg);
         }
     };

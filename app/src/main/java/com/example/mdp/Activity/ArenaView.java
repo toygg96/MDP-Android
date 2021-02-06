@@ -36,14 +36,12 @@ public class ArenaView extends View {
     private static String robotDirection = "east";
     private static boolean setRobotPostition = false, setWayPointPosition = false;
     private static boolean createCellStatus = false;
-    private Canvas canvas;
+    private static int imgXCoord = -1,imgYCoord= -1;
 
     //CONSTRUCTOR
     public ArenaView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         setWillNotDraw(false);
-
-        Log.d(TAG,"Mazeview non empty constructor called");
         createAllPaint();
     }
 
@@ -85,7 +83,6 @@ public class ArenaView extends View {
         drawEverything(canvas);
         setRobotPostition = false;
 
-        this.canvas = canvas;
     }
 
     //ON TOUCH METHOD
@@ -108,7 +105,6 @@ public class ArenaView extends View {
                     refreshMap();
                     BluetoothController.sendCmd("Android|Algo|SetOrigin|(" + String.valueOf(coordinates[0]) + "," + String.valueOf(coordinates[1]) + ")");
                     setRobotPostition = false;
-                    // send start point to RPI
 
                 }
             }
@@ -122,7 +118,6 @@ public class ArenaView extends View {
                 refreshMap();
                 BluetoothController.sendCmd("Android|Algo|SetWayPoint|(" + String.valueOf(coordinates[0]) + "," + String.valueOf(coordinates[1]) + ")");
                 setWayPointPosition = false;
-                // send waypoint to RPI
 
             }
         }
@@ -212,7 +207,7 @@ public class ArenaView extends View {
         //DRAW WAY POINT ON MAZE
         drawWayPoint(canvas);
 
-        drawDiscoveredImg(canvas,1,4,5);
+        drawDiscoveredImgs(canvas);
     }
 
     private void drawEndPoint(Canvas canvas) {
@@ -368,22 +363,145 @@ public class ArenaView extends View {
         }
     }
 
-    public void drawDiscoveredImg(Canvas canvas, int imgID, int XCoord, int YCoord){
-        if (canvas != null) {
-            Bitmap discoveredImg = BitmapFactory.decodeResource(
-                    getContext().getResources(),
-                    R.drawable.num0
-            );
+    public void drawDiscoveredImgs(Canvas canvas){
 
-            int xCoord = (int) cells[XCoord][getInverseYCoord(YCoord)].startX;
-            int yCoord = (int) cells[XCoord][getInverseYCoord(YCoord)].startY;
-            int x2Coord = (int) cells[XCoord][getInverseYCoord(YCoord)].endX;
-            int y2Coord = (int) cells[XCoord][getInverseYCoord(YCoord)].endY;
-            Rect rec = new Rect(xCoord, yCoord, x2Coord, y2Coord);
-            canvas.drawBitmap(discoveredImg, null, rec, null);
+            for (int x = 0; x < COLS; x++) {
+                for (int y = 0; y < ROWS; y++) {
+                    if (cells[x][y].imgFlag) {
+                        Bitmap discoveredImg = null;
+                        switch (cells[x][y].imgID) {
+
+                            case -1:
+                                break;
+
+                            case 1:
+                                 discoveredImg = BitmapFactory.decodeResource(
+                                        getContext().getResources(),
+                                        R.drawable.num1);
+                                drawDiscoveredImg(canvas,discoveredImg,x,y);
+                                break;
+
+                            case 2:
+                                discoveredImg = BitmapFactory.decodeResource(
+                                        getContext().getResources(),
+                                        R.drawable.num2);
+                                drawDiscoveredImg(canvas,discoveredImg,x,y);
+                                break;
+
+                            case 3:
+                                discoveredImg = BitmapFactory.decodeResource(
+                                        getContext().getResources(),
+                                        R.drawable.num3);
+                                drawDiscoveredImg(canvas,discoveredImg,x,y);
+                                break;
+
+                            case 4:
+                                discoveredImg = BitmapFactory.decodeResource(
+                                        getContext().getResources(),
+                                        R.drawable.num4);
+                                drawDiscoveredImg(canvas,discoveredImg,x,y);
+                                break;
+
+                            case 5:
+                                discoveredImg = BitmapFactory.decodeResource(
+                                        getContext().getResources(),
+                                        R.drawable.num5);
+                                drawDiscoveredImg(canvas,discoveredImg,x,y);
+                                break;
+
+                            case 6:
+                                discoveredImg = BitmapFactory.decodeResource(
+                                        getContext().getResources(),
+                                        R.drawable.num6);
+                                drawDiscoveredImg(canvas,discoveredImg,x,y);
+                                break;
+
+                            case 7:
+                                discoveredImg = BitmapFactory.decodeResource(
+                                        getContext().getResources(),
+                                        R.drawable.num7);
+                                drawDiscoveredImg(canvas,discoveredImg,x,y);
+                                break;
+
+                            case 8:
+                                discoveredImg = BitmapFactory.decodeResource(
+                                        getContext().getResources(),
+                                        R.drawable.num8);
+                                drawDiscoveredImg(canvas,discoveredImg,x,y);
+                                break;
+
+                            case 9:
+                                discoveredImg = BitmapFactory.decodeResource(
+                                        getContext().getResources(),
+                                        R.drawable.num9);
+                                drawDiscoveredImg(canvas,discoveredImg,x,y);
+                                break;
+
+                            case 10:
+                                discoveredImg = BitmapFactory.decodeResource(
+                                        getContext().getResources(),
+                                        R.drawable.num10);
+                                drawDiscoveredImg(canvas,discoveredImg,x,y);
+                                break;
+
+                            case 11:
+                                discoveredImg = BitmapFactory.decodeResource(
+                                        getContext().getResources(),
+                                        R.drawable.num11);
+                                drawDiscoveredImg(canvas,discoveredImg,x,y);
+                                break;
+
+                            case 12:
+                                discoveredImg = BitmapFactory.decodeResource(
+                                        getContext().getResources(),
+                                        R.drawable.num12);
+                                drawDiscoveredImg(canvas,discoveredImg,x,y);
+                                break;
+
+                            case 13:
+                                discoveredImg = BitmapFactory.decodeResource(
+                                        getContext().getResources(),
+                                        R.drawable.num13);
+                                drawDiscoveredImg(canvas,discoveredImg,x,y);
+                                break;
+
+                            case 14:
+                                discoveredImg = BitmapFactory.decodeResource(
+                                        getContext().getResources(),
+                                        R.drawable.num14);
+                                drawDiscoveredImg(canvas,discoveredImg,x,y);
+                                break;
+
+                            case 15:
+                                discoveredImg = BitmapFactory.decodeResource(
+                                        getContext().getResources(),
+                                        R.drawable.num15);
+                                drawDiscoveredImg(canvas,discoveredImg,x,y);
+                                break;
+                        }
+                    }
+                }
+            }
+
+//            int xCoord = (int) cells[XCoord][getInverseYCoord(YCoord)].startX;
+//            int yCoord = (int) cells[XCoord][getInverseYCoord(YCoord)].startY;
+//            int x2Coord = (int) cells[XCoord][getInverseYCoord(YCoord)].endX;
+//            int y2Coord = (int) cells[XCoord][getInverseYCoord(YCoord)].endY;
+
+    }
+
+    public void drawDiscoveredImg(Canvas canvas, Bitmap discoveredImg, int x, int y){
+        Rect rec = new Rect((int) cells[x][y].startX, (int) cells[x][y].startY, (int) cells[x][y].endX, (int) cells[x][y].endY);
+        canvas.drawBitmap(discoveredImg, null, rec, null);
+    }
+
+    public void setDiscoveredImgOnCell(int imgID, int XCoord, int YCoord) {
+        if (imgID < 1 || imgID > 15) {
+            Log.d(TAG,"ImgID invalid!");
+            return;
         }
-
-        //refreshMap();
+        cells[XCoord][getInverseYCoord(YCoord)].setImgFlag(true);
+        cells[XCoord][getInverseYCoord(YCoord)].setImgID(imgID);
     }
 
     private int[] findCoordinatesOnMap(float x, float y) {
@@ -460,9 +578,6 @@ public class ArenaView extends View {
     public void refreshMap(){
         invalidate();
     }
-
-    public Canvas getcanvas(){ return canvas; }
-
 
 
 }
