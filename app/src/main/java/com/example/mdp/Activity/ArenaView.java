@@ -15,15 +15,21 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 
+import com.example.mdp.Controller.BluetoothController;
 import com.example.mdp.Model.Cell;
 import com.example.mdp.R;
+import com.example.mdp.Controller.BluetoothController;
 
-public class MazeView extends View {
+import java.nio.charset.Charset;
 
-    private static final String TAG = "MazeView";
+import static android.content.ContentValues.TAG;
+
+public class ArenaView extends View {
+
+    private static final String TAG = "ArenaView";
     private static Cell[][] cells;
     private static final int COLS = 15, ROWS = 20;
-    private static final float WallThickness = 2;
+    private static final float WallThickness = 1;
     private static float cellSizeX,cellSizeY, hMargin, vMargin;
     private static Paint wallPaint, robotPaint, waypointPaint, directionPaint,  emptyPaint, virtualWallPaint, obstaclePaint, unexploredPaint, ftpPaint, endPointPaint, gridNumberPaint;
     private static int robotRow = 18, robotCols = 1, wayPointRow =-1, wayPointCols=-1;
@@ -32,7 +38,7 @@ public class MazeView extends View {
     private static boolean createCellStatus = false;
 
     //CONSTRUCTOR
-    public MazeView(Context context, @Nullable AttributeSet attrs) {
+    public ArenaView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         setWillNotDraw(false);
 
@@ -54,8 +60,8 @@ public class MazeView extends View {
         int width = getWidth();
         //HEIGHT OF THE CANVAS
         int height = getHeight();
-        Log.d(TAG,"Width: " + String.valueOf(width));
-        Log.d(TAG,"Height: " + String.valueOf(height));
+        //Log.d(TAG,"Width: " + String.valueOf(width));
+        //Log.d(TAG,"Height: " + String.valueOf(height));
         cellSizeX = (float) 453 / COLS;
         cellSizeY = (float) 465 / ROWS;
 
@@ -63,8 +69,8 @@ public class MazeView extends View {
         hMargin = (width - COLS * cellSizeX) / 11;
         vMargin = (height - ROWS * cellSizeY) / 2;
 
-        Log.d(TAG,"Cell sizeX: " + String.valueOf(cellSizeX));
-        Log.d(TAG,"Cell sizeY: " + String.valueOf(cellSizeY));
+        //Log.d(TAG,"Cell sizeX: " + String.valueOf(cellSizeX));
+        //Log.d(TAG,"Cell sizeY: " + String.valueOf(cellSizeY));
         //CREATE CELL ONCE
         if(!createCellStatus) {
             //CREATE CELL COORDINATES
@@ -83,12 +89,10 @@ public class MazeView extends View {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
-        int coordinates[];
         float x = event.getX();
         float y = event.getY();
-
-        coordinates = findCoordinatesOnMap(x, y);
-        Log.d(TAG, "(" + coordinates[0] + " , " + coordinates[1] + ')');
+        int  coordinates[] = findCoordinatesOnMap(x, y);
+        Log.d(TAG, "(" + coordinates[0] + "," + coordinates[1] + ')');
 
         if (setRobotPostition) {
             //ENSURE ONTOUCH IS WITHIN THE MAZE
@@ -97,9 +101,10 @@ public class MazeView extends View {
                 //ENSURE COORDINATES IS NOT THE FIRST OR LAST ROW/COLS AS THE ROBOT IS PLOT BASED ON THE CENTER COORDINATES
                 if ((coordinates[0] != 0 && coordinates[0] != 14) && (coordinates[1] != 0 && coordinates[1] != 19)) {
                     robotCols = coordinates[0];
-                    robotRow = coordinates[1];
+                    robotRow = getInverseYCoord(coordinates[1]);
                     invalidate();
-
+                    BluetoothController.sendCmd("Android|Algo|SetOrigin|(" + String.valueOf(coordinates[0]) + "," + String.valueOf(coordinates[1]) + ")");
+                    setRobotPostition = false;
                     // send start point to RPI
 
                 }
@@ -110,9 +115,10 @@ public class MazeView extends View {
             if (coordinates[0] != -1 && coordinates[1] != -1) {
 
                 wayPointCols = coordinates[0];
-                wayPointRow = coordinates[1];
+                wayPointRow = getInverseYCoord(coordinates[1]);
                 invalidate();
-
+                BluetoothController.sendCmd("Android|Algo|SetWayPoint|(" + String.valueOf(coordinates[0]) + "," + String.valueOf(coordinates[1]) + ")");
+                setWayPointPosition = false;
                 // send waypoint to RPI
 
             }
@@ -125,11 +131,11 @@ public class MazeView extends View {
 
         //PAINT FOR END POINT
         endPointPaint = new Paint();
-        endPointPaint.setColor(Color.RED);
+        endPointPaint.setColor(Color.GREEN);
 
         //PAINT THE THICKNESS OF THE WALL
         wallPaint = new Paint();
-        wallPaint.setColor(Color.BLACK);
+        wallPaint.setColor(Color.WHITE);
         wallPaint.setStrokeWidth(WallThickness);
 
         //COLOR FOR ROBOT
@@ -154,7 +160,7 @@ public class MazeView extends View {
 
         //COLOR FOR OBSTACLE
         obstaclePaint = new Paint();
-        obstaclePaint.setColor(Color.BLACK);
+        obstaclePaint.setColor(Color.CYAN);
 
         //COLOR FOR UNEXPLORED PATH
         unexploredPaint = new Paint();
@@ -170,7 +176,6 @@ public class MazeView extends View {
         ftpPaint.setColor(Color.parseColor("#FFC0CB"));
     }
 
-    //CREATE Cell METHOD
     private void createCell() {
         cells = new Cell[COLS][ROWS];
 
@@ -204,7 +209,6 @@ public class MazeView extends View {
         drawWayPoint(canvas);
     }
 
-    //DRAW ENDPOINT CELL
     private void drawEndPoint(Canvas canvas) {
 
         for (int x = 12; x < COLS; x++) {
@@ -217,7 +221,6 @@ public class MazeView extends View {
         }
     }
 
-    //DRAW INDIVIDUAL CELL
     private void drawCell(Canvas canvas){
 
         for (int x = 0; x < COLS; x++) {
@@ -230,14 +233,13 @@ public class MazeView extends View {
         }
     }
 
-    //DRAW BORDER FOR EACH CELL
     private void drawBorder(Canvas canvas){
 
         //DRAW BORDER FOR EACH CELL
         for (int x = 0; x < COLS; x++) {
             for (int y = 0; y < ROWS; y++) {
-                Log.d(TAG, String.valueOf("X: " + x));
-                Log.d(TAG, String.valueOf("Y: " + y));
+                //Log.d(TAG, String.valueOf("X: " + x));
+                //Log.d(TAG, String.valueOf("Y: " + y));
                 //DRAW VERTICAL LINES
                 canvas.drawLine(cells[x][y].startX,
                         cells[x][y].startY,
@@ -270,7 +272,6 @@ public class MazeView extends View {
         }
     }
 
-    //DRAW ROBOT ON THE CANVAS
     private void drawRobot(Canvas canvas) {
         //Rect rec =
         Bitmap robot = BitmapFactory.decodeResource(
@@ -278,41 +279,12 @@ public class MazeView extends View {
                 R.drawable.robot2
         );
 
-//        canvas.drawBitmap(robot, null   , new Rect((int) (COLS * cellSizeX), (int) (ROWS * cellSizeY), (int)((COLS + 1) * cellSizeX), (int) ((ROWS + 1) * cellSizeY)), null);
-
         int xCoord = (int) cells[robotCols-1][robotRow+1].startX;
         int yCoord = (int) cells[robotCols-1][robotRow+1].startY;
         int x2Coord = (int) cells[robotCols-1][robotRow+1].endX;
         int y2Coord = (int) cells[robotCols-1][robotRow+1].endY;
         Rect rec = new Rect(xCoord, (int)(yCoord-(2*cellSizeY)),(int)(x2Coord+(2*cellSizeX)),y2Coord);
         canvas.drawBitmap(robot, null, rec, null);
-//
-//        // DRAW COLOR FOR MIDDLE OF ROBOT
-//        canvas.drawRect(cells[robotCols][robotRow].startX, cells[robotCols][robotRow].startY, cells[robotCols][robotRow].endX, cells[robotCols][robotRow].endY, robotPaint);
-//
-//        // DRAW COLOR FOR THE RECT LEFT OF MID POINT
-//        canvas.drawRect(cells[robotCols - 1][robotRow].startX, cells[robotCols - 1][robotRow].startY, cells[robotCols - 1][robotRow].endX, cells[robotCols - 1][robotRow].endY, robotPaint);
-//
-//        //  DRAW COLOR FOR THE RECT RIGHT OF MID POINT
-//        canvas.drawRect(cells[robotCols + 1][robotRow].startX, cells[robotCols + 1][robotRow].startY, cells[robotCols + 1][robotRow].endX, cells[robotCols + 1][robotRow].endY, robotPaint);
-//
-//        //  DRAW COLOR FOR THE RECT BELOW MID POINT
-//        canvas.drawRect(cells[robotCols][robotRow - 1].startX, cells[robotCols][robotRow - 1].startY, cells[robotCols][robotRow - 1].endX, cells[robotCols][robotRow - 1].endY, robotPaint);
-//
-//        //  DRAW COLOR FOR THE RECT ABOVE MID POINT
-//        canvas.drawRect(cells[robotCols][robotRow + 1].startX, cells[robotCols][robotRow + 1].startY, cells[robotCols][robotRow + 1].endX, cells[robotCols][robotRow + 1].endY, robotPaint);
-//
-//        // DRAW COLOR FOR LOWER LEFT EDGE
-//        canvas.drawRect(cells[robotCols - 1][robotRow - 1].startX, cells[robotCols - 1][robotRow - 1].startY, cells[robotCols - 1][robotRow - 1].endX, cells[robotCols - 1][robotRow - 1].endY, robotPaint);
-//
-//        // DRAW COLOR FOR UPPER LEFT EDGE
-//        canvas.drawRect(cells[robotCols - 1][robotRow + 1].startX, cells[robotCols - 1][robotRow + 1].startY, cells[robotCols - 1][robotRow + 1].endX, cells[robotCols - 1][robotRow + 1].endY, robotPaint);
-//
-//        // DRAW COLOR FOR UPPER RIGHT EDGE
-//        canvas.drawRect(cells[robotCols + 1][robotRow + 1].startX, cells[robotCols + 1][robotRow + 1].startY, cells[robotCols + 1][robotRow + 1].endX, cells[robotCols + 1][robotRow + 1].endY, robotPaint);
-//
-//        // DRAW COLOR FOR LOWER RIGHT EDGE
-//        canvas.drawRect(cells[robotCols + 1][robotRow - 1].startX, cells[robotCols + 1][robotRow - 1].startY, cells[robotCols + 1][robotRow - 1].endX, cells[robotCols + 1][robotRow - 1].endY, robotPaint);
 
         drawDirectionArrow(canvas);
 
@@ -357,7 +329,7 @@ public class MazeView extends View {
         path.close();
         canvas.drawPath(path, directionPaint);
     }
-    //DRAW ROBOT ON THE CANVAS
+
     private void drawWayPoint(Canvas canvas) {
 
         if(wayPointRow != -1 && wayPointCols != -1) {
@@ -365,7 +337,6 @@ public class MazeView extends View {
         }
     }
 
-    //DRAW NUMBERS ON MAP GRID
     private void drawGridNumber(Canvas canvas) {
 
         //GRID NUMBER FOR COLUMN
@@ -391,8 +362,6 @@ public class MazeView extends View {
         }
     }
 
-
-    //FIND COORDIANTES OF THE CELLMAZE BASED ON ONTOUCH
     private int[] findCoordinatesOnMap(float x, float y) {
 
         int row = -1, cols = -1;
@@ -418,27 +387,26 @@ public class MazeView extends View {
         return new int[]{cols, row};
     }
 
-    //ALLOW USER TO SET WAYPOINT POSITION
+    public int getInverseYCoord(int YCoord){
+        return ((YCoord-19)*-1);
+    }
+
     public void setWayPoint(boolean status){
         setWayPointPosition = status;
     }
 
-    //ALLOW USER TO SET ROBOT POSITION
     public void setStartPoint(boolean status){
         setRobotPostition = status;
     }
 
-    //RETURN START POINT OF ROBOT FOR BUTTON CLICK
     public int[] getRobotStartPoint(){
         return new int[] {robotCols, robotRow};
     }
 
-    //RETURN WAYPOINT FOR BUTTON CLICK
     public int[] getWaypoint(){
         return new int[] {wayPointCols, wayPointRow};
     }
 
-    //UPDATE MAZE WHEN MAZE INFO ARRIVES
     public void updateMaze(String[] mazeInfo,boolean autoUpdate){
 
         robotDirection = mazeInfo[1];
@@ -460,14 +428,15 @@ public class MazeView extends View {
         if(autoUpdate) {
             invalidate();
         }
-        Log.d(TAG, "Stage 4: ");
+        //Log.d(TAG, "Stage 4: ");
 
 
     }
 
-    //REFRESH THE MAZE
     public void refreshMap(){
         invalidate();
     }
+
+
 
 }

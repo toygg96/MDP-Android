@@ -178,15 +178,7 @@ public class BluetoothSettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View r) {
                 //Log.d(TAG + "bluetooth",String.valueOf(BluetoothController.getAcceptedThread() == null));
-                if (BluetoothController.getBluetoothThread() != null)
-                    BluetoothController.getBluetoothThread().write(sendMsgInputBox.getText().toString().getBytes(Charset.defaultCharset()));
-                else {
-                    try {
-                        BluetoothController.getAcceptedThread().write(sendMsgInputBox.getText().toString().getBytes(Charset.defaultCharset()));
-                    } catch (Exception e) {
-                        Log.e(TAG,"Crashed here", e);
-                    }
-                }
+                BluetoothController.sendCmd(sendMsgInputBox.getText().toString());
                 sendMsgInputBox.setText("");
             }
         });

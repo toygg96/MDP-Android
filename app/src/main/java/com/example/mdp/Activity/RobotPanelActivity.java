@@ -33,7 +33,7 @@ import java.util.Locale;
 
 public class RobotPanelActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_SPEECH_INPUT = 1000;
-    private Button sendF1btn,sendF2btn,setF1btn,setF2btn, fastestPathBtn,explorationBtn, imageRecogBtn;
+    private Button sendF1btn,sendF2btn,setF1btn,setF2btn, fastestPathBtn,explorationBtn, imageRecogBtn,setWaypointBtn,setOriginBtn,startBtn;
     private ImageButton upBtn,downBtn,leftBtn,rightBtn, micBtn;
     private TextView F1txtbox, F2txtbox,bluetoothConnectionTxtbox, robotStatusTxtbox;
     private String F1text, F2text;
@@ -41,7 +41,7 @@ public class RobotPanelActivity extends AppCompatActivity {
     private SharedPreferences.Editor editor;
     private static final String MyPREFERENCES = "MyPrefs" ;
     private IntentFilter filter3, filter4, filter5;
-    private MazeView myMaze;
+    private ArenaView myMaze;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +58,9 @@ public class RobotPanelActivity extends AppCompatActivity {
         fastestPathBtn = (Button)findViewById(R.id.fastestPathBtn);
         explorationBtn = (Button)findViewById(R.id.explorationBtn);
         imageRecogBtn = (Button)findViewById(R.id.imageRecogBtn);
+        setOriginBtn = (Button)findViewById(R.id.setOriginBtn);
+        setWaypointBtn = (Button)findViewById(R.id.setWaypointBtn);
+        startBtn = (Button)findViewById(R.id.startBtn);
         F1txtbox = (TextView)findViewById(R.id.F1textBox);
         F2txtbox = (TextView)findViewById(R.id.F2textBox);
         bluetoothConnectionTxtbox = (TextView)findViewById(R.id.bluetoothConnectionTxtbox);
@@ -67,7 +70,6 @@ public class RobotPanelActivity extends AppCompatActivity {
         leftBtn = (ImageButton)findViewById(R.id.leftBtn);
         rightBtn = (ImageButton)findViewById(R.id.rightBtn);
         micBtn = (ImageButton)findViewById(R.id.micBtn);
-        myMaze = new MazeView(findViewById(R.id.mapView).getContext(),null);
 
         SharedPreferences sh = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         bluetoothConnectionTxtbox.setText("Connected to:\n"+ BluetoothController.getConnectedDevice());
@@ -98,63 +100,63 @@ public class RobotPanelActivity extends AppCompatActivity {
         sendF1btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View r) {
-                sendCmd(F1txtbox.getText().toString());
+                BluetoothController.sendCmd(F1txtbox.getText().toString());
             }
         });
 
         sendF2btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View r) {
-                sendCmd(F2txtbox.getText().toString());
+                BluetoothController.sendCmd(F2txtbox.getText().toString());
             }
         });
 
         upBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View r) {
-                sendCmd("cmd:MoveForward");
+                BluetoothController.sendCmd("cmd:MoveForward");
             }
         });
 
         downBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View r) {
-                sendCmd("cmd:MoveBackward");
+                BluetoothController.sendCmd("cmd:MoveBackward");
             }
         });
 
         leftBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View r) {
-                sendCmd("cmd:RotateLeft");
+                BluetoothController.sendCmd("cmd:RotateLeft");
             }
         });
 
         rightBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View r) {
-                sendCmd("cmd:RotateRight");
+                BluetoothController.sendCmd("cmd:RotateRight");
             }
         });
 
         fastestPathBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View r) {
-                sendCmd("cmd:Fastest");
+                BluetoothController.sendCmd("cmd:Fastest");
             }
         });
 
         explorationBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View r) {
-                sendCmd("cmd:Exploration");
+                BluetoothController.sendCmd("cmd:Exploration");
             }
         });
 
         imageRecogBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View r) {
-                sendCmd("cmd:Recognition");
+                BluetoothController.sendCmd("cmd:Recognition");
             }
         });
 
@@ -162,6 +164,27 @@ public class RobotPanelActivity extends AppCompatActivity {
             @Override
             public void onClick(View r) {
                 speak();
+            }
+        });
+
+        setOriginBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View r) {
+                myMaze.setStartPoint(true);
+            }
+        });
+
+        setWaypointBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View r) {
+                myMaze.setWayPoint(true);
+            }
+        });
+
+        startBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View r) {
+                BluetoothController.sendCmd("cmd:Recognition");
             }
         });
     }
@@ -181,6 +204,8 @@ public class RobotPanelActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         Log.d(TAG,"resume called");
+        if (myMaze == null)
+            myMaze = new ArenaView(findViewById(R.id.mapView).getContext(),null);
         registerReceivers();
         super.onResume();
 
@@ -331,19 +356,6 @@ public class RobotPanelActivity extends AppCompatActivity {
         sendF2btn.setEnabled(true);
     }
 
-    public void sendCmd(String cmdString){
-        //Log.d(TAG,String.valueOf(BluetoothController.getAcceptedThread() == null));
-        if (BluetoothController.getBluetoothThread() != null)
-            BluetoothController.getBluetoothThread().write(cmdString.getBytes(Charset.defaultCharset()));
-        else {
-            try {
-                BluetoothController.getAcceptedThread().write(cmdString.getBytes(Charset.defaultCharset()));
-            } catch (Exception e) {
-                Log.e(TAG, "Crashed here", e);
-            }
-        }
-    }
-
     public void speak(){
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
@@ -367,13 +379,13 @@ public class RobotPanelActivity extends AppCompatActivity {
                 if (resultCode == RESULT_OK && data != null) {
                     ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                     if (result.get(0).toLowerCase().contains("up") || result.get(0).toLowerCase().contains("forward"))
-                        sendCmd("cmd:MoveForward");
+                        BluetoothController.sendCmd("cmd:MoveForward");
                     else if (result.get(0).toLowerCase().contains("backward") || result.get(0).toLowerCase().contains("reverse"))
-                        sendCmd("cmd:MoveBackward");
+                        BluetoothController.sendCmd("cmd:MoveBackward");
                     else if (result.get(0).toLowerCase().contains("left"))
-                        sendCmd("cmd:RotateLeft");
+                        BluetoothController.sendCmd("cmd:RotateLeft");
                     else if (result.get(0).toLowerCase().contains("right"))
-                        sendCmd("cmd:RotateRight");
+                        BluetoothController.sendCmd("cmd:RotateRight");
                     else
                         Toast.makeText(this, "Cant understand your speech", Toast.LENGTH_SHORT).show();
                 }

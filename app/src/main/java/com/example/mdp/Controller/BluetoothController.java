@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import java.nio.charset.Charset;
 import java.util.Set;
 
 public class BluetoothController {
@@ -168,5 +170,17 @@ public class BluetoothController {
     }
 
     public static String getMsgLog() { return msgLog; }
+
+    public static void sendCmd(String cmdString){
+        if (BluetoothController.getBluetoothThread() != null)
+            BluetoothController.getBluetoothThread().write(cmdString.getBytes(Charset.defaultCharset()));
+        else {
+            try {
+                BluetoothController.getAcceptedThread().write(cmdString.getBytes(Charset.defaultCharset()));
+            } catch (Exception e) {
+                Log.e("BluetoothController", "Crashed here", e);
+            }
+        }
+    }
 
 }
