@@ -23,6 +23,8 @@ public class Cell {
         this.paint = paint;
     }
 
+    public Paint getPaint() { return this.paint; }
+
     public void setImgFlag(boolean imgFlag){ this.imgFlag = imgFlag; }
 
     public void setImgID(int imgID) { this.imgID = imgID; }

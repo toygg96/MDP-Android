@@ -31,9 +31,9 @@ public class ArenaView extends View {
     private static final int COLS = 15, ROWS = 20;
     private static final float WallThickness = 1;
     private static float cellSizeX,cellSizeY, hMargin, vMargin;
-    private static Paint wallPaint, robotPaint, waypointPaint, directionPaint,  emptyPaint, virtualWallPaint, obstaclePaint, unexploredPaint, ftpPaint, endPointPaint, gridNumberPaint;
+    private static Paint wallPaint, robotPaint, waypointPaint, directionPaint,  emptyPaint, virtualWallPaint, obstaclePaint, unexploredPaint, ftpPaint, endPointPaint, gridNumberPaint, exploredPaint;
     private static int robotRow = 18, robotCols = 1, wayPointRow =-1, wayPointCols=-1;
-    private static String robotDirection = "east";
+    private static String robotDirection = "north";
     private static boolean setRobotPostition = false, setWayPointPosition = false;
     private static boolean createCellStatus = false;
     private static int imgXCoord = -1,imgYCoord= -1;
@@ -133,7 +133,7 @@ public class ArenaView extends View {
 
         //PAINT THE THICKNESS OF THE WALL
         wallPaint = new Paint();
-        wallPaint.setColor(Color.WHITE);
+        wallPaint.setColor(Color.parseColor("#58ACFF"));
         wallPaint.setStrokeWidth(WallThickness);
 
         //COLOR FOR ROBOT
@@ -142,7 +142,6 @@ public class ArenaView extends View {
 
         //COLOR FOR ROBOT DIRECTION
         directionPaint = new Paint();
-
         directionPaint.setColor(Color.BLACK);
 
         //COLOR FOR WAY POINT
@@ -159,11 +158,11 @@ public class ArenaView extends View {
 
         //COLOR FOR OBSTACLE
         obstaclePaint = new Paint();
-        obstaclePaint.setColor(Color.CYAN);
+        obstaclePaint.setColor(Color.BLACK);
 
         //COLOR FOR UNEXPLORED PATH
         unexploredPaint = new Paint();
-        unexploredPaint.setColor(Color.GRAY);
+        unexploredPaint.setColor(Color.parseColor("#0E79E5"));
 
         gridNumberPaint = new Paint();
         gridNumberPaint.setColor(Color.BLACK);
@@ -173,6 +172,11 @@ public class ArenaView extends View {
         //COLOR FOR FASTEST PATH
         ftpPaint = new Paint();
         ftpPaint.setColor(Color.parseColor("#FFC0CB"));
+
+        // Explored paint
+        exploredPaint = new Paint();
+        exploredPaint.setColor(Color.WHITE);
+
     }
 
     private void createCell() {
@@ -549,19 +553,41 @@ public class ArenaView extends View {
         return new int[] {wayPointCols, wayPointRow};
     }
 
-    public void updateMaze(String[] mazeInfo,boolean autoUpdate){
+    public void updateMaze(String mdfString1,String mdfString2, boolean autoUpdate){
 
-        robotDirection = mazeInfo[1];
-        robotCols = Integer.parseInt(mazeInfo[2]);
-        robotRow = 19 - Integer.parseInt(mazeInfo[3]);
+//        robotDirection = mazeInfo[1];
+//        robotCols = Integer.parseInt(mazeInfo[2]);
+//        robotRow = 19 - Integer.parseInt(mazeInfo[3]);
 
-        int counter =0;
+        int counter = 0;
 
-        for (int x = 0; x < ROWS; x++) {
-            for (int y = 0; y < COLS; y++) {
+        for (int y = 0; y < ROWS; y++) {
+            for (int x = 0; x < COLS; x++) {
+                char tmp = mdfString1.charAt(counter);
+                if (tmp == '1') {
+                    cells[x][getInverseYCoord(y)].setPaint(exploredPaint);
+                    //Log.d(TAG,"(" + String.valueOf(x) + "," + String.valueOf(y) + ")");
+                }
+                counter++;
+            }
 
-            // HANDLE UPDATING OF MAP
+        }
 
+        counter = 0;
+        for (int y = 0; y < ROWS; y++) {
+            for (int x = 0; x < COLS; x++) {
+                Paint tmpPaint = cells[x][getInverseYCoord(y)].getPaint();
+                if (tmpPaint.getColor() == exploredPaint.getColor()){
+                    char tmp = mdfString2.charAt(counter);
+                    if (tmp == '1') {
+                        cells[x][getInverseYCoord(y)].setPaint(obstaclePaint);
+                        //Log.d(TAG,"(" + String.valueOf(x) + "," + String.valueOf(y) + ")");
+                    } else if (tmp == '0') {
+                        cells[x][getInverseYCoord(y)].setPaint(emptyPaint);
+                        //Log.d(TAG,"(" + String.valueOf(x) + "," + String.valueOf(y) + ")");
+                    }
+                    counter++;
+                }
             }
 
         }
@@ -571,7 +597,6 @@ public class ArenaView extends View {
             refreshMap();
         }
         //Log.d(TAG, "Stage 4: ");
-
 
     }
 

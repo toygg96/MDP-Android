@@ -24,10 +24,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.mdp.Model.hexToBinaryConverter;
 import com.example.mdp.Controller.BluetoothController;
 import com.example.mdp.R;
 
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -308,14 +308,20 @@ public class RobotPanelActivity extends AppCompatActivity {
                 robotStatusTxtbox.setText("Reversing");
             } else if (msg.equalsIgnoreCase("IDLE")) {
                 robotStatusTxtbox.setText("Idle");
-            }
-            if (msg.toLowerCase().contains("img:")) {
+            } else if (msg.toLowerCase().contains("img:")) {
                 String [] arrOfStr = msg.split(":");
                 arrOfStr[1] = arrOfStr[1].replace("(", "");
                 arrOfStr[1] = arrOfStr[1].replace(")", "");
                 String [] strippedMsg = arrOfStr[1].split(",");
                 myMaze.setDiscoveredImgOnCell(Integer.parseInt(strippedMsg[0]),Integer.parseInt(strippedMsg[1]),Integer.parseInt(strippedMsg[2]));
                 myMaze.refreshMap();
+            }
+            if (msg.toLowerCase().contains("update:")) {
+                String convertedMDF1 = hexToBinaryConverter.hexToBinary(msg.split(":")[1],true);
+                String convertedMDF2 = hexToBinaryConverter.hexToBinary(msg.split(":")[2],false);
+                Log.d(TAG,convertedMDF1);
+                Log.d(TAG,convertedMDF2);
+                myMaze.updateMaze(convertedMDF1,convertedMDF2,true);
             }
             BluetoothController.saveMsgLog(log + "\n" + msg);
         }
