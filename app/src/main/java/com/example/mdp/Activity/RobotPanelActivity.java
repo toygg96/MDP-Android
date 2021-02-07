@@ -13,8 +13,10 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,14 +36,16 @@ import java.util.Locale;
 public class RobotPanelActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_SPEECH_INPUT = 1000;
     private Button sendF1btn,sendF2btn,setF1btn,setF2btn, fastestPathBtn,explorationBtn, imageRecogBtn,setWaypointBtn,setOriginBtn,startBtn;
-    private ImageButton upBtn,downBtn,leftBtn,rightBtn, micBtn;
+    private ImageButton upBtn,downBtn,leftBtn,rightBtn, micBtn,refreshBtn;
     private TextView F1txtbox, F2txtbox,bluetoothConnectionTxtbox, robotStatusTxtbox;
+    private Switch autoUpdateSwitch;
     private String F1text, F2text;
     private SharedPreferences sharedpreferences;
     private SharedPreferences.Editor editor;
     private static final String MyPREFERENCES = "MyPrefs" ;
     private IntentFilter filter3, filter4, filter5;
     private ArenaView myMaze;
+    private boolean updateFlag = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +74,11 @@ public class RobotPanelActivity extends AppCompatActivity {
         leftBtn = (ImageButton)findViewById(R.id.leftBtn);
         rightBtn = (ImageButton)findViewById(R.id.rightBtn);
         micBtn = (ImageButton)findViewById(R.id.micBtn);
+        refreshBtn = (ImageButton)findViewById(R.id.refreshBtn);
+        autoUpdateSwitch = (Switch)findViewById(R.id.updateSwitch);
+
+        if (autoUpdateSwitch.isChecked())
+            updateFlag = true;
 
         SharedPreferences sh = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         bluetoothConnectionTxtbox.setText("Connected to:\n"+ BluetoothController.getConnectedDevice());
@@ -187,6 +196,22 @@ public class RobotPanelActivity extends AppCompatActivity {
                 BluetoothController.sendCmd("cmd:Recognition");
             }
         });
+
+        autoUpdateSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(buttonView.isChecked())
+                    updateFlag = true;
+                else
+                    updateFlag = false;
+            }
+        });
+
+        refreshBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View r) {
+                myMaze.refreshMap();
+            }
+        });
     }
 
     @Override
@@ -258,7 +283,6 @@ public class RobotPanelActivity extends AppCompatActivity {
                     F2txtbox.setText(F2text);
                     editor.putString("F2String", F2text);
                     editor.commit();
-
                 } else {
                     F1text = editText.getText().toString();
                     F1txtbox.setText(F1text);
@@ -297,7 +321,7 @@ public class RobotPanelActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             String log = BluetoothController.getMsgLog();
             String msg = intent.getStringExtra("receivingMsg");
-            Log.d("RobotPanelActivity",msg);
+            //Log.d("RobotPanelActivity",msg);
             if (msg.equalsIgnoreCase("MOVING:ROTATINGRIGHT")) {
                 robotStatusTxtbox.setText("Rotating Right");
             } else if (msg.equalsIgnoreCase("MOVING:ROTATINGLEFT")) {
@@ -319,9 +343,19 @@ public class RobotPanelActivity extends AppCompatActivity {
             if (msg.toLowerCase().contains("update:")) {
                 String convertedMDF1 = hexToBinaryConverter.hexToBinary(msg.split(":")[1],true);
                 String convertedMDF2 = hexToBinaryConverter.hexToBinary(msg.split(":")[2],false);
-                Log.d(TAG,convertedMDF1);
-                Log.d(TAG,convertedMDF2);
-                myMaze.updateMaze(convertedMDF1,convertedMDF2,true);
+                String robotCoordsDirection = msg.split(":")[3];
+                robotCoordsDirection = robotCoordsDirection.replace("(","");
+                robotCoordsDirection = robotCoordsDirection.replace(")","");
+                String [] strippedRobotCoordsDirection = robotCoordsDirection.split(",");
+                int XCoord = Integer.parseInt(strippedRobotCoordsDirection[0]);
+                int YCoord = Integer.parseInt(strippedRobotCoordsDirection[1]);
+                String facingDirection = strippedRobotCoordsDirection[2];
+                //Log.d(TAG,convertedMDF1);
+                //Log.d(TAG,convertedMDF2);
+                if (updateFlag)
+                    myMaze.updateMaze(convertedMDF1,convertedMDF2,XCoord,YCoord,facingDirection,true);
+                else
+                    myMaze.updateMaze(convertedMDF1,convertedMDF2,XCoord,YCoord,facingDirection,false);
             }
             BluetoothController.saveMsgLog(log + "\n" + msg);
         }

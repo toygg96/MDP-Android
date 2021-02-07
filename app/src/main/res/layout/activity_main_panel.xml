@@ -231,10 +231,11 @@
         app:srcCompat="@drawable/microphone" />
 
     <Switch
-        android:id="@+id/switch1"
+        android:id="@+id/updateSwitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Auto Update"
+        android:checked="true"
         app:layout_constraintStart_toStartOf="@+id/imageRecogBtn"
         app:layout_constraintTop_toTopOf="@+id/micBtn" />
 
@@ -245,8 +246,8 @@
         android:layout_marginTop="16dp"
         android:background="@null"
         android:scaleType="fitCenter"
-        app:layout_constraintStart_toStartOf="@+id/switch1"
-        app:layout_constraintTop_toBottomOf="@+id/switch1"
+        app:layout_constraintStart_toStartOf="@+id/updateSwitch"
+        app:layout_constraintTop_toBottomOf="@+id/updateSwitch"
         app:srcCompat="@drawable/refresh" />
 
 

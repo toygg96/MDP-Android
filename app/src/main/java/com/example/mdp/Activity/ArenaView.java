@@ -553,11 +553,14 @@ public class ArenaView extends View {
         return new int[] {wayPointCols, wayPointRow};
     }
 
-    public void updateMaze(String mdfString1,String mdfString2, boolean autoUpdate){
+    public void updateMaze(String mdfString1,String mdfString2, int XCoord, int YCoord, String facingDirection, boolean autoUpdate){
 
 //        robotDirection = mazeInfo[1];
 //        robotCols = Integer.parseInt(mazeInfo[2]);
 //        robotRow = 19 - Integer.parseInt(mazeInfo[3]);
+        robotCols = XCoord;
+        robotRow = getInverseYCoord(YCoord);
+        robotDirection = facingDirection;
 
         int counter = 0;
 
