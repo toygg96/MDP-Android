@@ -382,6 +382,7 @@ public class RobotPanelActivity extends AppCompatActivity {
             BluetoothController.setConnectedDevice("");
             BluetoothController.setActiveFlag(false);
             bluetoothConnectionTxtbox.setText("Connected to:\n"+ BluetoothController.getConnectedDevice());
+            BluetoothController.attemptConnection(BluetoothController.getConnectedBluetoothDevice(), true);
             disableAllBtn();
         }
     };

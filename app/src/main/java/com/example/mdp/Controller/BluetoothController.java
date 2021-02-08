@@ -19,6 +19,7 @@ public class BluetoothController {
     private static bluetoothConnectionThread.connectThread ct;
     private static String connectedDevice = "";
     private static bluetoothConnectionThread.AcceptThread at;
+    private static BluetoothDevice device;
     private static boolean activeFlag = false;
     private static String msgLog = "";
 
@@ -143,16 +144,19 @@ public class BluetoothController {
         return connectedDevice;
     }
 
-    public static void attemptConnection(BluetoothDevice device){
+    public static void attemptConnection(BluetoothDevice deviceToConnectTo, boolean autoReconnectFlag){
         if (ct != null) {
             //Log.d("LIMPEH VALUE",String.valueOf(bluetoothThread.isAlive()));
             ct.cancel();
             //bluetoothThread.setFinishedFlag(false);
             ct = null;
         }
-        ct = new bluetoothConnectionThread().new connectThread(activity,device,BA);
+        device = deviceToConnectTo;
+        ct = new bluetoothConnectionThread().new connectThread(activity,device,BA,autoReconnectFlag);
         ct.start();
     }
+
+    public static BluetoothDevice getConnectedBluetoothDevice() { return device; }
 
     public static void setConnectThreadToNull() {
         ct = null;

@@ -24,14 +24,16 @@ public class bluetoothConnectionThread {
         private MyBluetoothService bs;
         private MyBluetoothService.ConnectedThread ct;
         private Activity activity;
+        private boolean autoReconnectFlag = false;
         // Use a temporary object that is later assigned to mmSocket
         // because mmSocket is final.
 
-        public connectThread(Activity activity, BluetoothDevice device, BluetoothAdapter adapter) {
+        public connectThread(Activity activity, BluetoothDevice device, BluetoothAdapter adapter, boolean reconnectFlag) {
             // Use a temporary object that is later assigned to mmServerSocket
             // because mmServerSocket is final.
             this.activity = activity;
             this.bluetoothAdapter = adapter;
+            this.autoReconnectFlag = reconnectFlag;
             bs = new MyBluetoothService(activity);
             BluetoothSocket tmp = null;
             mmDevice = device;
@@ -46,26 +48,46 @@ public class bluetoothConnectionThread {
             mmSocket = tmp;
         }
 
-
         public void run() {
             // Cancel discovery because it otherwise slows down the connection.
             bluetoothAdapter.cancelDiscovery();
-
-            try {
-                // Connect to the remote device through the socket. This call blocks
-                // until it succeeds or throws an exception.
-                mmSocket.connect();
-                Log.d(TAG, "Connection succeeded");
-            } catch (IOException connectException) {
-                // Unable to connect; close the socket and return.
-                try {
-                    mmSocket.close();
-                } catch (IOException closeException) {
-                    Log.e(TAG, "Could not close the client socket", closeException);
+            Log.d(TAG,String.valueOf(autoReconnectFlag));
+            if (autoReconnectFlag) {
+                while (true) {
+                    try {
+                        Thread.sleep(2800);
+                        // Connect to the remote device through the socket. This call blocks
+                        // until it succeeds or throws an exception.
+                        mmSocket.connect();
+                        Log.d(TAG, "Connection succeeded");
+                        break;
+                    } catch (IOException | InterruptedException connectException) {
+                        // Unable to connect; close the socket and return.
+                        Log.e(TAG,"exception: ",connectException);
+                        try {
+                            mmSocket.close();
+                        } catch (IOException closeException) {
+                            Log.e(TAG, "Could not close the client socket", closeException);
+                        }
+                    }
                 }
-                return;
+            } else {
+                try {
+                    // Connect to the remote device through the socket. This call blocks
+                    // until it succeeds or throws an exception.
+                    mmSocket.connect();
+                    Log.d(TAG, "Connection succeeded");
+                } catch (IOException connectException) {
+                    // Unable to connect; close the socket and return.
+                    try {
+                        mmSocket.close();
+                    } catch (IOException closeException) {
+                        Log.e(TAG, "Could not close the client socket", closeException);
+                    }
+                    return;
+                }
             }
-
+            autoReconnectFlag = true;
             // The connection attempt succeeded. Perform work associated with
             // the connection in a separate thread.
             ct = bs.new ConnectedThread(mmSocket);

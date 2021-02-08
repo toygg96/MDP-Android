@@ -156,7 +156,7 @@ public class BluetoothSettingsActivity extends AppCompatActivity {
                                 if (!BluetoothController.isDevicePaired(device))
                                         result = device.createBond();
                                 else
-                                    BluetoothController.attemptConnection(device);
+                                    BluetoothController.attemptConnection(device,false);
                                 dialog.dismiss();
                             }
                         })
@@ -289,7 +289,7 @@ public class BluetoothSettingsActivity extends AppCompatActivity {
                 //Log.d(TAG,String.valueOf(prevbondState));
                 //Log.d(TAG,String.valueOf(bondState) + String.valueOf(prevbondState));
                 if (bondState == BluetoothDevice.BOND_BONDED && prevbondState == BluetoothDevice.BOND_BONDING) {
-                    BluetoothController.attemptConnection(device);
+                    BluetoothController.attemptConnection(device,false);
                     Toast.makeText(context, "Paired to selected device! (First time only) Connecting now!" , Toast.LENGTH_LONG).show();
                 }
             }
