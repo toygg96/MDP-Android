@@ -5,7 +5,6 @@
     <string name="make_visible">Make Visible</string>
     <string name="on_bluetooth">On Bluetooth</string>
     <string name="bluetooth_connection">Bluetooth Control Panel</string>
-    <string name="scan">Scan</string>
     <string name="sendMsgPlaceholder">Type message in this box</string>
     <string name="receiveTextLabel">Received text messages will be shown in this box</string>
     <string name="sendBtnText">Send</string>
@@ -22,4 +21,5 @@
     <string name="connected_to_n">Connected to: \n</string>
     <string name="exploration">Exploration</string>
     <string name="set_f1">Set F1</string>
+    <string name="scan">Scan</string>
 </resources>

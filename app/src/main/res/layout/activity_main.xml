@@ -29,6 +29,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
+    <Switch
+        android:id="@+id/bluetoothSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="35dp"
+        android:layout_marginTop="10dp"
+        android:checked="true"
+        android:text="Bluetooth State"
+        app:layout_constraintStart_toEndOf="@+id/bluetoothConnectionStatus"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
     <TextView
         android:id="@+id/receiveTextLabel"
         android:layout_width="wrap_content"
@@ -39,16 +50,19 @@
 
     <TextView
         android:id="@+id/receiveTextView"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="42dp"
         android:height="180dp"
-        android:maxHeight="180dp"
-        android:scrollbars = "vertical"
         android:background="@drawable/textview_border"
-        app:layout_constraintTop_toBottomOf="@+id/receiveTextLabel"
+        android:maxHeight="180dp"
+        android:scrollbars="vertical"
+        app:layout_constraintEnd_toEndOf="@+id/makeVisibleBtn"
+        app:layout_constraintHorizontal_bias="0.215"
         app:layout_constraintStart_toStartOf="@+id/receiveTextLabel"
-        app:layout_constraintEnd_toEndOf="@+id/makeVisibleBtn"/>
+        app:layout_constraintTop_toBottomOf="@+id/receiveTextLabel" />
 
     <EditText
         android:id="@+id/sendTextBox"
@@ -57,9 +71,9 @@
         android:layout_marginTop="10dp"
         android:maxWidth="215dp"
         android:maxHeight="50dp"
-        app:layout_constraintTop_toBottomOf="@+id/receiveTextView"
-        app:layout_constraintStart_toStartOf="@+id/offBluetoothBtn"
-        app:layout_constraintEnd_toStartOf="@+id/sendBtn"/>
+        app:layout_constraintEnd_toStartOf="@+id/sendBtn"
+        app:layout_constraintStart_toStartOf="@+id/receiveTextView"
+        app:layout_constraintTop_toBottomOf="@+id/receiveTextView" />
 
     <Button
         android:id="@+id/sendBtn"
@@ -69,67 +83,39 @@
         android:layout_marginLeft="20dp"
         android:text="@string/sendBtnText"
         app:layout_constraintTop_toBottomOf="@+id/receiveTextView"
-        app:layout_constraintEnd_toEndOf="@+id/listDeviceBtn"/>
+        app:layout_constraintEnd_toEndOf="@+id/receiveTextView"/>
 
     <Button
-        android:id="@+id/onBluetoothBtn"
+        android:id="@+id/scanBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="43dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="220dp"
-        android:text="@string/on_bluetooth"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:text="@string/scan"
+        app:layout_constraintStart_toStartOf="@id/sendTextBox"
         app:layout_constraintTop_toBottomOf="@+id/sendTextBox" />
 
     <Button
         android:id="@+id/makeVisibleBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="232dp"
+        android:layout_marginStart="101dp"
         android:layout_marginTop="10dp"
-        android:layout_marginEnd="42dp"
         android:text="@string/make_visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sendBtn" />
+        app:layout_constraintStart_toEndOf="@id/scanBtn"
+        app:layout_constraintTop_toBottomOf="@+id/sendTextBox" />
 
-    <Button
-        android:id="@+id/offBluetoothBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="43dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="214dp"
-        android:text="@string/off_bluetooth"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/onBluetoothBtn" />
 
     <Button
         android:id="@+id/listDeviceBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="236dp"
+        android:layout_marginStart="101dp"
         android:layout_marginTop="10dp"
-        android:layout_marginEnd="42dp"
         android:text="@string/list_devices"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/makeVisibleBtn" />
-
-    <Button
-        android:id="@+id/scanBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="162dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="161dp"
-        android:text="@string/scan"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/offBluetoothBtn" />
+        app:layout_constraintEnd_toEndOf="@id/sendBtn"
+        app:layout_constraintStart_toEndOf="@id/makeVisibleBtn"
+        app:layout_constraintTop_toBottomOf="@+id/sendBtn" />
 
     <ListView
         android:id="@+id/listView"
@@ -137,11 +123,10 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/listDeviceBtn"
-        app:layout_constraintStart_toStartOf="@+id/offBluetoothBtn"
-        app:layout_constraintTop_toBottomOf="@+id/scanBtn">
+        app:layout_constraintTop_toBottomOf="@+id/scanBtn"
+        app:layout_constraintVertical_bias="0.0">
 
     </ListView>
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

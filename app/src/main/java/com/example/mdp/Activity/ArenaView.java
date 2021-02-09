@@ -184,8 +184,20 @@ public class ArenaView extends View {
 
         for (int x = 0; x < COLS; x++) {
             for (int y = 0; y < ROWS; y++) {
-
                 cells[x][y] = new Cell(x * cellSizeX, y * cellSizeY, (x + 1) * cellSizeX, (y + 1) * cellSizeY, unexploredPaint);
+            }
+        }
+
+    }
+
+    private void recreateCell() {
+        cells = new Cell[COLS][ROWS];
+
+        for (int x = 0; x < COLS; x++) {
+            for (int y = 0; y < ROWS; y++) {
+                cells[x][y] = new Cell(x * cellSizeX, y * cellSizeY, (x + 1) * cellSizeX, (y + 1) * cellSizeY, unexploredPaint);
+                cells[x][y].setImgFlag(false);
+                cells[x][y].setImgID(-1);
 
             }
         }
@@ -193,29 +205,16 @@ public class ArenaView extends View {
     }
 
     public void drawEverything(Canvas canvas){
-        //DRAW EACH INDIVIDUAL CELL
         drawCell(canvas);
-
-        //DRAW BORDER FOR EACH CELL
         drawBorder(canvas);
-
-        //DRAW GRID NUMBER
         drawGridNumber(canvas);
-
-        //DRAW ENDPOINT ON MAZE
         drawEndPoint(canvas);
-
-        //DRAW ROBOT ON MAZE
         drawRobot(canvas);
-
-        //DRAW WAY POINT ON MAZE
         drawWayPoint(canvas);
-
         drawDiscoveredImgs(canvas);
     }
 
     private void drawEndPoint(Canvas canvas) {
-
         for (int x = 12; x < COLS; x++) {
             for (int y = 0; y < 3; y++) {
 
@@ -227,19 +226,15 @@ public class ArenaView extends View {
     }
 
     private void drawCell(Canvas canvas){
-
         for (int x = 0; x < COLS; x++) {
             for (int y = 0; y < ROWS; y++) {
-
                 //DRAW EACH INDIVIDUAL CELL
                 canvas.drawRect(cells[x][y].startX,cells[x][y].startY,cells[x][y].endX,cells[x][y].endY,cells[x][y].paint);
-
             }
         }
     }
 
     private void drawBorder(Canvas canvas){
-
         //DRAW BORDER FOR EACH CELL
         for (int x = 0; x < COLS; x++) {
             for (int y = 0; y < ROWS; y++) {
@@ -290,9 +285,7 @@ public class ArenaView extends View {
         int y2Coord = (int) cells[robotCols-1][robotRow+1].endY;
         Rect rec = new Rect(xCoord, (int)(yCoord-(2*cellSizeY)),(int)(x2Coord+(2*cellSizeX)),y2Coord);
         canvas.drawBitmap(robot, null, rec, null);
-
         drawDirectionArrow(canvas);
-
     }
 
     private void drawDirectionArrow(Canvas canvas) {
@@ -336,17 +329,14 @@ public class ArenaView extends View {
     }
 
     private void drawWayPoint(Canvas canvas) {
-
         if(wayPointRow != -1 && wayPointCols != -1) {
             canvas.drawRect(cells[wayPointCols][wayPointRow].startX, cells[wayPointCols][wayPointRow].startY, cells[wayPointCols][wayPointRow].endX, cells[wayPointCols][wayPointRow].endY, waypointPaint);
         }
     }
 
     private void drawGridNumber(Canvas canvas) {
-
         //GRID NUMBER FOR COLUMN
         for (int x = 0; x < 15; x++) {
-
             if(x > 9){
                 canvas.drawText(Integer.toString(x), cells[x][19].startX + (cellSizeX / 6), cells[x][19].endY + (cellSizeY), gridNumberPaint);
             } else {
@@ -357,7 +347,6 @@ public class ArenaView extends View {
 
         //GRID NUMBER FOR ROW
         for (int y = 0;y <20;y++) {
-
             if(y >9){
                 canvas.drawText(Integer.toString(19 - y), cells[0][y].startX - (cellSizeX / 1.5f), cells[0][y].endY - (cellSizeY / 3.5f), gridNumberPaint);
             }
@@ -487,11 +476,6 @@ public class ArenaView extends View {
                 }
             }
 
-//            int xCoord = (int) cells[XCoord][getInverseYCoord(YCoord)].startX;
-//            int yCoord = (int) cells[XCoord][getInverseYCoord(YCoord)].startY;
-//            int x2Coord = (int) cells[XCoord][getInverseYCoord(YCoord)].endX;
-//            int y2Coord = (int) cells[XCoord][getInverseYCoord(YCoord)].endY;
-
     }
 
     public void drawDiscoveredImg(Canvas canvas, Bitmap discoveredImg, int x, int y){
@@ -514,7 +498,6 @@ public class ArenaView extends View {
 
         //FIND COLS OF THE MAZE BASED ON ONTOUCH
         for (int i = 0; i < COLS; i++) {
-
             if ((x - 40) <= cells[i][0].endX && (x - 40) >= cells[i][0].startX) {
                 cols = i;
                 break;
@@ -522,7 +505,6 @@ public class ArenaView extends View {
         }
         //FIND ROW OF THE MAZE BASED ON ONTOUCH
         for (int j = 0; j < ROWS; j++) {
-
             if (y <= cells[0][j].endY && y >= cells[0][j].startY) {
                 row = (j-19)*-1;
                 break;
@@ -607,5 +589,13 @@ public class ArenaView extends View {
         invalidate();
     }
 
+    public void resetMap() {
+        recreateCell();
+        robotCols = 1;
+        robotRow = 18;
+        wayPointCols = -1;
+        wayPointRow = -1;
+        refreshMap();
+    }
 
 }

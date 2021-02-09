@@ -35,7 +35,7 @@ import java.util.Locale;
 
 public class RobotPanelActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_SPEECH_INPUT = 1000;
-    private Button sendF1btn,sendF2btn,setF1btn,setF2btn, fastestPathBtn,explorationBtn, imageRecogBtn,setWaypointBtn,setOriginBtn,startBtn;
+    private Button sendF1btn,sendF2btn,setF1btn,setF2btn, fastestPathBtn,explorationBtn, imageRecogBtn,setWaypointBtn,setOriginBtn,startBtn,resetMapBtn;
     private ImageButton upBtn,downBtn,leftBtn,rightBtn, micBtn,refreshBtn;
     private TextView F1txtbox, F2txtbox,bluetoothConnectionTxtbox, robotStatusTxtbox;
     private Switch autoUpdateSwitch;
@@ -65,6 +65,7 @@ public class RobotPanelActivity extends AppCompatActivity {
         setOriginBtn = (Button)findViewById(R.id.setOriginBtn);
         setWaypointBtn = (Button)findViewById(R.id.setWaypointBtn);
         startBtn = (Button)findViewById(R.id.startBtn);
+        resetMapBtn = (Button)findViewById(R.id.resetMapBtn);
         F1txtbox = (TextView)findViewById(R.id.F1textBox);
         F2txtbox = (TextView)findViewById(R.id.F2textBox);
         bluetoothConnectionTxtbox = (TextView)findViewById(R.id.bluetoothConnectionTxtbox);
@@ -193,7 +194,7 @@ public class RobotPanelActivity extends AppCompatActivity {
         startBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View r) {
-                BluetoothController.sendCmd("cmd:Recognition");
+                BluetoothController.sendCmd("cmd:Start");
             }
         });
 
@@ -210,6 +211,13 @@ public class RobotPanelActivity extends AppCompatActivity {
             @Override
             public void onClick(View r) {
                 myMaze.refreshMap();
+            }
+        });
+
+        resetMapBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View r) {
+                myMaze.resetMap();
             }
         });
     }
@@ -412,7 +420,6 @@ public class RobotPanelActivity extends AppCompatActivity {
         intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Please say something!");
 
         try{
-
             startActivityForResult(intent, REQUEST_CODE_SPEECH_INPUT);
         } catch (Exception e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();

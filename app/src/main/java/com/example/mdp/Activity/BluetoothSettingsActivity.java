@@ -28,16 +28,16 @@ import com.example.mdp.Controller.BluetoothController;
 import com.example.mdp.Controller.DeviceListAdapter;
 import com.example.mdp.R;
 
-import java.nio.charset.Charset;
-
 public class BluetoothSettingsActivity extends AppCompatActivity {
-    private Button onBluetoothBtn,makeVisibleBtn,offBluetoothBtn,listDeviceBtn,scanBtn,sendBtn;
+    private Button makeVisibleBtn,listDeviceBtn,scanBtn,sendBtn;
+    private Switch bluetoothSwitch;
     private BluetoothAdapter BA;
     private DeviceListAdapter adapter;
     private ListView lv;
     private TextView bluetoothStatusTextView, incomingTextView;
     private EditText sendMsgInputBox;
     private IntentFilter filter, filter2, filter3, filter4, filter5;
+    private boolean offFlag = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,12 +47,11 @@ public class BluetoothSettingsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.scaledrobot);
-        onBluetoothBtn = (Button) findViewById(R.id.onBluetoothBtn);
         makeVisibleBtn=(Button)findViewById(R.id.makeVisibleBtn);
-        offBluetoothBtn=(Button)findViewById(R.id.offBluetoothBtn);
         listDeviceBtn=(Button)findViewById(R.id.listDeviceBtn);
         scanBtn = (Button)findViewById(R.id.scanBtn);
         sendBtn = (Button)findViewById(R.id.sendBtn);
+        bluetoothSwitch = (Switch)findViewById(R.id.bluetoothSwitch);
         if (BluetoothController.getConnectedDevice().equalsIgnoreCase(""))
             sendBtn.setEnabled(false);
         else
@@ -68,24 +67,22 @@ public class BluetoothSettingsActivity extends AppCompatActivity {
         BA = BluetoothAdapter.getDefaultAdapter();
         BluetoothController.init(this,BA,adapter);
 
-        onBluetoothBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View r) {
-                //Log.d(TAG, "Turning bluetooth on");
-                String result = BluetoothController.onBluetooth(r);
-                bluetoothStatusTextView.setText(result);
-//                Intent i = new Intent(MapsActivity.this,ViewClinicActivity.class);
-//                MainActivity.this.startActivity(i);
-            }
-        });
-        onBluetoothBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View r) {
-                //Log.d(TAG, "Turning bluetooth on");
-                String result = BluetoothController.onBluetooth(r);
-                bluetoothStatusTextView.setText(result);
-//                Intent i = new Intent(MapsActivity.this,ViewClinicActivity.class);
-//                MainActivity.this.startActivity(i);
+        if (BluetoothController.getBluetoothState().equalsIgnoreCase("on"))
+            bluetoothSwitch.setChecked(true);
+        else
+            bluetoothSwitch.setChecked(false);
+
+        bluetoothSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(buttonView.isChecked()) {
+                    offFlag = false;
+                    String result = BluetoothController.onBluetooth(buttonView);
+                    bluetoothStatusTextView.setText(result);
+                } else {
+                    offFlag = true;
+                    String result = BluetoothController.offBluetooth(buttonView);
+                    bluetoothStatusTextView.setText(result);
+                }
             }
         });
 
@@ -94,15 +91,6 @@ public class BluetoothSettingsActivity extends AppCompatActivity {
             public void onClick(View r) {
                 //Log.d(TAG, "Make device visible");
                 BluetoothController.visibleDevice(r);
-            }
-        });
-
-        offBluetoothBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View r) {
-                //Log.d(TAG, "Turning bluetooth off");
-                String result = BluetoothController.offBluetooth(r);
-                bluetoothStatusTextView.setText(result);
             }
         });
 
@@ -124,7 +112,7 @@ public class BluetoothSettingsActivity extends AppCompatActivity {
                 if (!BA.isEnabled())
                     BA.enable();
                 while (BA.getState() != BA.STATE_ON) {}
-                Toast.makeText(getApplicationContext(), "Scanning",Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Scanning",Toast.LENGTH_SHORT).show();
                 BA.startDiscovery();
                 //Log.d(TAG, "Scanning for nearby bluetooth devices");
                 bluetoothStatusTextView.setText(BluetoothController.getBluetoothStatus());
@@ -182,11 +170,16 @@ public class BluetoothSettingsActivity extends AppCompatActivity {
                 sendMsgInputBox.setText("");
             }
         });
+
     }
 
     @Override
     protected void onResume() {
         Log.d(TAG,"onResume()");
+        if (BluetoothController.getBluetoothState().equalsIgnoreCase("on"))
+            bluetoothSwitch.setChecked(true);
+        else
+            bluetoothSwitch.setChecked(false);
         // Registering all the receivers
         registerReceivers();
         incomingTextView.setText(BluetoothController.getMsgLog());
@@ -251,17 +244,17 @@ public class BluetoothSettingsActivity extends AppCompatActivity {
             Log.d(TAG,action);
             if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
                 //discovery starts, we can show progress dialog or perform other tasks
-                Toast.makeText(context, "Starting scan", Toast.LENGTH_LONG).show();
-            } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
+                Toast.makeText(context, "Starting scan", Toast.LENGTH_SHORT).show();
+            } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action) && !offFlag) {
                 //discovery finishes, dismis progress dialog
                 scanBtn.setEnabled(true);
-                Toast.makeText(context, "Scan completed", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "Scan completed", Toast.LENGTH_SHORT).show();
             } else if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 // Discovery has found a device. Get the BluetoothDevice
                 // object and its info from the Intent.
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 String deviceHardwareAddress = device.getAddress(); // MAC addres
-                //Toast.makeText(context, "Found device: " + deviceName, Toast.LENGTH_LONG).show();
+                //Toast.makeText(context, "Found device: " + deviceName, Toast.LENGTH_SHORT).show();
                 if (adapter.getCount() == 0) {
                     BluetoothController.addDataToAdapater(device);
                     //Log.d(TAG,String.valueOf(adapter.getCount()));
@@ -290,7 +283,7 @@ public class BluetoothSettingsActivity extends AppCompatActivity {
                 //Log.d(TAG,String.valueOf(bondState) + String.valueOf(prevbondState));
                 if (bondState == BluetoothDevice.BOND_BONDED && prevbondState == BluetoothDevice.BOND_BONDING) {
                     BluetoothController.attemptConnection(device,false);
-                    Toast.makeText(context, "Paired to selected device! (First time only) Connecting now!" , Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "Paired to selected device! (First time only) Connecting now!" , Toast.LENGTH_SHORT).show();
                 }
             }
         }
@@ -359,9 +352,9 @@ public class BluetoothSettingsActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(getApplicationContext(), "Granted permissions successfully", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Granted permissions successfully", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(getApplicationContext(), "Permissions not granted! App will not run until permissions are granted :(", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Permissions not granted! App will not run until permissions are granted :(", Toast.LENGTH_SHORT).show();
             checkPermission();
         }
     }
