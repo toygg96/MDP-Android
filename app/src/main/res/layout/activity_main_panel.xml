@@ -29,7 +29,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        android:background="@drawable/btn_bg"
         android:text="@string/set_f1"
+        android:textColor="#FFFFFF"
         app:layout_constraintStart_toStartOf="@+id/F1textBox"
         app:layout_constraintTop_toBottomOf="@id/F1textBox" />
 
@@ -39,7 +41,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
+        android:background="@drawable/btn_bg"
         android:text="@string/f1btn"
+        android:textColor="#FFFFFF"
         app:layout_constraintStart_toEndOf="@id/setF1btn"
         app:layout_constraintTop_toBottomOf="@id/F1textBox" />
 
@@ -57,7 +61,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:background="@drawable/btn_bg"
         android:text="Set F2"
+        android:textColor="#FFFFFF"
         app:layout_constraintStart_toStartOf="@+id/F2textBox"
         app:layout_constraintTop_toBottomOf="@+id/F2textBox" />
 
@@ -67,7 +73,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
+        android:background="@drawable/btn_bg"
         android:text="@string/f2btn"
+        android:textColor="#FFFFFF"
         app:layout_constraintStart_toEndOf="@id/setF2btn"
         app:layout_constraintTop_toBottomOf="@+id/F2textBox"/>
 
@@ -98,7 +106,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="60dp"
+        android:background="@drawable/btn_bg"
         android:text="@string/set_origin"
+        android:textColor="#FFFFFF"
         app:layout_constraintTop_toBottomOf="@+id/robotStatusLabel"
         app:layout_constraintStart_toEndOf="@+id/robotStatusTxtbox"/>
 
@@ -107,7 +117,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="55dp"
+        android:background="@drawable/btn_bg"
         android:text="@string/set_waypoint"
+        android:textColor="#FFFFFF"
         app:layout_constraintTop_toBottomOf="@+id/robotStatusLabel"
         app:layout_constraintStart_toEndOf="@+id/setOriginBtn" />
 
@@ -118,6 +130,8 @@
         android:text="@string/fastest_path"
         android:layout_marginTop="25dp"
         android:layout_marginLeft="10dp"
+        android:background="@drawable/btn_bg"
+        android:textColor="#FFFFFF"
         app:layout_constraintTop_toBottomOf="@+id/robotStatusTxtbox"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -127,6 +141,8 @@
         android:layout_height="wrap_content"
         android:text="@string/start"
         android:layout_marginTop="7dp"
+        android:background="@drawable/btn_bg"
+        android:textColor="#FFFFFF"
         app:layout_constraintTop_toBottomOf="@+id/setOriginBtn"
         app:layout_constraintStart_toStartOf="@+id/setOriginBtn"/>
 
@@ -149,6 +165,8 @@
         android:text="@string/exploration"
         android:layout_marginTop="7dp"
         android:layout_marginLeft="10dp"
+        android:background="@drawable/btn_bg"
+        android:textColor="#FFFFFF"
         app:layout_constraintTop_toBottomOf="@+id/fastestPathBtn"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -158,9 +176,10 @@
         android:layout_height="wrap_content"
         android:text="Reset Map"
         android:layout_marginTop="7dp"
+        android:background="@drawable/btn_bg"
+        android:textColor="#FFFFFF"
         app:layout_constraintTop_toBottomOf="@+id/startBtn"
         app:layout_constraintStart_toStartOf="@+id/startBtn"/>
-
 
     <Button
         android:id="@+id/imageRecogBtn"
@@ -168,6 +187,8 @@
         android:layout_height="60dp"
         android:text="Image\nRecognition"
         android:layout_marginTop="7dp"
+        android:background="@drawable/btn_bg"
+        android:textColor="#FFFFFF"
         app:layout_constraintTop_toBottomOf="@+id/startBtn"
         app:layout_constraintStart_toStartOf="@+id/bluetoothConnectionTxtbox" />
 

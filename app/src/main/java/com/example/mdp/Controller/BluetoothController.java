@@ -89,15 +89,12 @@ public class BluetoothController {
     }
 
     public static String getAddress(String name){
-        if (name.equalsIgnoreCase("galaxy a70")) {
+        if (name.equalsIgnoreCase("galaxy a70"))
             return "A8:34:6A:DD:BD:6D";
-        }
-        else if (name.equalsIgnoreCase("MDP Grp 7")) {
+        else if (name.equalsIgnoreCase("MDP Grp 7"))
             return "CC:46:4E:E1:D1:D1";
-        } else {
+        else
             return BA.getAddress();
-        }
-
     }
 
     public static void listPairedDevice(View v){
