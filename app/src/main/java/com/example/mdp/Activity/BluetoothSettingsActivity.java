@@ -42,7 +42,7 @@ public class BluetoothSettingsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG,"onCreate()");
+        //Log.d(TAG,"onCreate()");
         setContentView(R.layout.activity_main);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -175,7 +175,7 @@ public class BluetoothSettingsActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        Log.d(TAG,"onResume()");
+        //Log.d(TAG,"onResume()");
         if (BluetoothController.getBluetoothState().equalsIgnoreCase("on"))
             bluetoothSwitch.setChecked(true);
         else
@@ -188,7 +188,7 @@ public class BluetoothSettingsActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        Log.d(TAG,"onPause()");
+        //Log.d(TAG,"onPause()");
         unregisterReceiver(receiver);
         unregisterReceiver(receiver2);
         unregisterReceiver(incomingMsgReceiver);
@@ -241,7 +241,7 @@ public class BluetoothSettingsActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            Log.d(TAG,action);
+            //Log.d(TAG,action);
             if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
                 //discovery starts, we can show progress dialog or perform other tasks
                 Toast.makeText(context, "Starting scan", Toast.LENGTH_SHORT).show();

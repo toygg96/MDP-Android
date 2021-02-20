@@ -236,7 +236,7 @@ public class RobotPanelActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        Log.d(TAG,"resume called");
+        //Log.d(TAG,"resume called");
         if (myMaze == null)
             myMaze = findViewById(R.id.mapView);
         registerReceivers();
@@ -346,7 +346,8 @@ public class RobotPanelActivity extends AppCompatActivity {
                 arrOfStr[1] = arrOfStr[1].replace(")", "");
                 String [] strippedMsg = arrOfStr[1].split(",");
                 myMaze.setDiscoveredImgOnCell(Integer.parseInt(strippedMsg[0]),Integer.parseInt(strippedMsg[1]),Integer.parseInt(strippedMsg[2]));
-                myMaze.refreshMap();
+                if (updateFlag)
+                    myMaze.refreshMap();
             }
             if (msg.toLowerCase().contains("update:")) {
                 String convertedMDF1 = hexToBinaryConverter.hexToBinary(msg.split(":")[1],true);
