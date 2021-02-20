@@ -37,7 +37,7 @@ public class BluetoothSettingsActivity extends AppCompatActivity {
     private TextView bluetoothStatusTextView, incomingTextView;
     private EditText sendMsgInputBox;
     private IntentFilter filter, filter2, filter3, filter4, filter5;
-    private boolean offFlag = false;
+    private boolean offFlag = false, scanFlag = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,6 +107,7 @@ public class BluetoothSettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View r) {
                 scanBtn.setEnabled(false);
+                scanFlag = true;
                 locationEnabled();
                 adapter.clear();
                 if (!BA.isEnabled())
@@ -245,10 +246,11 @@ public class BluetoothSettingsActivity extends AppCompatActivity {
             if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
                 //discovery starts, we can show progress dialog or perform other tasks
                 Toast.makeText(context, "Starting scan", Toast.LENGTH_SHORT).show();
-            } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action) && !offFlag) {
+            } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action) && !offFlag && scanFlag) {
                 //discovery finishes, dismis progress dialog
                 scanBtn.setEnabled(true);
                 Toast.makeText(context, "Scan completed", Toast.LENGTH_SHORT).show();
+                scanFlag = false;
             } else if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 // Discovery has found a device. Get the BluetoothDevice
                 // object and its info from the Intent.
@@ -308,6 +310,7 @@ public class BluetoothSettingsActivity extends AppCompatActivity {
             String msg = intent.getStringExtra("Device");
             BluetoothController.setConnectedDevice(msg);
             BluetoothController.setActiveFlag(true);
+            Toast.makeText(context, "Connected to " + BluetoothController.getConnectedDevice(),Toast.LENGTH_SHORT).show();
             bluetoothStatusTextView.setText(BluetoothController.getBluetoothStatus());
 
         }
@@ -359,7 +362,7 @@ public class BluetoothSettingsActivity extends AppCompatActivity {
         }
     }
 
-    private void locationEnabled () {
+    private void locationEnabled() {
         LocationManager lm = (LocationManager)
                 getSystemService(Context.LOCATION_SERVICE) ;
         boolean gps_enabled = false;

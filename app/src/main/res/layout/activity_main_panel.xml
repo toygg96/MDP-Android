@@ -96,7 +96,6 @@
         android:layout_marginTop="10dp"
         android:height="20dp"
         android:maxHeight="20dp"
-        android:background="@drawable/textview_border"
         app:layout_constraintTop_toBottomOf="@+id/robotStatusLabel"
         app:layout_constraintStart_toStartOf="@+id/robotStatusLabel"
         app:layout_constraintEnd_toEndOf="@+id/fastestPathBtn"/>
@@ -156,7 +155,7 @@
         android:text="@string/connected_to_n"
         app:layout_constraintTop_toBottomOf="@+id/setWaypointBtn"
         app:layout_constraintStart_toStartOf="@+id/setWaypointBtn"
-        app:layout_constraintEnd_toEndOf="@+id/setWaypointBtn"/>
+        app:layout_constraintEnd_toEndOf="@+id/imageRecogBtn"/>
 
     <Button
         android:id="@+id/explorationBtn"
