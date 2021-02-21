@@ -35,7 +35,7 @@ import java.util.Locale;
 
 public class RobotPanelActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_SPEECH_INPUT = 1000;
-    private Button sendF1btn,sendF2btn,setF1btn,setF2btn, fastestPathBtn,explorationBtn, imageRecogBtn,setWaypointBtn,setOriginBtn,startBtn,resetMapBtn;
+    private Button sendF1btn,sendF2btn,setF1btn,setF2btn, fastestPathBtn,explorationBtn, imageRecogBtn,setWaypointBtn,setOriginBtn,startBtn,resetMapBtn,mdfBtn;
     private ImageButton upBtn,downBtn,leftBtn,rightBtn, micBtn,refreshBtn;
     private TextView F1txtbox, F2txtbox,bluetoothConnectionTxtbox, robotStatusTxtbox;
     private Switch autoUpdateSwitch;
@@ -66,6 +66,7 @@ public class RobotPanelActivity extends AppCompatActivity {
         setWaypointBtn = (Button)findViewById(R.id.setWaypointBtn);
         startBtn = (Button)findViewById(R.id.startBtn);
         resetMapBtn = (Button)findViewById(R.id.resetMapBtn);
+        mdfBtn = (Button)findViewById(R.id.mdfBtn);
         F1txtbox = (TextView)findViewById(R.id.F1textBox);
         F2txtbox = (TextView)findViewById(R.id.F2textBox);
         bluetoothConnectionTxtbox = (TextView)findViewById(R.id.bluetoothConnectionTxtbox);
@@ -118,6 +119,13 @@ public class RobotPanelActivity extends AppCompatActivity {
             @Override
             public void onClick(View r) {
                 BluetoothController.sendCmd(F2txtbox.getText().toString());
+            }
+        });
+
+        mdfBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickMDFlogic(v);
             }
         });
 
@@ -220,6 +228,7 @@ public class RobotPanelActivity extends AppCompatActivity {
                 myMaze.resetMap();
             }
         });
+
     }
 
     @Override
@@ -311,6 +320,27 @@ public class RobotPanelActivity extends AppCompatActivity {
         dialogBuilder.show();
     }
 
+    public void onClickMDFlogic(View v){
+        AlertDialog dialogBuilder = new AlertDialog.Builder(v.getContext()).create();
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.mdf_dialog, null);
+
+        TextView mdfTxtview = (TextView) dialogView.findViewById(R.id.mdfTextView);
+        TextView mdfTxtview2 = (TextView) dialogView.findViewById(R.id.mdfTextView2);
+        Button closeBtn = (Button) dialogView.findViewById(R.id.closeBtn);
+        mdfTxtview.setText(BluetoothController.getMdfString());
+        mdfTxtview2.setText(BluetoothController.getMdfString2());
+        closeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // DO SOMETHINGS
+                dialogBuilder.cancel();
+            }
+        });
+        dialogBuilder.setView(dialogView);
+        dialogBuilder.show();
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -350,6 +380,8 @@ public class RobotPanelActivity extends AppCompatActivity {
                     myMaze.refreshMap();
             }
             if (msg.toLowerCase().contains("update:")) {
+                BluetoothController.setMdfString(msg.split(":")[1]);
+                BluetoothController.setMdfString2(msg.split(":")[2]);
                 String convertedMDF1 = hexToBinaryConverter.hexToBinary(msg.split(":")[1],true);
                 String convertedMDF2 = hexToBinaryConverter.hexToBinary(msg.split(":")[2],false);
                 String robotCoordsDirection = msg.split(":")[3];

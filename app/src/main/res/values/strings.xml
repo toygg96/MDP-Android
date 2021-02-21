@@ -22,4 +22,7 @@
     <string name="exploration">Exploration</string>
     <string name="set_f1">Set F1</string>
     <string name="scan">Scan</string>
+    <string name="close">Close</string>
+    <string name="mdf_string_1">MDF String 1</string>
+    <string name="mdf_string_2">MDF String 2</string>
 </resources>

@@ -22,6 +22,7 @@ public class BluetoothController {
     private static BluetoothDevice device;
     private static boolean activeFlag = false;
     private static String msgLog = "";
+    private static String mdfString = "", mdfString2 ="";
 
     public static void init(Activity activity1, BluetoothAdapter bAdapter, DeviceListAdapter dlAdapter) {
         activity= activity1;
@@ -183,5 +184,13 @@ public class BluetoothController {
             }
         }
     }
+
+    public static void setMdfString(String string1) { mdfString = string1; }
+
+    public static String getMdfString() { return mdfString; }
+
+    public static void setMdfString2(String string2) { mdfString2 = string2; }
+
+    public static String getMdfString2() { return mdfString2; }
 
 }
