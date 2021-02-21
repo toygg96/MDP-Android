@@ -132,49 +132,49 @@ public class RobotPanelActivity extends AppCompatActivity {
         upBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View r) {
-                BluetoothController.sendCmd("cmd:MoveForward");
+                BluetoothController.sendCmd("ARD|AND|F01|");
             }
         });
 
         downBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View r) {
-                BluetoothController.sendCmd("cmd:MoveBackward");
+                BluetoothController.sendCmd("ARD|AND|S01|");
             }
         });
 
         leftBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View r) {
-                BluetoothController.sendCmd("cmd:RotateLeft");
+                BluetoothController.sendCmd("ARD|AND|L0|");
             }
         });
 
         rightBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View r) {
-                BluetoothController.sendCmd("cmd:RotateRight");
+                BluetoothController.sendCmd("ARD|AND|R0|");
             }
         });
 
         fastestPathBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View r) {
-                BluetoothController.sendCmd("cmd:Fastest");
+                BluetoothController.sendCmd("ARD|AND|FP|");
             }
         });
 
         explorationBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View r) {
-                BluetoothController.sendCmd("cmd:Exploration");
+                BluetoothController.sendCmd("ARD|AND|ES|");
             }
         });
 
         imageRecogBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View r) {
-                BluetoothController.sendCmd("cmd:Recognition");
+                BluetoothController.sendCmd("ARD|AND|REC|");
             }
         });
 
@@ -202,15 +202,16 @@ public class RobotPanelActivity extends AppCompatActivity {
         startBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View r) {
-                BluetoothController.sendCmd("cmd:Start");
+                BluetoothController.sendCmd("ARD|AND|START|");
             }
         });
 
         autoUpdateSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(buttonView.isChecked())
+                if(buttonView.isChecked()) {
                     updateFlag = true;
-                else
+                    myMaze.refreshMap();
+                }  else
                     updateFlag = false;
             }
         });
@@ -233,14 +234,17 @@ public class RobotPanelActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        unregisterReceiver(incomingMsgReceiver);
-        unregisterReceiver(btConnectionStatusReceiver);
-        unregisterReceiver(disconnectedReceiver);
-        filter3 = null;
-        filter4 = null;
-        filter5 = null;
-        super.onPause();
-
+        try {
+            unregisterReceiver(incomingMsgReceiver);
+            unregisterReceiver(btConnectionStatusReceiver);
+            unregisterReceiver(disconnectedReceiver);
+            filter3 = null;
+            filter4 = null;
+            filter5 = null;
+            super.onPause();
+        } catch (Exception e) {
+            Log.e(TAG,"Error in unregistering receiver", e);
+        }
     }
 
     @Override
@@ -468,13 +472,13 @@ public class RobotPanelActivity extends AppCompatActivity {
                 if (resultCode == RESULT_OK && data != null) {
                     ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                     if (result.get(0).toLowerCase().contains("up") || result.get(0).toLowerCase().contains("forward"))
-                        BluetoothController.sendCmd("cmd:MoveForward");
+                        BluetoothController.sendCmd("ARD|AND|F01|");
                     else if (result.get(0).toLowerCase().contains("backward") || result.get(0).toLowerCase().contains("reverse"))
-                        BluetoothController.sendCmd("cmd:MoveBackward");
+                        BluetoothController.sendCmd("ARD|AND|S01|");
                     else if (result.get(0).toLowerCase().contains("left"))
-                        BluetoothController.sendCmd("cmd:RotateLeft");
+                        BluetoothController.sendCmd("ARD|AND|L0|");
                     else if (result.get(0).toLowerCase().contains("right"))
-                        BluetoothController.sendCmd("cmd:RotateRight");
+                        BluetoothController.sendCmd("ARD|AND|R0|");
                     else
                         Toast.makeText(this, "Cant understand your speech", Toast.LENGTH_SHORT).show();
                 }

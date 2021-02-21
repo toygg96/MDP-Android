@@ -103,7 +103,7 @@ public class ArenaView extends View {
                     robotCols = coordinates[0];
                     robotRow = getInverseYCoord(coordinates[1]);
                     refreshMap();
-                    BluetoothController.sendCmd("Android|Algo|SetOrigin|(" + String.valueOf(coordinates[0]) + "," + String.valueOf(coordinates[1]) + ")");
+                    BluetoothController.sendCmd("ARD|AND|SC|(" + String.valueOf(coordinates[0]) + "," + String.valueOf(coordinates[1]) + ")");
                     setRobotPostition = false;
 
                 }
@@ -116,7 +116,7 @@ public class ArenaView extends View {
                 wayPointCols = coordinates[0];
                 wayPointRow = getInverseYCoord(coordinates[1]);
                 refreshMap();
-                BluetoothController.sendCmd("Android|Algo|SetWayPoint|(" + String.valueOf(coordinates[0]) + "," + String.valueOf(coordinates[1]) + ")");
+                BluetoothController.sendCmd("ARD|AND|WP|(" + String.valueOf(coordinates[0]) + "," + String.valueOf(coordinates[1]) + ")");
                 setWayPointPosition = false;
 
             }

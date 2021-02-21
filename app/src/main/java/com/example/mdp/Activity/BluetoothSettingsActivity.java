@@ -36,7 +36,7 @@ public class BluetoothSettingsActivity extends AppCompatActivity {
     private ListView lv;
     private TextView bluetoothStatusTextView, incomingTextView;
     private EditText sendMsgInputBox;
-    private IntentFilter filter, filter2, filter3, filter4, filter5;
+    private IntentFilter filter = null, filter2 = null, filter3 = null, filter4 = null, filter5 = null;
     private boolean offFlag = false, scanFlag = false;
 
     @Override
@@ -190,13 +190,22 @@ public class BluetoothSettingsActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         //Log.d(TAG,"onPause()");
-        unregisterReceiver(receiver);
-        unregisterReceiver(receiver2);
-        unregisterReceiver(incomingMsgReceiver);
-        unregisterReceiver(btConnectionStatusReceiver);
-        unregisterReceiver(disconnectedReceiver);
-        BluetoothController.saveMsgLog(incomingTextView.getText().toString());
-        super.onPause();
+        try {
+            unregisterReceiver(receiver);
+            unregisterReceiver(receiver2);
+            unregisterReceiver(incomingMsgReceiver);
+            unregisterReceiver(btConnectionStatusReceiver);
+            unregisterReceiver(disconnectedReceiver);
+            BluetoothController.saveMsgLog(incomingTextView.getText().toString());
+            filter = null;
+            filter2 = null;
+            filter3 = null;
+            filter4 = null;
+            filter5 = null;
+            super.onPause();
+        } catch (Exception e){
+            Log.e(TAG,"Error in unregistering receiver", e);
+        }
     }
 
     @Override
