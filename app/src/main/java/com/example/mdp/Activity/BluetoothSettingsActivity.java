@@ -67,10 +67,13 @@ public class BluetoothSettingsActivity extends AppCompatActivity {
         BA = BluetoothAdapter.getDefaultAdapter();
         BluetoothController.init(this,BA,adapter);
 
-        if (BluetoothController.getBluetoothState().equalsIgnoreCase("on"))
+        if (BluetoothController.getBluetoothState().equalsIgnoreCase("on")) {
             bluetoothSwitch.setChecked(true);
-        else
+            offFlag = false;
+        } else {
             bluetoothSwitch.setChecked(false);
+            offFlag = true;
+        }
 
         bluetoothSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -90,15 +93,21 @@ public class BluetoothSettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View r) {
                 //Log.d(TAG, "Make device visible");
-                BluetoothController.visibleDevice(r);
+                if (!offFlag)
+                    BluetoothController.visibleDevice(r);
+                else
+                    Toast.makeText(r.getContext(), "Bluetooth is not on" + BluetoothController.getConnectedDevice(),Toast.LENGTH_SHORT).show();
             }
         });
 
         listDeviceBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View r) {
-                //Log.d(TAG, "List Bluetooth devices");
-                BluetoothController.listPairedDevice(r);
+                //Log.d(TAG, "List Bluetooth devices");\
+                if (!offFlag)
+                    BluetoothController.listPairedDevice(r);
+                else
+                    Toast.makeText(r.getContext(), "Bluetooth is not on" + BluetoothController.getConnectedDevice(),Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -108,6 +117,7 @@ public class BluetoothSettingsActivity extends AppCompatActivity {
             public void onClick(View r) {
                 scanBtn.setEnabled(false);
                 scanFlag = true;
+                bluetoothSwitch.setChecked(true);
                 locationEnabled();
                 adapter.clear();
                 if (!BA.isEnabled())
@@ -333,6 +343,7 @@ public class BluetoothSettingsActivity extends AppCompatActivity {
             BluetoothController.setConnectThreadToNull();
             BluetoothController.setConnectedDevice("");
             BluetoothController.setActiveFlag(false);
+            Toast.makeText(context, "Disconnected! Attempting to reconnect." + BluetoothController.getConnectedDevice(),Toast.LENGTH_SHORT).show();
             bluetoothStatusTextView.setText(BluetoothController.getBluetoothStatus());
             sendBtn.setEnabled(false);
             sendMsgInputBox.setEnabled(false);

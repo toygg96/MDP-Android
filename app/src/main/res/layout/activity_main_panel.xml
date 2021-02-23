@@ -97,7 +97,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/robot_status"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="30dp"
         android:layout_marginLeft="5dp"
         app:layout_constraintStart_toStartOf="@+id/mapView"
         app:layout_constraintTop_toBottomOf="@+id/mapView" />
@@ -117,23 +117,22 @@
         android:id="@+id/setOriginBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="60dp"
         android:background="@drawable/btn_bg"
         android:text="@string/set_origin"
         android:textColor="#FFFFFF"
         app:layout_constraintTop_toBottomOf="@+id/robotStatusLabel"
+        app:layout_constraintEnd_toStartOf="@+id/setWaypointBtn"
         app:layout_constraintStart_toEndOf="@+id/robotStatusTxtbox"/>
 
     <Button
         android:id="@+id/setWaypointBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="55dp"
         android:background="@drawable/btn_bg"
         android:text="@string/set_waypoint"
         android:textColor="#FFFFFF"
         app:layout_constraintTop_toBottomOf="@+id/robotStatusLabel"
-        app:layout_constraintStart_toEndOf="@+id/setOriginBtn" />
+        app:layout_constraintEnd_toEndOf="@+id/mdfBtn" />
 
     <Button
         android:id="@+id/fastestPathBtn"
@@ -209,7 +208,7 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         app:srcCompat="@drawable/uparrow"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="50dp"
         android:layout_marginLeft='10dp'
         android:scaleType="fitCenter"
         app:layout_constraintTop_toBottomOf="@+id/explorationBtn"
@@ -256,7 +255,7 @@
         android:id="@+id/micBtn"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginStart="40dp"
+        android:layout_marginStart="70dp"
         android:background="@null"
         android:scaleType="fitCenter"
         app:layout_constraintStart_toEndOf="@+id/rightBtn"
