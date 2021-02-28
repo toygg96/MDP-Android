@@ -656,6 +656,52 @@ public class ArenaView extends View{
         }
     }
 
+    public void updateMaze3(String instruction, boolean autoUpdate){
+
+            switch (instruction) {
+                case "F01":
+                    if (robotDirection.equals("north"))
+                        robotRow -= 1;
+                    else if (robotDirection.equals("south"))
+                        robotRow += 1;
+                    else if (robotDirection.equals("east"))
+                        robotCols += 1;
+                    else if (robotDirection.equals("west"))
+                        robotCols -= 1;
+                    if (autoUpdate) {
+                        refreshMap();
+                        break;
+                    }
+                case "L0":
+                    if (robotDirection.equals("north"))
+                        robotDirection = "west";
+                    else if (robotDirection.equals("south"))
+                        robotDirection = "east";
+                    else if (robotDirection.equals("east"))
+                        robotDirection = "north";
+                    else if (robotDirection.equals("west"))
+                        robotDirection = "south";
+                    if (autoUpdate) {
+                        refreshMap();
+                        break;
+                    }
+                case "R0":
+                    if (robotDirection.equals("north"))
+                        robotDirection = "east";
+                    else if (robotDirection.equals("south"))
+                        robotDirection = "west";
+                    else if (robotDirection.equals("east"))
+                        robotDirection = "south";
+                    else if (robotDirection.equals("west"))
+                        robotDirection = "north";
+                    if (autoUpdate) {
+                        refreshMap();
+                        break;
+                    }
+            }
+
+    }
+
 
     public void refreshMap(){
         invalidate();

@@ -135,6 +135,11 @@ public class RobotPanelActivity extends AppCompatActivity {
             @Override
             public void onClick(View r) {
                 BluetoothController.sendCmd("ARD|AND|F01|");
+                if (updateFlag)
+                    myMaze.updateMaze3("F01",true);
+                else
+                    myMaze.updateMaze3("F01",false);
+                robotStatusTxtbox.setText("Moving forward");
             }
         });
 
@@ -142,6 +147,11 @@ public class RobotPanelActivity extends AppCompatActivity {
             @Override
             public void onClick(View r) {
                 BluetoothController.sendCmd("ARD|AND|L0|");
+                if (updateFlag)
+                    myMaze.updateMaze3("L0",true);
+                else
+                    myMaze.updateMaze3("L0",false);
+                robotStatusTxtbox.setText("Rotating left");
             }
         });
 
@@ -149,6 +159,11 @@ public class RobotPanelActivity extends AppCompatActivity {
             @Override
             public void onClick(View r) {
                 BluetoothController.sendCmd("ARD|AND|R0|");
+                if (updateFlag)
+                    myMaze.updateMaze3("R0",true);
+                else
+                    myMaze.updateMaze3("R0",false);
+                robotStatusTxtbox.setText("Rotating right");
             }
         });
 
