@@ -254,18 +254,6 @@
         android:background="@null"/>
 
     <ImageButton
-        android:id="@+id/downBtn"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        app:srcCompat="@drawable/downarrow"
-        android:layout_marginTop="5dp"
-        android:layout_marginLeft='0dp'
-        android:scaleType="fitCenter"
-        app:layout_constraintTop_toBottomOf="@+id/leftBtn"
-        app:layout_constraintStart_toStartOf="@+id/upBtn"
-        android:background="@null"/>
-
-    <ImageButton
         android:id="@+id/micBtn"
         android:layout_width="48dp"
         android:layout_height="48dp"

@@ -36,7 +36,7 @@ import java.util.Locale;
 public class RobotPanelActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_SPEECH_INPUT = 1000;
     private Button sendF1btn,sendF2btn,setF1btn,setF2btn, fastestPathBtn,explorationBtn, imageRecogBtn,setWaypointBtn,setOriginBtn,startBtn,resetMapBtn,mdfBtn, imageStrBtn;
-    private ImageButton upBtn,downBtn,leftBtn,rightBtn, micBtn,refreshBtn;
+    private ImageButton upBtn,leftBtn,rightBtn, micBtn,refreshBtn;
     private TextView F1txtbox, F2txtbox,bluetoothConnectionTxtbox, robotStatusTxtbox;
     private Switch autoUpdateSwitch;
     private String F1text, F2text;
@@ -73,7 +73,6 @@ public class RobotPanelActivity extends AppCompatActivity {
         bluetoothConnectionTxtbox = (TextView)findViewById(R.id.bluetoothConnectionTxtbox);
         robotStatusTxtbox = (TextView)findViewById(R.id.robotStatusTxtbox);
         upBtn = (ImageButton)findViewById(R.id.upBtn);
-        downBtn = (ImageButton)findViewById(R.id.downBtn);
         leftBtn = (ImageButton)findViewById(R.id.leftBtn);
         rightBtn = (ImageButton)findViewById(R.id.rightBtn);
         micBtn = (ImageButton)findViewById(R.id.micBtn);
@@ -136,13 +135,6 @@ public class RobotPanelActivity extends AppCompatActivity {
             @Override
             public void onClick(View r) {
                 BluetoothController.sendCmd("ARD|AND|F01|");
-            }
-        });
-
-        downBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View r) {
-                BluetoothController.sendCmd("ARD|AND|S01|");
             }
         });
 
@@ -404,24 +396,25 @@ public class RobotPanelActivity extends AppCompatActivity {
                 robotStatusTxtbox.setText("Taking Picture");
             } else if (msg.toLowerCase().contains("img")) {
                 String [] arrOfStr = msg.split("\\|");
-                Log.d(TAG,arrOfStr[2]);
+//                Log.d(TAG,arrOfStr[2]);
                 BluetoothController.addImgString(arrOfStr[2]);
                 arrOfStr[2] = arrOfStr[2].replace("(", "");
                 arrOfStr[2] = arrOfStr[2].replace(")", "");
                 String [] strippedMsg = arrOfStr[2].split(",");
-                Log.d(TAG,strippedMsg[0]);
-                Log.d(TAG,strippedMsg[1]);
-                Log.d(TAG,strippedMsg[2]);
+//                Log.d(TAG,strippedMsg[0]);
+//                Log.d(TAG,strippedMsg[1]);
+//                Log.d(TAG,strippedMsg[2]);
                 myMaze.setDiscoveredImgOnCell(Integer.parseInt(strippedMsg[0]),Integer.parseInt(strippedMsg[1]),Integer.parseInt(strippedMsg[2]));
                 if (updateFlag)
                     myMaze.refreshMap();
             }
-            if (msg.toLowerCase().contains("update:")) {
-                BluetoothController.setMdfString(msg.split(":")[1]);
-                BluetoothController.setMdfString2(msg.split(":")[2]);
-                String convertedMDF1 = hexToBinaryConverter.hexToBinary(msg.split(":")[1],true);
-                String convertedMDF2 = hexToBinaryConverter.hexToBinary(msg.split(":")[2],false);
-                String robotCoordsDirection = msg.split(":")[3];
+            if (msg.toLowerCase().contains("mdf")) {
+                BluetoothController.setMdfString(msg.split("\\|")[1]);
+                BluetoothController.setMdfString2(msg.split("\\|")[2]);
+                Log.d(TAG,msg.split("\\|")[3]);
+                String convertedMDF1 = hexToBinaryConverter.hexToBinary(msg.split("\\|")[1],true);
+                String convertedMDF2 = hexToBinaryConverter.hexToBinary(msg.split("\\|")[2],false);
+                String robotCoordsDirection = msg.split("\\|")[3];
                 robotCoordsDirection = robotCoordsDirection.replace("(","");
                 robotCoordsDirection = robotCoordsDirection.replace(")","");
                 String [] strippedRobotCoordsDirection = robotCoordsDirection.split(",");
@@ -434,6 +427,22 @@ public class RobotPanelActivity extends AppCompatActivity {
                     myMaze.updateMaze(convertedMDF1,convertedMDF2,XCoord,YCoord,facingDirection,true);
                 else
                     myMaze.updateMaze(convertedMDF1,convertedMDF2,XCoord,YCoord,facingDirection,false);
+            } else if (msg.toLowerCase().contains("fp")) {
+                String [] instructions = msg.split("\\|");
+                Thread thread = new Thread() {
+                    @Override
+                    public void run() {
+                        try {
+                            if (updateFlag)
+                                myMaze.updateMaze2(instructions,true,robotStatusTxtbox);
+                            else
+                                myMaze.updateMaze2(instructions,false,robotStatusTxtbox);
+                            } catch (Exception e) {
+                                Log.e(TAG,"Error in multithread: " , e);
+                            }
+                        }
+                    };
+                thread.start();
             }
             BluetoothController.saveMsgLog(log + "\n" + msg);
         }
@@ -468,7 +477,6 @@ public class RobotPanelActivity extends AppCompatActivity {
 
     public void disableAllBtn(){
         upBtn.setEnabled(false);
-        downBtn.setEnabled(false);
         leftBtn.setEnabled(false);
         rightBtn.setEnabled(false);
         sendF1btn.setEnabled(false);
@@ -477,7 +485,6 @@ public class RobotPanelActivity extends AppCompatActivity {
 
     public void enableAllBtn(){
         upBtn.setEnabled(true);
-        downBtn.setEnabled(true);
         leftBtn.setEnabled(true);
         rightBtn.setEnabled(true);
         sendF1btn.setEnabled(true);
@@ -507,8 +514,6 @@ public class RobotPanelActivity extends AppCompatActivity {
                     ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                     if (result.get(0).toLowerCase().contains("up") || result.get(0).toLowerCase().contains("forward"))
                         BluetoothController.sendCmd("ARD|AND|F01|");
-                    else if (result.get(0).toLowerCase().contains("backward") || result.get(0).toLowerCase().contains("reverse"))
-                        BluetoothController.sendCmd("ARD|AND|S01|");
                     else if (result.get(0).toLowerCase().contains("left"))
                         BluetoothController.sendCmd("ARD|AND|L0|");
                     else if (result.get(0).toLowerCase().contains("right"))

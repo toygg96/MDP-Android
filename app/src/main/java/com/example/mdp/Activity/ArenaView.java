@@ -12,6 +12,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
@@ -20,11 +21,13 @@ import com.example.mdp.Model.Cell;
 import com.example.mdp.R;
 import com.example.mdp.Controller.BluetoothController;
 
+import org.w3c.dom.Text;
+
 import java.nio.charset.Charset;
 
 import static android.content.ContentValues.TAG;
 
-public class ArenaView extends View {
+public class ArenaView extends View{
 
     private static final String TAG = "ArenaView";
     private static Cell[][] cells;
@@ -33,7 +36,7 @@ public class ArenaView extends View {
     private static float cellSizeX,cellSizeY, hMargin, vMargin;
     private static Paint wallPaint, robotPaint, waypointPaint, directionPaint,  emptyPaint, virtualWallPaint, obstaclePaint, unexploredPaint, ftpPaint, endPointPaint, gridNumberPaint, exploredPaint;
     private static int robotRow = 18, robotCols = 1, wayPointRow =-1, wayPointCols=-1;
-    private static String robotDirection = "north";
+    private static String robotDirection = "east";
     private static boolean setRobotPostition = false, setWayPointPosition = false;
     private static boolean createCellStatus = false;
     private static int imgXCoord = -1,imgYCoord= -1;
@@ -584,6 +587,75 @@ public class ArenaView extends View {
         //Log.d(TAG, "Stage 4: ");
 
     }
+
+    public void updateMaze2(String[] instructions, boolean autoUpdate, TextView robotStatusTxtbox){
+
+        //robotCols = XCoord;
+        //robotRow = getInverseYCoord(YCoord);
+        //robotDirection = facingDirection;
+        for (String instruction: instructions) {
+            switch (instruction) {
+                case "F01":
+                    robotStatusTxtbox.setText("Moving forward");
+                    if (robotDirection.equals("north"))
+                        robotRow -= 1;
+                    else if (robotDirection.equals("south"))
+                        robotRow += 1;
+                    else if (robotDirection.equals("east"))
+                        robotCols += 1;
+                    else if (robotDirection.equals("west"))
+                        robotCols -= 1;
+                    if (autoUpdate) {
+                        refreshMap();
+                        try {
+                            Thread.sleep(1000);
+                        } catch (Exception e){
+                            Log.e(TAG,"Error in waiting",e);
+                        }
+                        break;
+                    }
+                case "L0":
+                    robotStatusTxtbox.setText("Rotating left");
+                    if (robotDirection.equals("north"))
+                        robotDirection = "west";
+                    else if (robotDirection.equals("south"))
+                        robotDirection = "east";
+                    else if (robotDirection.equals("east"))
+                        robotDirection = "north";
+                    else if (robotDirection.equals("west"))
+                        robotDirection = "south";
+                    if (autoUpdate) {
+                        refreshMap();
+                        try {
+                            Thread.sleep(1000);
+                        } catch (Exception e){
+                            Log.e(TAG,"Error in waiting",e);
+                        }
+                        break;
+                    }
+                case "R0":
+                    robotStatusTxtbox.setText("Rotating right");
+                    if (robotDirection.equals("north"))
+                        robotDirection = "east";
+                    else if (robotDirection.equals("south"))
+                        robotDirection = "west";
+                    else if (robotDirection.equals("east"))
+                        robotDirection = "south";
+                    else if (robotDirection.equals("west"))
+                        robotDirection = "north";
+                    if (autoUpdate) {
+                        refreshMap();
+                        try {
+                            Thread.sleep(1000);
+                        } catch (Exception e){
+                            Log.e(TAG,"Error in waiting",e);
+                        }
+                        break;
+                    }
+            }
+        }
+    }
+
 
     public void refreshMap(){
         invalidate();
