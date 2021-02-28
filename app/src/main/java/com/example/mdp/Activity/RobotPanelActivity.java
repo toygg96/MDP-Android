@@ -35,7 +35,7 @@ import java.util.Locale;
 
 public class RobotPanelActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_SPEECH_INPUT = 1000;
-    private Button sendF1btn,sendF2btn,setF1btn,setF2btn, fastestPathBtn,explorationBtn, imageRecogBtn,setWaypointBtn,setOriginBtn,startBtn,resetMapBtn,mdfBtn;
+    private Button sendF1btn,sendF2btn,setF1btn,setF2btn, fastestPathBtn,explorationBtn, imageRecogBtn,setWaypointBtn,setOriginBtn,startBtn,resetMapBtn,mdfBtn, imageStrBtn;
     private ImageButton upBtn,downBtn,leftBtn,rightBtn, micBtn,refreshBtn;
     private TextView F1txtbox, F2txtbox,bluetoothConnectionTxtbox, robotStatusTxtbox;
     private Switch autoUpdateSwitch;
@@ -67,6 +67,7 @@ public class RobotPanelActivity extends AppCompatActivity {
         startBtn = (Button)findViewById(R.id.startBtn);
         resetMapBtn = (Button)findViewById(R.id.resetMapBtn);
         mdfBtn = (Button)findViewById(R.id.mdfBtn);
+        imageStrBtn = (Button)findViewById(R.id.imageBtn);
         F1txtbox = (TextView)findViewById(R.id.F1textBox);
         F2txtbox = (TextView)findViewById(R.id.F2textBox);
         bluetoothConnectionTxtbox = (TextView)findViewById(R.id.bluetoothConnectionTxtbox);
@@ -95,6 +96,8 @@ public class RobotPanelActivity extends AppCompatActivity {
         F2txtbox.setText(F2text);
 
         BluetoothController.init(this, BluetoothAdapter.getDefaultAdapter(),BluetoothController.getAdapter());
+
+        BluetoothController.sendCmd("ARD|AND|SS");
 
         setF1btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -160,21 +163,21 @@ public class RobotPanelActivity extends AppCompatActivity {
         fastestPathBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View r) {
-                BluetoothController.sendCmd("ARD|AND|FP|");
+                BluetoothController.sendCmd("FP|START");
             }
         });
 
         explorationBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View r) {
-                BluetoothController.sendCmd("ARD|AND|ES|");
+                BluetoothController.sendCmd("EX|START");
             }
         });
 
         imageRecogBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View r) {
-                BluetoothController.sendCmd("ARD|AND|REC|");
+                BluetoothController.sendCmd("IMG|START");
             }
         });
 
@@ -230,6 +233,12 @@ public class RobotPanelActivity extends AppCompatActivity {
             }
         });
 
+        imageStrBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View r) {
+                onClickImageStrLogic(r);
+            }
+        });
     }
 
     @Override
@@ -345,6 +354,25 @@ public class RobotPanelActivity extends AppCompatActivity {
         dialogBuilder.show();
     }
 
+    public void onClickImageStrLogic(View v){
+        AlertDialog dialogBuilder = new AlertDialog.Builder(v.getContext()).create();
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.img_strings_dialog, null);
+
+        TextView imgStrTxtview = (TextView) dialogView.findViewById(R.id.imageStrTextView);
+        Button closeBtn = (Button) dialogView.findViewById(R.id.closeBtn2);
+        imgStrTxtview.setText(BluetoothController.getImgStrings());
+        closeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // DO SOMETHINGS
+                dialogBuilder.cancel();
+            }
+        });
+        dialogBuilder.setView(dialogView);
+        dialogBuilder.show();
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -364,21 +392,26 @@ public class RobotPanelActivity extends AppCompatActivity {
             String log = BluetoothController.getMsgLog();
             String msg = intent.getStringExtra("receivingMsg");
             //Log.d("RobotPanelActivity",msg);
-            if (msg.equalsIgnoreCase("MOVING:ROTATINGRIGHT")) {
+            if (msg.equalsIgnoreCase("R0")) {
                 robotStatusTxtbox.setText("Rotating Right");
-            } else if (msg.equalsIgnoreCase("MOVING:ROTATINGLEFT")) {
+            } else if (msg.equalsIgnoreCase("L0")) {
                 robotStatusTxtbox.setText("Rotating Left");
-            } else if (msg.equalsIgnoreCase("MOVING:FORWARD")) {
+            } else if (msg.equalsIgnoreCase("F01")) {
                 robotStatusTxtbox.setText("Moving Forward");
-            } else if (msg.equalsIgnoreCase("MOVING:REVERSE")) {
-                robotStatusTxtbox.setText("Reversing");
-            } else if (msg.equalsIgnoreCase("IDLE")) {
-                robotStatusTxtbox.setText("Idle");
-            } else if (msg.toLowerCase().contains("img:")) {
-                String [] arrOfStr = msg.split(":");
-                arrOfStr[1] = arrOfStr[1].replace("(", "");
-                arrOfStr[1] = arrOfStr[1].replace(")", "");
-                String [] strippedMsg = arrOfStr[1].split(",");
+            } else if (msg.equalsIgnoreCase("N")) {
+                robotStatusTxtbox.setText("Exploration completed");
+            } else if (msg.equalsIgnoreCase("C")) {
+                robotStatusTxtbox.setText("Taking Picture");
+            } else if (msg.toLowerCase().contains("img")) {
+                String [] arrOfStr = msg.split("\\|");
+                Log.d(TAG,arrOfStr[2]);
+                BluetoothController.addImgString(arrOfStr[2]);
+                arrOfStr[2] = arrOfStr[2].replace("(", "");
+                arrOfStr[2] = arrOfStr[2].replace(")", "");
+                String [] strippedMsg = arrOfStr[2].split(",");
+                Log.d(TAG,strippedMsg[0]);
+                Log.d(TAG,strippedMsg[1]);
+                Log.d(TAG,strippedMsg[2]);
                 myMaze.setDiscoveredImgOnCell(Integer.parseInt(strippedMsg[0]),Integer.parseInt(strippedMsg[1]),Integer.parseInt(strippedMsg[2]));
                 if (updateFlag)
                     myMaze.refreshMap();

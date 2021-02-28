@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Set;
 
 public class BluetoothController {
@@ -23,6 +24,7 @@ public class BluetoothController {
     private static boolean activeFlag = false;
     private static String msgLog = "";
     private static String mdfString = "", mdfString2 ="";
+    private static String imgStrings = "";
 
     public static void init(Activity activity1, BluetoothAdapter bAdapter, DeviceListAdapter dlAdapter) {
         activity= activity1;
@@ -193,4 +195,9 @@ public class BluetoothController {
 
     public static String getMdfString2() { return mdfString2; }
 
+    public static void addImgString(String imgStr) {
+        imgStrings = imgStrings + "\n" + imgStr;
+    }
+
+    public static String getImgStrings() { return imgStrings; }
 }

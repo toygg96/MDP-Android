@@ -25,4 +25,6 @@
     <string name="close">Close</string>
     <string name="mdf_string_1">MDF String 1</string>
     <string name="mdf_string_2">MDF String 2</string>
+    <string name="display_mdf">Display MDF</string>
+    <string name="image_strings">Image Strings</string>
 </resources>
