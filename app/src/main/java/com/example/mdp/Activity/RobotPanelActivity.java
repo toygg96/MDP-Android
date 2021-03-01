@@ -444,20 +444,40 @@ public class RobotPanelActivity extends AppCompatActivity {
                     myMaze.updateMaze(convertedMDF1,convertedMDF2,XCoord,YCoord,facingDirection,false);
             } else if (msg.toLowerCase().contains("fp")) {
                 String [] instructions = msg.split("\\|");
-                Thread thread = new Thread() {
-                    @Override
-                    public void run() {
-                        try {
-                            if (updateFlag)
-                                myMaze.updateMaze2(instructions,true,robotStatusTxtbox);
-                            else
-                                myMaze.updateMaze2(instructions,false,robotStatusTxtbox);
+                if (msg.toLowerCase().contains("f02") || msg.toLowerCase().contains("f03") || msg.toLowerCase().contains("f04") || msg.toLowerCase().contains("f05")
+                || msg.toLowerCase().contains("f06") || msg.toLowerCase().contains("f07") || msg.toLowerCase().contains("f08") || msg.toLowerCase().contains("f09")
+                        || msg.toLowerCase().contains("f10") | msg.toLowerCase().contains("f11") | msg.toLowerCase().contains("f12") || msg.toLowerCase().contains("f13")
+                || msg.toLowerCase().contains("f14") || msg.toLowerCase().contains("f15") || msg.toLowerCase().contains("f16") || msg.toLowerCase().contains("f17")) {
+                    Thread thread = new Thread() {
+                        @Override
+                        public void run() {
+                            try {
+                                if (updateFlag)
+                                    myMaze.updateMaze4(instructions, true, robotStatusTxtbox);
+                                else
+                                    myMaze.updateMaze4(instructions, false, robotStatusTxtbox);
                             } catch (Exception e) {
-                                Log.e(TAG,"Error in multithread: " , e);
+                                Log.e(TAG, "Error in multithread: ", e);
                             }
                         }
                     };
-                thread.start();
+                    thread.start();
+                } else {
+                    Thread thread = new Thread() {
+                        @Override
+                        public void run() {
+                            try {
+                                if (updateFlag)
+                                    myMaze.updateMaze2(instructions, true, robotStatusTxtbox);
+                                else
+                                    myMaze.updateMaze2(instructions, false, robotStatusTxtbox);
+                            } catch (Exception e) {
+                                Log.e(TAG, "Error in multithread: ", e);
+                            }
+                        }
+                    };
+                    thread.start();
+                }
             }
             BluetoothController.saveMsgLog(log + "\n" + msg);
         }

@@ -594,26 +594,11 @@ public class ArenaView extends View{
         //robotRow = getInverseYCoord(YCoord);
         //robotDirection = facingDirection;
         for (String instruction: instructions) {
+            Log.d(TAG,instruction);
             switch (instruction) {
                 case "F01":
-                    robotStatusTxtbox.setText("Moving forward");
-                    if (robotDirection.equals("north"))
-                        robotRow -= 1;
-                    else if (robotDirection.equals("south"))
-                        robotRow += 1;
-                    else if (robotDirection.equals("east"))
-                        robotCols += 1;
-                    else if (robotDirection.equals("west"))
-                        robotCols -= 1;
-                    if (autoUpdate) {
-                        refreshMap();
-                        try {
-                            Thread.sleep(1000);
-                        } catch (Exception e){
-                            Log.e(TAG,"Error in waiting",e);
-                        }
-                        break;
-                    }
+                    robotMoveForward(robotStatusTxtbox,autoUpdate);
+                    break;
                 case "L0":
                     robotStatusTxtbox.setText("Rotating left");
                     if (robotDirection.equals("north"))
@@ -627,12 +612,32 @@ public class ArenaView extends View{
                     if (autoUpdate) {
                         refreshMap();
                         try {
-                            Thread.sleep(1000);
+                            Thread.sleep(2000);
                         } catch (Exception e){
                             Log.e(TAG,"Error in waiting",e);
                         }
                         break;
                     }
+                case "L1":
+                    robotStatusTxtbox.setText("Rotating left");
+                    if (robotDirection.equals("north"))
+                        robotDirection = "west";
+                    else if (robotDirection.equals("south"))
+                        robotDirection = "east";
+                    else if (robotDirection.equals("east"))
+                        robotDirection = "north";
+                    else if (robotDirection.equals("west"))
+                        robotDirection = "south";
+                    if (autoUpdate) {
+                        refreshMap();
+                        try {
+                            Thread.sleep(2000);
+                        } catch (Exception e){
+                            Log.e(TAG,"Error in waiting",e);
+                        }
+                        break;
+                    }
+                    robotMoveForward(robotStatusTxtbox,autoUpdate);
                 case "R0":
                     robotStatusTxtbox.setText("Rotating right");
                     if (robotDirection.equals("north"))
@@ -646,62 +651,190 @@ public class ArenaView extends View{
                     if (autoUpdate) {
                         refreshMap();
                         try {
-                            Thread.sleep(1000);
+                            Thread.sleep(2000);
                         } catch (Exception e){
                             Log.e(TAG,"Error in waiting",e);
                         }
                         break;
                     }
+                case "R1":
+                    robotStatusTxtbox.setText("Rotating right");
+                    if (robotDirection.equals("north"))
+                        robotDirection = "east";
+                    else if (robotDirection.equals("south"))
+                        robotDirection = "west";
+                    else if (robotDirection.equals("east"))
+                        robotDirection = "south";
+                    else if (robotDirection.equals("west"))
+                        robotDirection = "north";
+                    if (autoUpdate) {
+                        refreshMap();
+                        try {
+                            Thread.sleep(2000);
+                        } catch (Exception e){
+                            Log.e(TAG,"Error in waiting",e);
+                        }
+                        break;
+                    }
+                    robotMoveForward(robotStatusTxtbox,autoUpdate);
             }
         }
     }
 
     public void updateMaze3(String instruction, boolean autoUpdate){
 
-            switch (instruction) {
-                case "F01":
-                    if (robotDirection.equals("north"))
-                        robotRow -= 1;
-                    else if (robotDirection.equals("south"))
-                        robotRow += 1;
-                    else if (robotDirection.equals("east"))
-                        robotCols += 1;
-                    else if (robotDirection.equals("west"))
-                        robotCols -= 1;
-                    if (autoUpdate) {
-                        refreshMap();
-                        break;
-                    }
-                case "L0":
-                    if (robotDirection.equals("north"))
-                        robotDirection = "west";
-                    else if (robotDirection.equals("south"))
-                        robotDirection = "east";
-                    else if (robotDirection.equals("east"))
-                        robotDirection = "north";
-                    else if (robotDirection.equals("west"))
-                        robotDirection = "south";
-                    if (autoUpdate) {
-                        refreshMap();
-                        break;
-                    }
-                case "R0":
-                    if (robotDirection.equals("north"))
-                        robotDirection = "east";
-                    else if (robotDirection.equals("south"))
-                        robotDirection = "west";
-                    else if (robotDirection.equals("east"))
-                        robotDirection = "south";
-                    else if (robotDirection.equals("west"))
-                        robotDirection = "north";
-                    if (autoUpdate) {
-                        refreshMap();
-                        break;
-                    }
-            }
+        switch (instruction) {
+            case "F01":
+                if (robotDirection.equals("north"))
+                    robotRow -= 1;
+                else if (robotDirection.equals("south"))
+                    robotRow += 1;
+                else if (robotDirection.equals("east"))
+                    robotCols += 1;
+                else if (robotDirection.equals("west"))
+                    robotCols -= 1;
+                if (autoUpdate) {
+                    refreshMap();
+                    break;
+                }
+            case "L0":
+                if (robotDirection.equals("north"))
+                    robotDirection = "west";
+                else if (robotDirection.equals("south"))
+                    robotDirection = "east";
+                else if (robotDirection.equals("east"))
+                    robotDirection = "north";
+                else if (robotDirection.equals("west"))
+                    robotDirection = "south";
+                if (autoUpdate) {
+                    refreshMap();
+                    break;
+                }
+            case "R0":
+                if (robotDirection.equals("north"))
+                    robotDirection = "east";
+                else if (robotDirection.equals("south"))
+                    robotDirection = "west";
+                else if (robotDirection.equals("east"))
+                    robotDirection = "south";
+                else if (robotDirection.equals("west"))
+                    robotDirection = "north";
+                if (autoUpdate) {
+                    refreshMap();
+                    break;
+                }
+        }
 
     }
 
+    public void updateMaze4(String[] instructions, boolean autoUpdate, TextView robotStatusTxtbox){
+            for (String instruction: instructions) {
+                if (instruction.charAt(0) == 'F' && !instruction.equals("FP")) {
+                    int numOfSteps = Integer.parseInt(instruction.substring(1, instruction.length()));
+                    while (numOfSteps != 0) {
+                        robotStatusTxtbox.setText("Moving forward");
+                        if (robotDirection.equals("north")) {
+                            robotRow -= 1;
+                            numOfSteps -= 1;
+                        } else if (robotDirection.equals("south")) {
+                            robotRow += 1;
+                            numOfSteps -= 1;
+                        } else if (robotDirection.equals("east")) {
+                            robotCols += 1;
+                            numOfSteps -= 1;
+                        } else if (robotDirection.equals("west")) {
+                            robotCols -= 1;
+                            numOfSteps -= 1;
+                        }
+
+                        if (autoUpdate) {
+                            refreshMap();
+                        }
+                        try {
+                            Thread.sleep(2000);
+                        } catch (Exception e){
+                            Log.e(TAG,"Error in waiting",e);
+                        }
+                    }
+                }
+                if (instruction.equals("L0")) {
+                    robotStatusTxtbox.setText("Rotating left");
+                    if (robotDirection.equals("north"))
+                        robotDirection = "west";
+                    else if (robotDirection.equals("south"))
+                        robotDirection = "east";
+                    else if (robotDirection.equals("east"))
+                        robotDirection = "north";
+                    else if (robotDirection.equals("west"))
+                        robotDirection = "south";
+                    if (autoUpdate) {
+                        refreshMap();
+                    }
+                    try {
+                        Thread.sleep(2000);
+                    } catch (Exception e){
+                        Log.e(TAG,"Error in waiting",e);
+                    }
+                } else if (instruction.equals("R0")){
+                    robotStatusTxtbox.setText("Rotating right");
+                    if (robotDirection.equals("north"))
+                        robotDirection = "east";
+                    else if (robotDirection.equals("south"))
+                        robotDirection = "west";
+                    else if (robotDirection.equals("east"))
+                        robotDirection = "south";
+                    else if (robotDirection.equals("west"))
+                        robotDirection = "north";
+                    if (autoUpdate) {
+                        refreshMap();
+                    }
+                    try {
+                        Thread.sleep(2000);
+                    } catch (Exception e){
+                        Log.e(TAG,"Error in waiting",e);
+                    }
+                } else if (instruction.equals("L1")){
+                    robotStatusTxtbox.setText("Rotating left");
+                    if (robotDirection.equals("north"))
+                        robotDirection = "west";
+                    else if (robotDirection.equals("south"))
+                        robotDirection = "east";
+                    else if (robotDirection.equals("east"))
+                        robotDirection = "north";
+                    else if (robotDirection.equals("west"))
+                        robotDirection = "south";
+                    if (autoUpdate) {
+                        refreshMap();
+                    }
+                    try {
+                        Thread.sleep(2000);
+                    } catch (Exception e){
+                        Log.e(TAG,"Error in waiting",e);
+                    }
+                    robotMoveForward(robotStatusTxtbox,autoUpdate);
+                } else if (instruction.equals("R1")){
+                    robotStatusTxtbox.setText("Rotating right");
+                    if (robotDirection.equals("north"))
+                        robotDirection = "east";
+                    else if (robotDirection.equals("south"))
+                        robotDirection = "west";
+                    else if (robotDirection.equals("east"))
+                        robotDirection = "south";
+                    else if (robotDirection.equals("west"))
+                        robotDirection = "north";
+                    if (autoUpdate) {
+                        refreshMap();
+                    }
+                    try {
+                        Thread.sleep(2000);
+                    } catch (Exception e){
+                        Log.e(TAG,"Error in waiting",e);
+                    }
+                    robotMoveForward(robotStatusTxtbox,autoUpdate);
+                }
+            }
+
+    }
 
     public void refreshMap(){
         invalidate();
@@ -714,6 +847,28 @@ public class ArenaView extends View{
         wayPointCols = -1;
         wayPointRow = -1;
         refreshMap();
+    }
+
+    public void robotMoveForward(TextView robotStatusTxtbox, boolean autoUpdate){
+        robotStatusTxtbox.setText("Moving forward");
+        if (robotDirection.equals("north")) {
+            robotRow -= 1;
+        } else if (robotDirection.equals("south")) {
+            robotRow += 1;
+        } else if (robotDirection.equals("east")) {
+            robotCols += 1;
+        } else if (robotDirection.equals("west")) {
+            robotCols -= 1;
+        }
+
+        if (autoUpdate) {
+            refreshMap();
+        }
+        try {
+            Thread.sleep(2000);
+        } catch (Exception e){
+            Log.e(TAG,"Error in waiting",e);
+        }
     }
 
 }
