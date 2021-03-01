@@ -600,83 +600,19 @@ public class ArenaView extends View{
                     robotMoveForward(robotStatusTxtbox,autoUpdate);
                     break;
                 case "L0":
-                    robotStatusTxtbox.setText("Rotating left");
-                    if (robotDirection.equals("north"))
-                        robotDirection = "west";
-                    else if (robotDirection.equals("south"))
-                        robotDirection = "east";
-                    else if (robotDirection.equals("east"))
-                        robotDirection = "north";
-                    else if (robotDirection.equals("west"))
-                        robotDirection = "south";
-                    if (autoUpdate) {
-                        refreshMap();
-                        try {
-                            Thread.sleep(2000);
-                        } catch (Exception e){
-                            Log.e(TAG,"Error in waiting",e);
-                        }
-                        break;
-                    }
+                    robotRotateLeft(robotStatusTxtbox,autoUpdate);
+                    break;
                 case "L1":
-                    robotStatusTxtbox.setText("Rotating left");
-                    if (robotDirection.equals("north"))
-                        robotDirection = "west";
-                    else if (robotDirection.equals("south"))
-                        robotDirection = "east";
-                    else if (robotDirection.equals("east"))
-                        robotDirection = "north";
-                    else if (robotDirection.equals("west"))
-                        robotDirection = "south";
-                    if (autoUpdate) {
-                        refreshMap();
-                        try {
-                            Thread.sleep(2000);
-                        } catch (Exception e){
-                            Log.e(TAG,"Error in waiting",e);
-                        }
-                        break;
-                    }
+                    robotRotateLeft(robotStatusTxtbox,autoUpdate);
                     robotMoveForward(robotStatusTxtbox,autoUpdate);
+                    break;
                 case "R0":
-                    robotStatusTxtbox.setText("Rotating right");
-                    if (robotDirection.equals("north"))
-                        robotDirection = "east";
-                    else if (robotDirection.equals("south"))
-                        robotDirection = "west";
-                    else if (robotDirection.equals("east"))
-                        robotDirection = "south";
-                    else if (robotDirection.equals("west"))
-                        robotDirection = "north";
-                    if (autoUpdate) {
-                        refreshMap();
-                        try {
-                            Thread.sleep(2000);
-                        } catch (Exception e){
-                            Log.e(TAG,"Error in waiting",e);
-                        }
-                        break;
-                    }
+                    robotRotateRight(robotStatusTxtbox,autoUpdate);
+                    break;
                 case "R1":
-                    robotStatusTxtbox.setText("Rotating right");
-                    if (robotDirection.equals("north"))
-                        robotDirection = "east";
-                    else if (robotDirection.equals("south"))
-                        robotDirection = "west";
-                    else if (robotDirection.equals("east"))
-                        robotDirection = "south";
-                    else if (robotDirection.equals("west"))
-                        robotDirection = "north";
-                    if (autoUpdate) {
-                        refreshMap();
-                        try {
-                            Thread.sleep(2000);
-                        } catch (Exception e){
-                            Log.e(TAG,"Error in waiting",e);
-                        }
-                        break;
-                    }
+                    robotRotateRight(robotStatusTxtbox,autoUpdate);
                     robotMoveForward(robotStatusTxtbox,autoUpdate);
+                    break;
             }
         }
     }
@@ -698,31 +634,11 @@ public class ArenaView extends View{
                     break;
                 }
             case "L0":
-                if (robotDirection.equals("north"))
-                    robotDirection = "west";
-                else if (robotDirection.equals("south"))
-                    robotDirection = "east";
-                else if (robotDirection.equals("east"))
-                    robotDirection = "north";
-                else if (robotDirection.equals("west"))
-                    robotDirection = "south";
-                if (autoUpdate) {
-                    refreshMap();
-                    break;
-                }
+                robotManualRotateLeft(autoUpdate);
+                break;
             case "R0":
-                if (robotDirection.equals("north"))
-                    robotDirection = "east";
-                else if (robotDirection.equals("south"))
-                    robotDirection = "west";
-                else if (robotDirection.equals("east"))
-                    robotDirection = "south";
-                else if (robotDirection.equals("west"))
-                    robotDirection = "north";
-                if (autoUpdate) {
-                    refreshMap();
-                    break;
-                }
+                robotManualRotateRight(autoUpdate);
+                break;
         }
 
     }
@@ -758,78 +674,14 @@ public class ArenaView extends View{
                     }
                 }
                 if (instruction.equals("L0")) {
-                    robotStatusTxtbox.setText("Rotating left");
-                    if (robotDirection.equals("north"))
-                        robotDirection = "west";
-                    else if (robotDirection.equals("south"))
-                        robotDirection = "east";
-                    else if (robotDirection.equals("east"))
-                        robotDirection = "north";
-                    else if (robotDirection.equals("west"))
-                        robotDirection = "south";
-                    if (autoUpdate) {
-                        refreshMap();
-                    }
-                    try {
-                        Thread.sleep(2000);
-                    } catch (Exception e){
-                        Log.e(TAG,"Error in waiting",e);
-                    }
+                    robotRotateLeft(robotStatusTxtbox, autoUpdate);
                 } else if (instruction.equals("R0")){
-                    robotStatusTxtbox.setText("Rotating right");
-                    if (robotDirection.equals("north"))
-                        robotDirection = "east";
-                    else if (robotDirection.equals("south"))
-                        robotDirection = "west";
-                    else if (robotDirection.equals("east"))
-                        robotDirection = "south";
-                    else if (robotDirection.equals("west"))
-                        robotDirection = "north";
-                    if (autoUpdate) {
-                        refreshMap();
-                    }
-                    try {
-                        Thread.sleep(2000);
-                    } catch (Exception e){
-                        Log.e(TAG,"Error in waiting",e);
-                    }
+                    robotRotateRight(robotStatusTxtbox,autoUpdate);
                 } else if (instruction.equals("L1")){
-                    robotStatusTxtbox.setText("Rotating left");
-                    if (robotDirection.equals("north"))
-                        robotDirection = "west";
-                    else if (robotDirection.equals("south"))
-                        robotDirection = "east";
-                    else if (robotDirection.equals("east"))
-                        robotDirection = "north";
-                    else if (robotDirection.equals("west"))
-                        robotDirection = "south";
-                    if (autoUpdate) {
-                        refreshMap();
-                    }
-                    try {
-                        Thread.sleep(2000);
-                    } catch (Exception e){
-                        Log.e(TAG,"Error in waiting",e);
-                    }
+                    robotRotateLeft(robotStatusTxtbox, autoUpdate);
                     robotMoveForward(robotStatusTxtbox,autoUpdate);
                 } else if (instruction.equals("R1")){
-                    robotStatusTxtbox.setText("Rotating right");
-                    if (robotDirection.equals("north"))
-                        robotDirection = "east";
-                    else if (robotDirection.equals("south"))
-                        robotDirection = "west";
-                    else if (robotDirection.equals("east"))
-                        robotDirection = "south";
-                    else if (robotDirection.equals("west"))
-                        robotDirection = "north";
-                    if (autoUpdate) {
-                        refreshMap();
-                    }
-                    try {
-                        Thread.sleep(2000);
-                    } catch (Exception e){
-                        Log.e(TAG,"Error in waiting",e);
-                    }
+                    robotRotateRight(robotStatusTxtbox, autoUpdate);
                     robotMoveForward(robotStatusTxtbox,autoUpdate);
                 }
             }
@@ -869,6 +721,73 @@ public class ArenaView extends View{
         } catch (Exception e){
             Log.e(TAG,"Error in waiting",e);
         }
+    }
+
+    public void robotRotateLeft(TextView robotStatusTxtbox, boolean autoUpdate){
+        robotStatusTxtbox.setText("Rotating left");
+        if (robotDirection.equals("north"))
+            robotDirection = "west";
+        else if (robotDirection.equals("south"))
+            robotDirection = "east";
+        else if (robotDirection.equals("east"))
+            robotDirection = "north";
+        else if (robotDirection.equals("west"))
+            robotDirection = "south";
+        if (autoUpdate) {
+            refreshMap();
+            try {
+                Thread.sleep(2000);
+            } catch (Exception e){
+                Log.e(TAG,"Error in waiting",e);
+            }
+        }
+    }
+
+    public void robotRotateRight(TextView robotStatusTxtbox, boolean autoUpdate){
+        robotStatusTxtbox.setText("Rotating right");
+        if (robotDirection.equals("north"))
+            robotDirection = "east";
+        else if (robotDirection.equals("south"))
+            robotDirection = "west";
+        else if (robotDirection.equals("east"))
+            robotDirection = "south";
+        else if (robotDirection.equals("west"))
+            robotDirection = "north";
+        if (autoUpdate) {
+            refreshMap();
+            try {
+                Thread.sleep(2000);
+            } catch (Exception e){
+                Log.e(TAG,"Error in waiting",e);
+            }
+        }
+    }
+
+    public void robotManualRotateLeft(boolean autoUpdate){
+        if (robotDirection.equals("north"))
+            robotDirection = "west";
+        else if (robotDirection.equals("south"))
+            robotDirection = "east";
+        else if (robotDirection.equals("east"))
+            robotDirection = "north";
+        else if (robotDirection.equals("west"))
+            robotDirection = "south";
+        if (autoUpdate)
+            refreshMap();
+
+    }
+
+    public void robotManualRotateRight(boolean autoUpdate){
+        if (robotDirection.equals("north"))
+            robotDirection = "east";
+        else if (robotDirection.equals("south"))
+            robotDirection = "west";
+        else if (robotDirection.equals("east"))
+            robotDirection = "south";
+        else if (robotDirection.equals("west"))
+            robotDirection = "north";
+        if (autoUpdate)
+            refreshMap();
     }
 
 }
