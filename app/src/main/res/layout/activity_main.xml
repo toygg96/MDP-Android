@@ -12,6 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/bluetooth_connection"
+        android:textStyle="bold"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.505"
@@ -27,6 +28,7 @@
         android:layout_marginStart="40dp"
         android:layout_marginTop="4dp"
         android:text="Bluetooth: Turned on\nBluetooth Device Name:\nBluetooth Address:\nConnected to:"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
@@ -46,6 +48,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/receiveTextLabel"
+        android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@+id/bluetoothConnectionStatus"
         app:layout_constraintStart_toStartOf="@+id/bluetoothConnectionStatus"/>
 

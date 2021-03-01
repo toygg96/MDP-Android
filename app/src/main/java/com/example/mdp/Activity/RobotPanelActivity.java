@@ -364,10 +364,10 @@ public class RobotPanelActivity extends AppCompatActivity {
     public void onClickImageStrLogic(View v){
         AlertDialog dialogBuilder = new AlertDialog.Builder(v.getContext()).create();
         LayoutInflater inflater = getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.img_strings_dialog, null);
+        View dialogView = inflater.inflate(R.layout.nice_image_string_dialog, null);
 
-        TextView imgStrTxtview = (TextView) dialogView.findViewById(R.id.imageStrTextView);
-        Button closeBtn = (Button) dialogView.findViewById(R.id.closeBtn2);
+        TextView imgStrTxtview = (TextView) dialogView.findViewById(R.id.imgStringsTV);
+        Button closeBtn = (Button) dialogView.findViewById(R.id.okDialogBtn2);
         imgStrTxtview.setText(BluetoothController.getImgStrings());
         closeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
