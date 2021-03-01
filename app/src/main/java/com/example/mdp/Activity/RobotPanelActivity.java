@@ -343,11 +343,11 @@ public class RobotPanelActivity extends AppCompatActivity {
     public void onClickMDFlogic(View v){
         AlertDialog dialogBuilder = new AlertDialog.Builder(v.getContext()).create();
         LayoutInflater inflater = getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.mdf_dialog, null);
+        View dialogView = inflater.inflate(R.layout.nice_mdf_dialog, null);
 
-        TextView mdfTxtview = (TextView) dialogView.findViewById(R.id.mdfTextView);
-        TextView mdfTxtview2 = (TextView) dialogView.findViewById(R.id.mdfTextView2);
-        Button closeBtn = (Button) dialogView.findViewById(R.id.closeBtn);
+        TextView mdfTxtview = (TextView) dialogView.findViewById(R.id.mdfTV);
+        TextView mdfTxtview2 = (TextView) dialogView.findViewById(R.id.mdfTV2);
+        Button closeBtn = (Button) dialogView.findViewById(R.id.okDialogBtn);
         mdfTxtview.setText(BluetoothController.getMdfString());
         mdfTxtview2.setText(BluetoothController.getMdfString2());
         closeBtn.setOnClickListener(new View.OnClickListener() {
