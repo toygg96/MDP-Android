@@ -27,4 +27,8 @@
     <string name="mdf_string_2">MDF String 2</string>
     <string name="display_mdf">Display MDF</string>
     <string name="image_strings">Image Strings</string>
+    <string name="enter_a_string">Enter a String</string>
+    <string name="ok">Ok</string>
+    <string name="cancel">Cancel</string>
+    <string name="your_string">\'Your string\'</string>
 </resources>

@@ -96,7 +96,7 @@ public class RobotPanelActivity extends AppCompatActivity {
 
         BluetoothController.init(this, BluetoothAdapter.getDefaultAdapter(),BluetoothController.getAdapter());
 
-        BluetoothController.sendCmd("ARD|AND|SS");
+        BluetoothController.sendCmd("SS");
 
         setF1btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -134,7 +134,7 @@ public class RobotPanelActivity extends AppCompatActivity {
         upBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View r) {
-                BluetoothController.sendCmd("ARD|AND|F01|");
+                BluetoothController.sendCmd("F01");
                 if (updateFlag)
                     myMaze.updateMaze3("F01",true);
                 else
@@ -146,7 +146,7 @@ public class RobotPanelActivity extends AppCompatActivity {
         leftBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View r) {
-                BluetoothController.sendCmd("ARD|AND|L0|");
+                BluetoothController.sendCmd("L0");
                 if (updateFlag)
                     myMaze.updateMaze3("L0",true);
                 else
@@ -158,7 +158,7 @@ public class RobotPanelActivity extends AppCompatActivity {
         rightBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View r) {
-                BluetoothController.sendCmd("ARD|AND|R0|");
+                BluetoothController.sendCmd("R0");
                 if (updateFlag)
                     myMaze.updateMaze3("R0",true);
                 else
@@ -304,7 +304,7 @@ public class RobotPanelActivity extends AppCompatActivity {
     public void onClickLogicF1F2(View v,boolean F1){
         AlertDialog dialogBuilder = new AlertDialog.Builder(v.getContext()).create();
         LayoutInflater inflater = getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.alert_dialog, null);
+        View dialogView = inflater.inflate(R.layout.fn_dialog, null);
 
         EditText editText = (EditText) dialogView.findViewById(R.id.edt_comment);
         Button okBtn = (Button) dialogView.findViewById(R.id.okBtn);
@@ -548,11 +548,11 @@ public class RobotPanelActivity extends AppCompatActivity {
                 if (resultCode == RESULT_OK && data != null) {
                     ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                     if (result.get(0).toLowerCase().contains("up") || result.get(0).toLowerCase().contains("forward"))
-                        BluetoothController.sendCmd("ARD|AND|F01|");
+                        BluetoothController.sendCmd("F01");
                     else if (result.get(0).toLowerCase().contains("left"))
-                        BluetoothController.sendCmd("ARD|AND|L0|");
+                        BluetoothController.sendCmd("L0");
                     else if (result.get(0).toLowerCase().contains("right"))
-                        BluetoothController.sendCmd("ARD|AND|R0|");
+                        BluetoothController.sendCmd("R0");
                     else
                         Toast.makeText(this, "Cant understand your speech", Toast.LENGTH_SHORT).show();
                 }
