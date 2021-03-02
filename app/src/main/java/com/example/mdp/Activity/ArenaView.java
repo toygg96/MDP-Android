@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -36,7 +37,7 @@ public class ArenaView extends View{
     private static float cellSizeX,cellSizeY, hMargin, vMargin;
     private static Paint wallPaint, robotPaint, waypointPaint, directionPaint,  emptyPaint, virtualWallPaint, obstaclePaint, unexploredPaint, ftpPaint, endPointPaint, gridNumberPaint, exploredPaint;
     private static int robotRow = 18, robotCols = 1, wayPointRow =-1, wayPointCols=-1;
-    private static String robotDirection = "east";
+    private static String robotDirection = "E";
     private static boolean setRobotPostition = false, setWayPointPosition = false;
     private static boolean createCellStatus = false;
     private static int imgXCoord = -1,imgYCoord= -1;
@@ -299,28 +300,28 @@ public class ArenaView extends View{
         Path path = new Path();
 
         switch (robotDirection){
-            case "north":
+            case "N":
                 path.moveTo(cells[robotCols][robotRow - 1].startX + halfWidth, cells[robotCols][robotRow - 1].startY); // Top
                 path.lineTo(cells[robotCols][robotRow - 1].startX, cells[robotCols][robotRow - 1].endY); // Bottom left
                 path.lineTo(cells[robotCols][robotRow - 1].endX, cells[robotCols][robotRow - 1].endY); // Bottom right
                 path.lineTo(cells[robotCols][robotRow - 1].startX + halfWidth, cells[robotCols][robotRow - 1].startY); // Back to Top
                 break;
 
-            case "south":
+            case "S":
                 path.moveTo(cells[robotCols][robotRow + 1].endX - halfWidth, cells[robotCols][robotRow + 1].endY); // Top
                 path.lineTo(cells[robotCols][robotRow + 1].startX, cells[robotCols][robotRow + 1].startY); // Bottom left
                 path.lineTo(cells[robotCols + 1][robotRow + 1].startX, cells[robotCols +1][robotRow + 1].startY); // Bottom right
                 path.lineTo(cells[robotCols][robotRow + 1].endX - halfWidth, cells[robotCols][robotRow + 1].endY); // Back to Top
                 break;
 
-            case "east":
+            case "E":
                 path.moveTo(cells[robotCols+1][robotRow].startX + (2*halfWidth), cells[robotCols][robotRow].startY + halfWidth); // Top
                 path.lineTo(cells[robotCols+1][robotRow].startX, cells[robotCols+1][robotRow].startY); // Bottom left
                 path.lineTo(cells[robotCols+1][robotRow+1].startX, cells[robotCols+1][robotRow+1].startY); // Bottom right
                 path.lineTo(cells[robotCols+1][robotRow].startX + (2*halfWidth) , cells[robotCols][robotRow].startY + halfWidth); // Back to Top
                 break;
 
-            case "west":
+            case "W":
                 path.moveTo(cells[robotCols-1][robotRow].startX, cells[robotCols][robotRow].startY + halfWidth); // Top
                 path.lineTo(cells[robotCols][robotRow].startX, cells[robotCols][robotRow].startY); // Bottom left
                 path.lineTo(cells[robotCols][robotRow + 1].startX, cells[robotCols][robotRow  +1].startY); // Bottom right
@@ -538,46 +539,43 @@ public class ArenaView extends View{
         return new int[] {wayPointCols, wayPointRow};
     }
 
-    public void updateMaze(String mdfString1,String mdfString2, int XCoord, int YCoord, String facingDirection, boolean autoUpdate){
-
-//        robotDirection = mazeInfo[1];
-//        robotCols = Integer.parseInt(mazeInfo[2]);
-//        robotRow = 19 - Integer.parseInt(mazeInfo[3]);
-        robotCols = XCoord;
-        robotRow = getInverseYCoord(YCoord);
-        robotDirection = facingDirection;
+    public void updateMaze(String mdfString1,String mdfString2, boolean autoUpdate){
 
         int counter = 0;
 
-        for (int y = 0; y < ROWS; y++) {
-            for (int x = 0; x < COLS; x++) {
-                char tmp = mdfString1.charAt(counter);
-                if (tmp == '1') {
-                    cells[x][getInverseYCoord(y)].setPaint(exploredPaint);
-                    //Log.d(TAG,"(" + String.valueOf(x) + "," + String.valueOf(y) + ")");
-                }
-                counter++;
-            }
-
-        }
-
-        counter = 0;
-        for (int y = 0; y < ROWS; y++) {
-            for (int x = 0; x < COLS; x++) {
-                Paint tmpPaint = cells[x][getInverseYCoord(y)].getPaint();
-                if (tmpPaint.getColor() == exploredPaint.getColor()){
-                    char tmp = mdfString2.charAt(counter);
+        try {
+            for (int y = 0; y < ROWS; y++) {
+                for (int x = 0; x < COLS; x++) {
+                    char tmp = mdfString1.charAt(counter);
                     if (tmp == '1') {
-                        cells[x][getInverseYCoord(y)].setPaint(obstaclePaint);
-                        //Log.d(TAG,"(" + String.valueOf(x) + "," + String.valueOf(y) + ")");
-                    } else if (tmp == '0') {
-                        cells[x][getInverseYCoord(y)].setPaint(emptyPaint);
+                        cells[x][getInverseYCoord(y)].setPaint(exploredPaint);
                         //Log.d(TAG,"(" + String.valueOf(x) + "," + String.valueOf(y) + ")");
                     }
                     counter++;
                 }
+
             }
 
+        counter = 0;
+            for (int y = 0; y < ROWS; y++) {
+                for (int x = 0; x < COLS; x++) {
+                    Paint tmpPaint = cells[x][getInverseYCoord(y)].getPaint();
+                    if (tmpPaint.getColor() == exploredPaint.getColor()) {
+                        char tmp = mdfString2.charAt(counter);
+                        if (tmp == '1') {
+                            cells[x][getInverseYCoord(y)].setPaint(obstaclePaint);
+                            //Log.d(TAG,"(" + String.valueOf(x) + "," + String.valueOf(y) + ")");
+                        } else if (tmp == '0') {
+                            cells[x][getInverseYCoord(y)].setPaint(emptyPaint);
+                            //Log.d(TAG,"(" + String.valueOf(x) + "," + String.valueOf(y) + ")");
+                        }
+                        counter++;
+                    }
+                }
+
+            }
+        } catch (Exception e) {
+            Log.e(TAG,"Error: " ,e);
         }
 
         //ENSURE AUTO UPDATE TOGGLE BUTTON IS ON
@@ -621,13 +619,13 @@ public class ArenaView extends View{
 
         switch (instruction) {
             case "F01":
-                if (robotDirection.equals("north"))
+                if (robotDirection.equals("N"))
                     robotRow -= 1;
-                else if (robotDirection.equals("south"))
+                else if (robotDirection.equals("S"))
                     robotRow += 1;
-                else if (robotDirection.equals("east"))
+                else if (robotDirection.equals("E"))
                     robotCols += 1;
-                else if (robotDirection.equals("west"))
+                else if (robotDirection.equals("W"))
                     robotCols -= 1;
                 if (autoUpdate) {
                     refreshMap();
@@ -649,16 +647,16 @@ public class ArenaView extends View{
                     int numOfSteps = Integer.parseInt(instruction.substring(1, instruction.length()));
                     while (numOfSteps != 0) {
                         robotStatusTxtbox.setText("Moving forward");
-                        if (robotDirection.equals("north")) {
+                        if (robotDirection.equals("N")) {
                             robotRow -= 1;
                             numOfSteps -= 1;
-                        } else if (robotDirection.equals("south")) {
+                        } else if (robotDirection.equals("S")) {
                             robotRow += 1;
                             numOfSteps -= 1;
-                        } else if (robotDirection.equals("east")) {
+                        } else if (robotDirection.equals("E")) {
                             robotCols += 1;
                             numOfSteps -= 1;
-                        } else if (robotDirection.equals("west")) {
+                        } else if (robotDirection.equals("W")) {
                             robotCols -= 1;
                             numOfSteps -= 1;
                         }
@@ -688,6 +686,14 @@ public class ArenaView extends View{
 
     }
 
+    public void setRobotLocationAndDirection(int XCoord, int YCoord, String facingDirection,boolean autoUpdate){
+        robotCols = XCoord;
+        robotRow = getInverseYCoord(YCoord);
+        robotDirection = facingDirection.toUpperCase();
+        if (autoUpdate)
+            refreshMap();
+    }
+
     public void refreshMap(){
         invalidate();
     }
@@ -703,13 +709,13 @@ public class ArenaView extends View{
 
     public void robotMoveForward(TextView robotStatusTxtbox, boolean autoUpdate){
         robotStatusTxtbox.setText("Moving forward");
-        if (robotDirection.equals("north")) {
+        if (robotDirection.equals("N")) {
             robotRow -= 1;
-        } else if (robotDirection.equals("south")) {
+        } else if (robotDirection.equals("S")) {
             robotRow += 1;
-        } else if (robotDirection.equals("east")) {
+        } else if (robotDirection.equals("E")) {
             robotCols += 1;
-        } else if (robotDirection.equals("west")) {
+        } else if (robotDirection.equals("W")) {
             robotCols -= 1;
         }
 
@@ -725,14 +731,14 @@ public class ArenaView extends View{
 
     public void robotRotateLeft(TextView robotStatusTxtbox, boolean autoUpdate){
         robotStatusTxtbox.setText("Rotating left");
-        if (robotDirection.equals("north"))
-            robotDirection = "west";
-        else if (robotDirection.equals("south"))
-            robotDirection = "east";
-        else if (robotDirection.equals("east"))
-            robotDirection = "north";
-        else if (robotDirection.equals("west"))
-            robotDirection = "south";
+        if (robotDirection.equals("N"))
+            robotDirection = "W";
+        else if (robotDirection.equals("S"))
+            robotDirection = "E";
+        else if (robotDirection.equals("E"))
+            robotDirection = "N";
+        else if (robotDirection.equals("W"))
+            robotDirection = "S";
         if (autoUpdate) {
             refreshMap();
             try {
@@ -745,14 +751,14 @@ public class ArenaView extends View{
 
     public void robotRotateRight(TextView robotStatusTxtbox, boolean autoUpdate){
         robotStatusTxtbox.setText("Rotating right");
-        if (robotDirection.equals("north"))
-            robotDirection = "east";
-        else if (robotDirection.equals("south"))
-            robotDirection = "west";
-        else if (robotDirection.equals("east"))
-            robotDirection = "south";
-        else if (robotDirection.equals("west"))
-            robotDirection = "north";
+        if (robotDirection.equals("N"))
+            robotDirection = "E";
+        else if (robotDirection.equals("S"))
+            robotDirection = "W";
+        else if (robotDirection.equals("E"))
+            robotDirection = "S";
+        else if (robotDirection.equals("W"))
+            robotDirection = "N";
         if (autoUpdate) {
             refreshMap();
             try {
@@ -764,28 +770,28 @@ public class ArenaView extends View{
     }
 
     public void robotManualRotateLeft(boolean autoUpdate){
-        if (robotDirection.equals("north"))
-            robotDirection = "west";
-        else if (robotDirection.equals("south"))
-            robotDirection = "east";
-        else if (robotDirection.equals("east"))
-            robotDirection = "north";
-        else if (robotDirection.equals("west"))
-            robotDirection = "south";
+        if (robotDirection.equals("N"))
+            robotDirection = "W";
+        else if (robotDirection.equals("S"))
+            robotDirection = "E";
+        else if (robotDirection.equals("E"))
+            robotDirection = "N";
+        else if (robotDirection.equals("W"))
+            robotDirection = "S";
         if (autoUpdate)
             refreshMap();
 
     }
 
     public void robotManualRotateRight(boolean autoUpdate){
-        if (robotDirection.equals("north"))
-            robotDirection = "east";
-        else if (robotDirection.equals("south"))
-            robotDirection = "west";
-        else if (robotDirection.equals("east"))
-            robotDirection = "south";
-        else if (robotDirection.equals("west"))
-            robotDirection = "north";
+        if (robotDirection.equals("N"))
+            robotDirection = "E";
+        else if (robotDirection.equals("S"))
+            robotDirection = "W";
+        else if (robotDirection.equals("E"))
+            robotDirection = "S";
+        else if (robotDirection.equals("W"))
+            robotDirection = "N";
         if (autoUpdate)
             refreshMap();
     }

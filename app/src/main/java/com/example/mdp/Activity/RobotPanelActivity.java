@@ -6,8 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.media.Image;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -16,6 +18,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Scroller;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,7 +39,7 @@ import java.util.Locale;
 public class RobotPanelActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_SPEECH_INPUT = 1000;
     private Button sendF1btn,sendF2btn,setF1btn,setF2btn, fastestPathBtn,explorationBtn, imageRecogBtn,setWaypointBtn,setOriginBtn,startBtn,resetMapBtn,mdfBtn, imageStrBtn;
-    private ImageButton upBtn,leftBtn,rightBtn, micBtn,refreshBtn;
+    private ImageButton upBtn,leftBtn,rightBtn, micBtn,refreshBtn, msgHistoryBtn;
     private TextView F1txtbox, F2txtbox,bluetoothConnectionTxtbox, robotStatusTxtbox;
     private Switch autoUpdateSwitch;
     private String F1text, F2text;
@@ -77,6 +80,7 @@ public class RobotPanelActivity extends AppCompatActivity {
         rightBtn = (ImageButton)findViewById(R.id.rightBtn);
         micBtn = (ImageButton)findViewById(R.id.micBtn);
         refreshBtn = (ImageButton)findViewById(R.id.refreshBtn);
+        msgHistoryBtn = (ImageButton)findViewById(R.id.msgHistoryBtn);
         autoUpdateSwitch = (Switch)findViewById(R.id.updateSwitch);
 
         if (autoUpdateSwitch.isChecked())
@@ -246,6 +250,13 @@ public class RobotPanelActivity extends AppCompatActivity {
                 onClickImageStrLogic(r);
             }
         });
+
+        msgHistoryBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View r) {
+                onClickMsgHistoryLogic(r);
+            }
+        });
     }
 
     @Override
@@ -380,6 +391,28 @@ public class RobotPanelActivity extends AppCompatActivity {
         dialogBuilder.show();
     }
 
+    public void onClickMsgHistoryLogic(View v){
+        AlertDialog dialogBuilder = new AlertDialog.Builder(v.getContext()).create();
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.message_chat_dialog, null);
+
+        TextView msgLogTV = (TextView) dialogView.findViewById(R.id.msgLogTV);
+        Button closeBtn = (Button) dialogView.findViewById(R.id.okDialogBtn3);
+        msgLogTV.setText(BluetoothController.getMsgLog());
+        msgLogTV.setScroller(new Scroller(this));
+        msgLogTV.setVerticalScrollBarEnabled(true);
+        msgLogTV.setMovementMethod(new ScrollingMovementMethod());
+        closeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // DO SOMETHINGS
+                dialogBuilder.cancel();
+            }
+        });
+        dialogBuilder.setView(dialogView);
+        dialogBuilder.show();
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -426,22 +459,22 @@ public class RobotPanelActivity extends AppCompatActivity {
             if (msg.toLowerCase().contains("mdf")) {
                 BluetoothController.setMdfString(msg.split("\\|")[1]);
                 BluetoothController.setMdfString2(msg.split("\\|")[2]);
-                Log.d(TAG,msg.split("\\|")[3]);
-                String convertedMDF1 = hexToBinaryConverter.hexToBinary(msg.split("\\|")[1],true);
-                String convertedMDF2 = hexToBinaryConverter.hexToBinary(msg.split("\\|")[2],false);
-                String robotCoordsDirection = msg.split("\\|")[3];
-                robotCoordsDirection = robotCoordsDirection.replace("(","");
-                robotCoordsDirection = robotCoordsDirection.replace(")","");
-                String [] strippedRobotCoordsDirection = robotCoordsDirection.split(",");
-                int XCoord = Integer.parseInt(strippedRobotCoordsDirection[0]);
-                int YCoord = Integer.parseInt(strippedRobotCoordsDirection[1]);
-                String facingDirection = strippedRobotCoordsDirection[2];
+                Log.d(TAG, msg.split("\\|")[3]);
+                String convertedMDF1 = hexToBinaryConverter.hexToBinary(msg.split("\\|")[1], true);
+                String convertedMDF2 = hexToBinaryConverter.hexToBinary(msg.split("\\|")[2], false);
                 //Log.d(TAG,convertedMDF1);
                 //Log.d(TAG,convertedMDF2);
-                if (updateFlag)
-                    myMaze.updateMaze(convertedMDF1,convertedMDF2,XCoord,YCoord,facingDirection,true);
-                else
-                    myMaze.updateMaze(convertedMDF1,convertedMDF2,XCoord,YCoord,facingDirection,false);
+                Thread thread = new Thread() {
+                    @Override
+                    public void run() {
+                        if (updateFlag) {
+                            myMaze.updateMaze(convertedMDF1, convertedMDF2, true);
+                        } else {
+                            myMaze.updateMaze(convertedMDF1, convertedMDF2, false);
+                        }
+                    }
+                };
+                thread.start();
             } else if (msg.toLowerCase().contains("fp")) {
                 String [] instructions = msg.split("\\|");
                 if (msg.toLowerCase().contains("f02") || msg.toLowerCase().contains("f03") || msg.toLowerCase().contains("f04") || msg.toLowerCase().contains("f05")
@@ -478,6 +511,28 @@ public class RobotPanelActivity extends AppCompatActivity {
                     };
                     thread.start();
                 }
+            } else if (msg.toLowerCase().contains("loc")) {
+                String robotCoordsDirection = msg.split("\\|")[1];
+                robotCoordsDirection = robotCoordsDirection.replace("(", "");
+                robotCoordsDirection = robotCoordsDirection.replace(")", "");
+                String[] strippedRobotCoordsDirection = robotCoordsDirection.split(",");
+                int XCoord = Integer.parseInt(strippedRobotCoordsDirection[0]);
+                int YCoord = Integer.parseInt(strippedRobotCoordsDirection[1]);
+                String facingDirection = strippedRobotCoordsDirection[2];
+                Thread thread = new Thread() {
+                    @Override
+                    public void run() {
+                        try {
+                            if (updateFlag)
+                                myMaze.setRobotLocationAndDirection(XCoord,YCoord,facingDirection,true);
+                            else
+                                myMaze.setRobotLocationAndDirection(XCoord,YCoord,facingDirection,false);
+                        } catch (Exception e) {
+                            Log.e(TAG, "Error in multithread: ", e);
+                        }
+                    }
+                };
+                thread.start();
             }
             BluetoothController.saveMsgLog(log + "\n" + msg);
         }
