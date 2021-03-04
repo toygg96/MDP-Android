@@ -9,8 +9,8 @@
 
     <com.example.mdp.Activity.ArenaView
         android:id="@+id/mapView"
-        android:layout_width="370dp"
-        android:layout_height="370dp"
+        android:layout_width="400dp"
+        android:layout_height="480dp"
         android:layout_marginTop="18dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/robotStatusTxtbox" />
@@ -18,7 +18,7 @@
     <TextView
         android:id="@+id/F1textBox"
         android:layout_width="180dp"
-        android:layout_height="40dp"
+        android:layout_height="50dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="22dp"
         android:maxWidth="120dp"
@@ -29,7 +29,7 @@
         android:id="@+id/setF1btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/btn_bg"
         android:text="@string/set_f1"
         android:textColor="#FFFFFF"
@@ -41,17 +41,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/btn_bg"
         android:text="@string/f1btn"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toEndOf="@id/setF1btn"
-        app:layout_constraintTop_toBottomOf="@id/F1textBox"/>
+        app:layout_constraintTop_toBottomOf="@id/F1textBox" />
 
     <TextView
         android:id="@+id/F2textBox"
         android:layout_width="180dp"
-        android:layout_height="40dp"
+        android:layout_height="50dp"
         android:layout_marginTop="7dp"
         android:maxWidth="120dp"
         app:layout_constraintStart_toStartOf="@+id/setF1btn"
@@ -61,7 +61,7 @@
         android:id="@+id/setF2btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/btn_bg"
         android:text="Set F2"
         android:textColor="#FFFFFF"
@@ -73,46 +73,46 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/btn_bg"
         android:text="@string/f2btn"
         android:textColor="#FFFFFF"
         app:layout_constraintStart_toEndOf="@id/setF2btn"
-        app:layout_constraintTop_toBottomOf="@+id/F2textBox"/>
+        app:layout_constraintTop_toBottomOf="@+id/F2textBox" />
 
     <Button
         android:id="@+id/mdfBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:background="@drawable/btn_bg"
+        android:layout_marginTop="68dp"
         android:width="185dp"
+        android:background="@drawable/btn_bg"
         android:text="@string/display_mdf"
         android:textColor="#FFFFFF"
-        app:layout_constraintStart_toStartOf="@id/setF2btn"
         app:layout_constraintEnd_toEndOf="@id/F2btn"
-        app:layout_constraintTop_toBottomOf="@+id/setF2btn"/>
+        app:layout_constraintStart_toStartOf="@id/setF2btn"
+        app:layout_constraintTop_toBottomOf="@+id/setF2btn" />
 
     <Button
         android:id="@+id/imageBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/btn_bg"
+        android:layout_marginTop="68dp"
         android:width="185dp"
+        android:background="@drawable/btn_bg"
         android:text="Display Image"
         android:textColor="#FFFFFF"
-        app:layout_constraintStart_toStartOf="@id/setF2btn"
         app:layout_constraintEnd_toEndOf="@id/F2btn"
-        app:layout_constraintTop_toBottomOf="@+id/mdfBtn"/>
+        app:layout_constraintStart_toStartOf="@id/setF2btn"
+        app:layout_constraintTop_toBottomOf="@+id/mdfBtn" />
 
     <TextView
         android:id="@+id/robotStatusLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="10dp"
         android:text="@string/robot_status"
-        app:layout_constraintEnd_toStartOf="@+id/F1textBox"
         app:layout_constraintStart_toEndOf="@+id/updateSwitch"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -132,7 +132,7 @@
         android:id="@+id/setOriginBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="65dp"
+        android:layout_marginTop="25dp"
         android:background="@drawable/btn_bg"
         android:text="@string/set_origin"
         android:textColor="#FFFFFF"
@@ -144,7 +144,7 @@
         android:id="@+id/setWaypointBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="65dp"
+        android:layout_marginTop="25dp"
         android:background="@drawable/btn_bg"
         android:text="@string/set_waypoint"
         android:textColor="#FFFFFF"
@@ -156,7 +156,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="65dp"
+        android:layout_marginTop="25dp"
         android:background="@drawable/btn_bg"
         android:text="@string/fastest_path"
         android:textColor="#FFFFFF"
@@ -225,12 +225,10 @@
         android:id="@+id/upBtn"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginStart="29dp"
         android:layout_marginTop="65dp"
         android:background="@null"
         android:scaleType="fitCenter"
-        app:layout_constraintEnd_toStartOf="@+id/setWaypointBtn"
-        app:layout_constraintStart_toStartOf="@+id/imageBtn"
+        app:layout_constraintStart_toEndOf="@+id/leftBtn"
         app:layout_constraintTop_toBottomOf="@+id/setWaypointBtn"
         app:srcCompat="@drawable/uparrow" />
 
@@ -238,7 +236,7 @@
         android:id="@+id/leftBtn"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginStart="35dp"
+        android:layout_marginStart="30dp"
         android:layout_marginTop="5dp"
         android:background="@null"
         android:scaleType="fitCenter"
@@ -250,11 +248,10 @@
         android:id="@+id/rightBtn"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginStart="53dp"
         android:layout_marginTop="5dp"
         android:background="@null"
         android:scaleType="fitCenter"
-        app:layout_constraintStart_toEndOf="@+id/leftBtn"
+        app:layout_constraintStart_toEndOf="@+id/upBtn"
         app:layout_constraintTop_toBottomOf="@+id/upBtn"
         app:srcCompat="@drawable/rightarrow" />
 
@@ -262,7 +259,7 @@
         android:id="@+id/micBtn"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginStart="25dp"
+        android:layout_marginStart="10dp"
         android:background="@null"
         android:scaleType="fitCenter"
         app:layout_constraintStart_toEndOf="@+id/rightBtn"
@@ -297,9 +294,9 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginTop="35dp"
-        android:src="@drawable/message"
         android:background="@null"
         android:scaleType="fitCenter"
+        android:src="@drawable/message"
         app:layout_constraintEnd_toEndOf="@+id/micBtn"
         app:layout_constraintTop_toBottomOf="@+id/setWaypointBtn" />
 

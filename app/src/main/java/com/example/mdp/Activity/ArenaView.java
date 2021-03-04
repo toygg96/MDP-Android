@@ -65,8 +65,8 @@ public class ArenaView extends View{
         int height = getHeight();
         //Log.d(TAG,"Width: " + String.valueOf(width));
         //Log.d(TAG,"Height: " + String.valueOf(height));
-        cellSizeX = (float) 453 / COLS;
-        cellSizeY = (float) 465 / ROWS;
+        cellSizeX = (float) 493 / COLS;
+        cellSizeY = (float) 599 / ROWS;
 
         //CALCULATE MARGIN SIZE FOR THE CANVAS
         hMargin = (width - COLS * cellSizeX) / 11;
@@ -620,13 +620,25 @@ public class ArenaView extends View{
         switch (instruction) {
             case "F01":
                 if (robotDirection.equals("north"))
-                    robotRow -= 1;
+                    if((robotRow - 1)  < 1)
+                        Log.d(TAG,"INVALID MOVEMENT");
+                    else
+                        robotRow -= 1;
                 else if (robotDirection.equals("south"))
-                    robotRow += 1;
+                    if ((robotRow + 1) > 18)
+                        Log.d(TAG,"INVALID MOVEMENT");
+                    else
+                        robotRow += 1;
                 else if (robotDirection.equals("east"))
-                    robotCols += 1;
+                    if ((robotCols + 1)  > 13)
+                        Log.d(TAG,"INVALID MOVEMENT");
+                    else
+                        robotCols += 1;
                 else if (robotDirection.equals("west"))
-                    robotCols -= 1;
+                    if((robotCols - 1) < 1)
+                        Log.d(TAG,"INVALID MOVEMENT");
+                    else
+                        robotCols -= 1;
                 if (autoUpdate) {
                     refreshMap();
                     break;
