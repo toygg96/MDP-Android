@@ -138,7 +138,7 @@ public class RobotPanelActivity extends AppCompatActivity {
         upBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View r) {
-                BluetoothController.sendCmd("F01");
+                BluetoothController.sendCmd("F01|");
                 if (updateFlag)
                     myMaze.updateMaze3("F01",true);
                 else
@@ -150,7 +150,7 @@ public class RobotPanelActivity extends AppCompatActivity {
         leftBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View r) {
-                BluetoothController.sendCmd("L0");
+                BluetoothController.sendCmd("L0|");
                 if (updateFlag)
                     myMaze.updateMaze3("L0",true);
                 else
@@ -162,7 +162,7 @@ public class RobotPanelActivity extends AppCompatActivity {
         rightBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View r) {
-                BluetoothController.sendCmd("R0");
+                BluetoothController.sendCmd("R0|");
                 if (updateFlag)
                     myMaze.updateMaze3("R0",true);
                 else
@@ -443,96 +443,112 @@ public class RobotPanelActivity extends AppCompatActivity {
             } else if (msg.equalsIgnoreCase("C")) {
                 robotStatusTxtbox.setText("Taking Picture");
             } else if (msg.toLowerCase().contains("img")) {
-                String [] arrOfStr = msg.split("\\|");
+                try {
+                    String[] arrOfStr = msg.split("\\|");
 //                Log.d(TAG,arrOfStr[2]);
-                BluetoothController.addImgString(arrOfStr[2]);
-                arrOfStr[2] = arrOfStr[2].replace("(", "");
-                arrOfStr[2] = arrOfStr[2].replace(")", "");
-                String [] strippedMsg = arrOfStr[2].split(",");
+                    BluetoothController.addImgString(arrOfStr[2]);
+                    arrOfStr[2] = arrOfStr[2].replace("(", "");
+                    arrOfStr[2] = arrOfStr[2].replace(")", "");
+                    String[] strippedMsg = arrOfStr[2].split(",");
 //                Log.d(TAG,strippedMsg[0]);
 //                Log.d(TAG,strippedMsg[1]);
 //                Log.d(TAG,strippedMsg[2]);
-                myMaze.setDiscoveredImgOnCell(Integer.parseInt(strippedMsg[0]),Integer.parseInt(strippedMsg[1]),Integer.parseInt(strippedMsg[2]));
-                if (updateFlag)
-                    myMaze.refreshMap();
+                    myMaze.setDiscoveredImgOnCell(Integer.parseInt(strippedMsg[0]), Integer.parseInt(strippedMsg[1]), Integer.parseInt(strippedMsg[2]));
+                    if (updateFlag)
+                        myMaze.refreshMap();
+                } catch (Exception e) {
+                    Log.e(TAG,"Error: ", e);
+                }
             }
             if (msg.toLowerCase().contains("mdf")) {
-                BluetoothController.setMdfString(msg.split("\\|")[1]);
-                BluetoothController.setMdfString2(msg.split("\\|")[2]);
-                Log.d(TAG, msg.split("\\|")[3]);
-                String convertedMDF1 = hexToBinaryConverter.hexToBinary(msg.split("\\|")[1], true);
-                String convertedMDF2 = hexToBinaryConverter.hexToBinary(msg.split("\\|")[2], false);
-                //Log.d(TAG,convertedMDF1);
-                //Log.d(TAG,convertedMDF2);
-                Thread thread = new Thread() {
-                    @Override
-                    public void run() {
-                        if (updateFlag) {
-                            myMaze.updateMaze(convertedMDF1, convertedMDF2, true);
-                        } else {
-                            myMaze.updateMaze(convertedMDF1, convertedMDF2, false);
+                try {
+                    BluetoothController.setMdfString(msg.split("\\|")[1]);
+                    BluetoothController.setMdfString2(msg.split("\\|")[2]);
+                    Log.d(TAG, msg.split("\\|")[3]);
+                    String convertedMDF1 = hexToBinaryConverter.hexToBinary(msg.split("\\|")[1], true);
+                    String convertedMDF2 = hexToBinaryConverter.hexToBinary(msg.split("\\|")[2], false);
+                    //Log.d(TAG,convertedMDF1);
+                    //Log.d(TAG,convertedMDF2);
+                    Thread thread = new Thread() {
+                        @Override
+                        public void run() {
+                            if (updateFlag) {
+                                myMaze.updateMaze(convertedMDF1, convertedMDF2, true);
+                            } else {
+                                myMaze.updateMaze(convertedMDF1, convertedMDF2, false);
+                            }
                         }
-                    }
-                };
-                thread.start();
+                    };
+                    thread.start();
+                } catch (Exception e) {
+                    Log.e(TAG,"Error", e);
+                }
             } else if (msg.toLowerCase().contains("fp")) {
-                String [] instructions = msg.split("\\|");
-                if (msg.toLowerCase().contains("f02") || msg.toLowerCase().contains("f03") || msg.toLowerCase().contains("f04") || msg.toLowerCase().contains("f05")
-                || msg.toLowerCase().contains("f06") || msg.toLowerCase().contains("f07") || msg.toLowerCase().contains("f08") || msg.toLowerCase().contains("f09")
-                        || msg.toLowerCase().contains("f10") | msg.toLowerCase().contains("f11") | msg.toLowerCase().contains("f12") || msg.toLowerCase().contains("f13")
-                || msg.toLowerCase().contains("f14") || msg.toLowerCase().contains("f15") || msg.toLowerCase().contains("f16") || msg.toLowerCase().contains("f17")) {
-                    Thread thread = new Thread() {
-                        @Override
-                        public void run() {
-                            try {
-                                if (updateFlag)
-                                    myMaze.updateMaze4(instructions, true, robotStatusTxtbox);
-                                else
-                                    myMaze.updateMaze4(instructions, false, robotStatusTxtbox);
-                            } catch (Exception e) {
-                                Log.e(TAG, "Error in multithread: ", e);
+                try {
+                    String[] instructions = msg.split("\\|");
+                    if (msg.toLowerCase().contains("f02") || msg.toLowerCase().contains("f03") || msg.toLowerCase().contains("f04") || msg.toLowerCase().contains("f05")
+                            || msg.toLowerCase().contains("f06") || msg.toLowerCase().contains("f07") || msg.toLowerCase().contains("f08") || msg.toLowerCase().contains("f09")
+                            || msg.toLowerCase().contains("f10") | msg.toLowerCase().contains("f11") | msg.toLowerCase().contains("f12") || msg.toLowerCase().contains("f13")
+                            || msg.toLowerCase().contains("f14") || msg.toLowerCase().contains("f15") || msg.toLowerCase().contains("f16") || msg.toLowerCase().contains("f17")) {
+                        Thread thread = new Thread() {
+                            @Override
+                            public void run() {
+                                try {
+                                    if (updateFlag)
+                                        myMaze.updateMaze4(instructions, true, robotStatusTxtbox);
+                                    else
+                                        myMaze.updateMaze4(instructions, false, robotStatusTxtbox);
+                                } catch (Exception e) {
+                                    Log.e(TAG, "Error in multithread: ", e);
+                                }
                             }
-                        }
-                    };
-                    thread.start();
-                } else {
-                    Thread thread = new Thread() {
-                        @Override
-                        public void run() {
-                            try {
-                                if (updateFlag)
-                                    myMaze.updateMaze2(instructions, true, robotStatusTxtbox);
-                                else
-                                    myMaze.updateMaze2(instructions, false, robotStatusTxtbox);
-                            } catch (Exception e) {
-                                Log.e(TAG, "Error in multithread: ", e);
+                        };
+                        thread.start();
+                    } else {
+                        Thread thread = new Thread() {
+                            @Override
+                            public void run() {
+                                try {
+                                    if (updateFlag)
+                                        myMaze.updateMaze2(instructions, true, robotStatusTxtbox);
+                                    else
+                                        myMaze.updateMaze2(instructions, false, robotStatusTxtbox);
+                                } catch (Exception e) {
+                                    Log.e(TAG, "Error in multithread: ", e);
+                                }
                             }
-                        }
-                    };
-                    thread.start();
+                        };
+                        thread.start();
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG,"Error ", e);
                 }
             } else if (msg.toLowerCase().contains("loc")) {
-                String robotCoordsDirection = msg.split("\\|")[1];
-                robotCoordsDirection = robotCoordsDirection.replace("(", "");
-                robotCoordsDirection = robotCoordsDirection.replace(")", "");
-                String[] strippedRobotCoordsDirection = robotCoordsDirection.split(",");
-                int XCoord = Integer.parseInt(strippedRobotCoordsDirection[0]);
-                int YCoord = Integer.parseInt(strippedRobotCoordsDirection[1]);
-                String facingDirection = strippedRobotCoordsDirection[2];
-                Thread thread = new Thread() {
-                    @Override
-                    public void run() {
-                        try {
-                            if (updateFlag)
-                                myMaze.setRobotLocationAndDirection(XCoord,YCoord,facingDirection,true);
-                            else
-                                myMaze.setRobotLocationAndDirection(XCoord,YCoord,facingDirection,false);
-                        } catch (Exception e) {
-                            Log.e(TAG, "Error in multithread: ", e);
+                try {
+                    String robotCoordsDirection = msg.split("\\|")[1];
+                    robotCoordsDirection = robotCoordsDirection.replace("(", "");
+                    robotCoordsDirection = robotCoordsDirection.replace(")", "");
+                    String[] strippedRobotCoordsDirection = robotCoordsDirection.split(",");
+                    int XCoord = Integer.parseInt(strippedRobotCoordsDirection[0]);
+                    int YCoord = Integer.parseInt(strippedRobotCoordsDirection[1]);
+                    String facingDirection = strippedRobotCoordsDirection[2];
+                    Thread thread = new Thread() {
+                        @Override
+                        public void run() {
+                            try {
+                                if (updateFlag)
+                                    myMaze.setRobotLocationAndDirection(XCoord, YCoord, facingDirection, true);
+                                else
+                                    myMaze.setRobotLocationAndDirection(XCoord, YCoord, facingDirection, false);
+                            } catch (Exception e) {
+                                Log.e(TAG, "Error in multithread: ", e);
+                            }
                         }
-                    }
-                };
-                thread.start();
+                    };
+                    thread.start();
+                } catch (Exception e){
+                    Log.e(TAG,"Error: ",e);
+                }
             }
             BluetoothController.saveMsgLog(log + "\n" + msg);
         }
