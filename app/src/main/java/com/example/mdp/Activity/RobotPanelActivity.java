@@ -100,7 +100,7 @@ public class RobotPanelActivity extends AppCompatActivity {
 
         BluetoothController.init(this, BluetoothAdapter.getDefaultAdapter(),BluetoothController.getAdapter());
 
-        BluetoothController.sendCmd("SS");
+        //BluetoothController.sendCmd("S|");
 
         setF1btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,11 +150,11 @@ public class RobotPanelActivity extends AppCompatActivity {
         leftBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View r) {
-                BluetoothController.sendCmd("L0|");
+                BluetoothController.sendCmd("L|");
                 if (updateFlag)
-                    myMaze.updateMaze3("L0",true);
+                    myMaze.updateMaze3("L",true);
                 else
-                    myMaze.updateMaze3("L0",false);
+                    myMaze.updateMaze3("L",false);
                 robotStatusTxtbox.setText("Rotating left");
             }
         });
@@ -162,11 +162,11 @@ public class RobotPanelActivity extends AppCompatActivity {
         rightBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View r) {
-                BluetoothController.sendCmd("R0|");
+                BluetoothController.sendCmd("R|");
                 if (updateFlag)
-                    myMaze.updateMaze3("R0",true);
+                    myMaze.updateMaze3("R",true);
                 else
-                    myMaze.updateMaze3("R0",false);
+                    myMaze.updateMaze3("R",false);
                 robotStatusTxtbox.setText("Rotating right");
             }
         });
@@ -432,11 +432,11 @@ public class RobotPanelActivity extends AppCompatActivity {
             String log = BluetoothController.getMsgLog();
             String msg = intent.getStringExtra("receivingMsg");
             //Log.d("RobotPanelActivity",msg);
-            if (msg.equalsIgnoreCase("R0")) {
+            if (msg.equalsIgnoreCase("R")) {
                 robotStatusTxtbox.setText("Rotating Right");
-            } else if (msg.equalsIgnoreCase("L0")) {
+            } else if (msg.equalsIgnoreCase("L")) {
                 robotStatusTxtbox.setText("Rotating Left");
-            } else if (msg.equalsIgnoreCase("F01")) {
+            } else if (msg.equalsIgnoreCase("F01") || msg.equalsIgnoreCase("F02") || msg.equalsIgnoreCase("F03") || msg.equalsIgnoreCase("F04") || msg.equalsIgnoreCase("F05")) {
                 robotStatusTxtbox.setText("Moving Forward");
             } else if (msg.equalsIgnoreCase("N")) {
                 robotStatusTxtbox.setText("Exploration completed");
@@ -483,7 +483,7 @@ public class RobotPanelActivity extends AppCompatActivity {
                 } catch (Exception e) {
                     Log.e(TAG,"Error", e);
                 }
-            } else if (msg.toLowerCase().contains("fp")) {
+            } else if (msg.toLowerCase().contains("p")) {
                 try {
                     String[] instructions = msg.split("\\|");
                     if (msg.toLowerCase().contains("f02") || msg.toLowerCase().contains("f03") || msg.toLowerCase().contains("f04") || msg.toLowerCase().contains("f05")
@@ -532,6 +532,7 @@ public class RobotPanelActivity extends AppCompatActivity {
                     int XCoord = Integer.parseInt(strippedRobotCoordsDirection[0]);
                     int YCoord = Integer.parseInt(strippedRobotCoordsDirection[1]);
                     String facingDirection = strippedRobotCoordsDirection[2];
+                    Log.d(TAG,"Direction: " + facingDirection);
                     Thread thread = new Thread() {
                         @Override
                         public void run() {
@@ -621,9 +622,9 @@ public class RobotPanelActivity extends AppCompatActivity {
                     if (result.get(0).toLowerCase().contains("up") || result.get(0).toLowerCase().contains("forward"))
                         BluetoothController.sendCmd("F01");
                     else if (result.get(0).toLowerCase().contains("left"))
-                        BluetoothController.sendCmd("L0");
+                        BluetoothController.sendCmd("L");
                     else if (result.get(0).toLowerCase().contains("right"))
-                        BluetoothController.sendCmd("R0");
+                        BluetoothController.sendCmd("R");
                     else
                         Toast.makeText(this, "Cant understand your speech", Toast.LENGTH_SHORT).show();
                 }

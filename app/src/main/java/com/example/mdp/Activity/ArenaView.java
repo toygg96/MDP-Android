@@ -37,7 +37,7 @@ public class ArenaView extends View{
     private static float cellSizeX,cellSizeY, hMargin, vMargin;
     private static Paint wallPaint, robotPaint, waypointPaint, directionPaint,  emptyPaint, virtualWallPaint, obstaclePaint, unexploredPaint, ftpPaint, endPointPaint, gridNumberPaint, exploredPaint;
     private static int robotRow = 18, robotCols = 1, wayPointRow =-1, wayPointCols=-1;
-    private static String robotDirection = "east";
+    private static String robotDirection = "north";
     private static boolean setRobotPostition = false, setWayPointPosition = false;
     private static boolean createCellStatus = false;
     private static int imgXCoord = -1,imgYCoord= -1;
@@ -597,14 +597,14 @@ public class ArenaView extends View{
                 case "F01":
                     robotMoveForward(robotStatusTxtbox,autoUpdate);
                     break;
-                case "L0":
+                case "L":
                     robotRotateLeft(robotStatusTxtbox,autoUpdate);
                     break;
                 case "L1":
                     robotRotateLeft(robotStatusTxtbox,autoUpdate);
                     robotMoveForward(robotStatusTxtbox,autoUpdate);
                     break;
-                case "R0":
+                case "R":
                     robotRotateRight(robotStatusTxtbox,autoUpdate);
                     break;
                 case "R1":
@@ -631,10 +631,10 @@ public class ArenaView extends View{
                     refreshMap();
                     break;
                 }
-            case "L0":
+            case "L":
                 robotManualRotateLeft(autoUpdate);
                 break;
-            case "R0":
+            case "R":
                 robotManualRotateRight(autoUpdate);
                 break;
         }
@@ -643,7 +643,8 @@ public class ArenaView extends View{
 
     public void updateMaze4(String[] instructions, boolean autoUpdate, TextView robotStatusTxtbox){
             for (String instruction: instructions) {
-                if (instruction.charAt(0) == 'F' && !instruction.equals("FP")) {
+                instruction = instruction.replace("$","");
+                if (instruction.charAt(0) == 'F' && !instruction.equalsIgnoreCase("P")) {
                     int numOfSteps = Integer.parseInt(instruction.substring(1, instruction.length()));
                     while (numOfSteps != 0) {
                         robotStatusTxtbox.setText("Moving forward");
@@ -671,9 +672,10 @@ public class ArenaView extends View{
                         }
                     }
                 }
-                if (instruction.equals("L0")) {
+                Log.d(TAG,"Message: " + instruction);
+                if (instruction.equals("L")) {
                     robotRotateLeft(robotStatusTxtbox, autoUpdate);
-                } else if (instruction.equals("R0")){
+                } else if (instruction.equals("R")){
                     robotRotateRight(robotStatusTxtbox,autoUpdate);
                 } else if (instruction.equals("L1")){
                     robotRotateLeft(robotStatusTxtbox, autoUpdate);
@@ -689,7 +691,7 @@ public class ArenaView extends View{
     public void setRobotLocationAndDirection(int XCoord, int YCoord, String facingDirection,boolean autoUpdate){
         robotCols = XCoord;
         robotRow = getInverseYCoord(YCoord);
-        robotDirection = facingDirection.toUpperCase();
+        robotDirection = facingDirection.toLowerCase();
         if (autoUpdate)
             refreshMap();
     }
