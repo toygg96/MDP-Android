@@ -586,13 +586,14 @@ public class ArenaView extends View{
 
     }
 
+    // For fastest path string command (E.g P|F01|F01|L|F01) theres no $ to signify end of string
     public void updateMaze2(String[] instructions, boolean autoUpdate, TextView robotStatusTxtbox){
 
         //robotCols = XCoord;
         //robotRow = getInverseYCoord(YCoord);
         //robotDirection = facingDirection;
         for (String instruction: instructions) {
-            Log.d(TAG,instruction);
+            //Log.d(TAG,instruction);
             switch (instruction) {
                 case "F01":
                     robotMoveForward(robotStatusTxtbox,autoUpdate);
@@ -619,22 +620,22 @@ public class ArenaView extends View{
 
         switch (instruction) {
             case "F01":
-                if (robotDirection.equals("north"))
+                if (robotDirection.equalsIgnoreCase("north"))
                     if((robotRow - 1)  < 1)
                         Log.d(TAG,"INVALID MOVEMENT");
                     else
                         robotRow -= 1;
-                else if (robotDirection.equals("south"))
+                else if (robotDirection.equalsIgnoreCase("south"))
                     if ((robotRow + 1) > 18)
                         Log.d(TAG,"INVALID MOVEMENT");
                     else
                         robotRow += 1;
-                else if (robotDirection.equals("east"))
+                else if (robotDirection.equalsIgnoreCase("east"))
                     if ((robotCols + 1)  > 13)
                         Log.d(TAG,"INVALID MOVEMENT");
                     else
                         robotCols += 1;
-                else if (robotDirection.equals("west"))
+                else if (robotDirection.equalsIgnoreCase("west"))
                     if((robotCols - 1) < 1)
                         Log.d(TAG,"INVALID MOVEMENT");
                     else
@@ -653,23 +654,24 @@ public class ArenaView extends View{
 
     }
 
+    // For fastest path string command (E.g P|R|F12|L|F17$) theres a $ to signify end of string
     public void updateMaze4(String[] instructions, boolean autoUpdate, TextView robotStatusTxtbox){
             for (String instruction: instructions) {
                 instruction = instruction.replace("$","");
-                if (instruction.charAt(0) == 'F' && !instruction.equalsIgnoreCase("P")) {
+                if (instruction.charAt(0) == 'F') {
                     int numOfSteps = Integer.parseInt(instruction.substring(1, instruction.length()));
                     while (numOfSteps != 0) {
                         robotStatusTxtbox.setText("Moving forward");
-                        if (robotDirection.equals("north")) {
+                        if (robotDirection.equalsIgnoreCase("north")) {
                             robotRow -= 1;
                             numOfSteps -= 1;
-                        } else if (robotDirection.equals("south")) {
+                        } else if (robotDirection.equalsIgnoreCase("south")) {
                             robotRow += 1;
                             numOfSteps -= 1;
-                        } else if (robotDirection.equals("east")) {
+                        } else if (robotDirection.equalsIgnoreCase("east")) {
                             robotCols += 1;
                             numOfSteps -= 1;
-                        } else if (robotDirection.equals("west")) {
+                        } else if (robotDirection.equalsIgnoreCase("west")) {
                             robotCols -= 1;
                             numOfSteps -= 1;
                         }
@@ -678,21 +680,21 @@ public class ArenaView extends View{
                             refreshMap();
                         }
                         try {
-                            Thread.sleep(2000);
+                            Thread.sleep(1000);
                         } catch (Exception e){
                             Log.e(TAG,"Error in waiting",e);
                         }
                     }
                 }
-                Log.d(TAG,"Message: " + instruction);
-                if (instruction.equals("L")) {
+                //Log.d(TAG,"Message: " + instruction);
+                if (instruction.equalsIgnoreCase("L")) {
                     robotRotateLeft(robotStatusTxtbox, autoUpdate);
-                } else if (instruction.equals("R")){
+                } else if (instruction.equalsIgnoreCase("R")){
                     robotRotateRight(robotStatusTxtbox,autoUpdate);
-                } else if (instruction.equals("L1")){
+                } else if (instruction.equalsIgnoreCase("L1")){
                     robotRotateLeft(robotStatusTxtbox, autoUpdate);
                     robotMoveForward(robotStatusTxtbox,autoUpdate);
-                } else if (instruction.equals("R1")){
+                } else if (instruction.equalsIgnoreCase("R1")){
                     robotRotateRight(robotStatusTxtbox, autoUpdate);
                     robotMoveForward(robotStatusTxtbox,autoUpdate);
                 }
@@ -723,13 +725,13 @@ public class ArenaView extends View{
 
     public void robotMoveForward(TextView robotStatusTxtbox, boolean autoUpdate){
         robotStatusTxtbox.setText("Moving forward");
-        if (robotDirection.equals("north")) {
+        if (robotDirection.equalsIgnoreCase("north")) {
             robotRow -= 1;
-        } else if (robotDirection.equals("south")) {
+        } else if (robotDirection.equalsIgnoreCase("south")) {
             robotRow += 1;
-        } else if (robotDirection.equals("east")) {
+        } else if (robotDirection.equalsIgnoreCase("east")) {
             robotCols += 1;
-        } else if (robotDirection.equals("west")) {
+        } else if (robotDirection.equalsIgnoreCase("west")) {
             robotCols -= 1;
         }
 
@@ -737,7 +739,7 @@ public class ArenaView extends View{
             refreshMap();
         }
         try {
-            Thread.sleep(2000);
+            Thread.sleep(1000);
         } catch (Exception e){
             Log.e(TAG,"Error in waiting",e);
         }
@@ -745,18 +747,18 @@ public class ArenaView extends View{
 
     public void robotRotateLeft(TextView robotStatusTxtbox, boolean autoUpdate){
         robotStatusTxtbox.setText("Rotating left");
-        if (robotDirection.equals("north"))
+        if (robotDirection.equalsIgnoreCase("north"))
             robotDirection = "west";
-        else if (robotDirection.equals("south"))
+        else if (robotDirection.equalsIgnoreCase("south"))
             robotDirection = "east";
-        else if (robotDirection.equals("east"))
+        else if (robotDirection.equalsIgnoreCase("east"))
             robotDirection = "north";
-        else if (robotDirection.equals("west"))
+        else if (robotDirection.equalsIgnoreCase("west"))
             robotDirection = "south";
         if (autoUpdate) {
             refreshMap();
             try {
-                Thread.sleep(2000);
+                Thread.sleep(1000);
             } catch (Exception e){
                 Log.e(TAG,"Error in waiting",e);
             }
@@ -765,18 +767,18 @@ public class ArenaView extends View{
 
     public void robotRotateRight(TextView robotStatusTxtbox, boolean autoUpdate){
         robotStatusTxtbox.setText("Rotating right");
-        if (robotDirection.equals("north"))
+        if (robotDirection.equalsIgnoreCase("north"))
             robotDirection = "east";
-        else if (robotDirection.equals("south"))
+        else if (robotDirection.equalsIgnoreCase("south"))
             robotDirection = "west";
-        else if (robotDirection.equals("east"))
+        else if (robotDirection.equalsIgnoreCase("east"))
             robotDirection = "south";
-        else if (robotDirection.equals("west"))
+        else if (robotDirection.equalsIgnoreCase("west"))
             robotDirection = "north";
         if (autoUpdate) {
             refreshMap();
             try {
-                Thread.sleep(2000);
+                Thread.sleep(1000);
             } catch (Exception e){
                 Log.e(TAG,"Error in waiting",e);
             }
@@ -784,13 +786,13 @@ public class ArenaView extends View{
     }
 
     public void robotManualRotateLeft(boolean autoUpdate){
-        if (robotDirection.equals("north"))
+        if (robotDirection.equalsIgnoreCase("north"))
             robotDirection = "west";
-        else if (robotDirection.equals("south"))
+        else if (robotDirection.equalsIgnoreCase("south"))
             robotDirection = "east";
-        else if (robotDirection.equals("east"))
+        else if (robotDirection.equalsIgnoreCase("east"))
             robotDirection = "north";
-        else if (robotDirection.equals("west"))
+        else if (robotDirection.equalsIgnoreCase("west"))
             robotDirection = "south";
         if (autoUpdate)
             refreshMap();
@@ -798,13 +800,13 @@ public class ArenaView extends View{
     }
 
     public void robotManualRotateRight(boolean autoUpdate){
-        if (robotDirection.equals("north"))
+        if (robotDirection.equalsIgnoreCase("north"))
             robotDirection = "east";
-        else if (robotDirection.equals("south"))
+        else if (robotDirection.equalsIgnoreCase("south"))
             robotDirection = "west";
-        else if (robotDirection.equals("east"))
+        else if (robotDirection.equalsIgnoreCase("east"))
             robotDirection = "south";
-        else if (robotDirection.equals("west"))
+        else if (robotDirection.equalsIgnoreCase("west"))
             robotDirection = "north";
         if (autoUpdate)
             refreshMap();

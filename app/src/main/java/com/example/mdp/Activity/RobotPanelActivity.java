@@ -49,6 +49,8 @@ public class RobotPanelActivity extends AppCompatActivity {
     private IntentFilter filter3, filter4, filter5;
     private ArenaView myMaze;
     private boolean updateFlag = true;
+    private String mdfString1 = "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
+    private String mdfString2 = "0000000000000030FC2000400080000001E000400080000400084070F880800000000000000";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -175,6 +177,7 @@ public class RobotPanelActivity extends AppCompatActivity {
             @Override
             public void onClick(View r) {
                 BluetoothController.sendCmd("FP|START");
+                myMaze.updateMaze(hexToBinaryConverter.hexToBinary(mdfString1,true),hexToBinaryConverter.hexToBinary(mdfString2,false),true);
             }
         });
 
@@ -464,7 +467,6 @@ public class RobotPanelActivity extends AppCompatActivity {
                 try {
                     BluetoothController.setMdfString(msg.split("\\|")[1]);
                     BluetoothController.setMdfString2(msg.split("\\|")[2]);
-                    Log.d(TAG, msg.split("\\|")[3]);
                     String convertedMDF1 = hexToBinaryConverter.hexToBinary(msg.split("\\|")[1], true);
                     String convertedMDF2 = hexToBinaryConverter.hexToBinary(msg.split("\\|")[2], false);
                     //Log.d(TAG,convertedMDF1);
