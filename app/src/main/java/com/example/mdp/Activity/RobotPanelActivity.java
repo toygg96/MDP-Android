@@ -50,7 +50,7 @@ public class RobotPanelActivity extends AppCompatActivity {
     private ArenaView myMaze;
     private boolean updateFlag = true;
     private String mdfString1 = "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
-    private String mdfString2 = "0000000000000030FC2000400080000001E000400080000400084070F880800000000000000";
+    private String mdfString2 = "00000000000000000061f84000800100000003c00080000400084070f880800000000000080";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +99,6 @@ public class RobotPanelActivity extends AppCompatActivity {
         // We can then use the data
         F1txtbox.setText(F1text);
         F2txtbox.setText(F2text);
-
         BluetoothController.init(this, BluetoothAdapter.getDefaultAdapter(),BluetoothController.getAdapter());
 
         //BluetoothController.sendCmd("S|");
@@ -177,7 +176,6 @@ public class RobotPanelActivity extends AppCompatActivity {
             @Override
             public void onClick(View r) {
                 BluetoothController.sendCmd("FP|START");
-                myMaze.updateMaze(hexToBinaryConverter.hexToBinary(mdfString1,true),hexToBinaryConverter.hexToBinary(mdfString2,false),true);
             }
         });
 
@@ -435,12 +433,21 @@ public class RobotPanelActivity extends AppCompatActivity {
             String log = BluetoothController.getMsgLog();
             String msg = intent.getStringExtra("receivingMsg");
             //Log.d("RobotPanelActivity",msg);
-            if (msg.equalsIgnoreCase("R")) {
+            if (msg.equalsIgnoreCase("R|")) {
                 robotStatusTxtbox.setText("Rotating Right");
-            } else if (msg.equalsIgnoreCase("L")) {
+                myMaze.robotManualRotateRight(true);
+            } else if (msg.equalsIgnoreCase("L|")) {
                 robotStatusTxtbox.setText("Rotating Left");
-            } else if (msg.equalsIgnoreCase("F01") || msg.equalsIgnoreCase("F02") || msg.equalsIgnoreCase("F03") || msg.equalsIgnoreCase("F04") || msg.equalsIgnoreCase("F05")) {
+                myMaze.robotManualRotateLeft(true);
+            } else if (msg.charAt(0) == 'F')  {
                 robotStatusTxtbox.setText("Moving Forward");
+                Thread thread = new Thread() {
+                    @Override
+                    public void run() {
+                        myMaze.robotMoveForward2(robotStatusTxtbox, msg, true);
+                    }
+                };
+                thread.start();
             } else if (msg.equalsIgnoreCase("N")) {
                 robotStatusTxtbox.setText("Exploration completed");
             } else if (msg.equalsIgnoreCase("C")) {

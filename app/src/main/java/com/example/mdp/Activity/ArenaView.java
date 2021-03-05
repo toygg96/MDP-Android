@@ -19,6 +19,7 @@ import androidx.annotation.Nullable;
 
 import com.example.mdp.Controller.BluetoothController;
 import com.example.mdp.Model.Cell;
+import com.example.mdp.Model.hexToBinaryConverter;
 import com.example.mdp.R;
 import com.example.mdp.Controller.BluetoothController;
 
@@ -41,6 +42,9 @@ public class ArenaView extends View{
     private static boolean setRobotPostition = false, setWayPointPosition = false;
     private static boolean createCellStatus = false;
     private static int imgXCoord = -1,imgYCoord= -1;
+    private String mdfString1 = "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
+    private String mdfString2 = "00000000000000000061f84000800100000003c00080000400084070f880800000000000080";
+    private static boolean startFlag = true;
 
     //CONSTRUCTOR
     public ArenaView(Context context, @Nullable AttributeSet attrs) {
@@ -86,6 +90,11 @@ public class ArenaView extends View{
         canvas.translate(40, 0);
         drawEverything(canvas);
         setRobotPostition = false;
+        if (startFlag) {
+            updateMaze(hexToBinaryConverter.hexToBinary(mdfString1, true), hexToBinaryConverter.hexToBinary(mdfString2, false), true);
+            startFlag = false;
+        }
+
 
     }
 
@@ -742,6 +751,37 @@ public class ArenaView extends View{
             Thread.sleep(1000);
         } catch (Exception e){
             Log.e(TAG,"Error in waiting",e);
+        }
+    }
+
+    public void robotMoveForward2(TextView robotStatusTxtbox, String instructions, boolean autoUpdate){
+        robotStatusTxtbox.setText("Moving forward");
+        Log.d(TAG,"Extracted string : " + instructions.substring(1,3));
+        int numOfSteps = Integer.parseInt(instructions.substring(1,3));
+        Log.d(TAG,"Num of steps: " + numOfSteps);
+        while (numOfSteps != 0) {
+            Log.d(TAG,"Num of steps (before forward): " + numOfSteps);
+            if (robotDirection.equalsIgnoreCase("north")) {
+                robotRow -= 1;
+            } else if (robotDirection.equalsIgnoreCase("south")) {
+                robotRow += 1;
+            } else if (robotDirection.equalsIgnoreCase("east")) {
+                robotCols += 1;
+            } else if (robotDirection.equalsIgnoreCase("west")) {
+                robotCols -= 1;
+            }
+
+            if (autoUpdate) {
+                refreshMap();
+            }
+
+            try {
+                Thread.sleep(1000);
+            } catch (Exception e){
+                Log.e(TAG,"Error in waiting",e);
+            }
+            numOfSteps -= 1;
+            Log.d(TAG,"Num of steps (after forward): " + numOfSteps);
         }
     }
 
