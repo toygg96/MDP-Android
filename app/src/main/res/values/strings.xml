@@ -32,4 +32,7 @@
     <string name="cancel">Cancel</string>
     <string name="your_string">\'Your string\'</string>
     <string name="message_history">Message history</string>
+    <string name="customisable_string_1">Customisable String 1</string>
+    <string name="customisable_string_2">Customisable String 2</string>
+    <string name="manual_controls">Manual Controls</string>
 </resources>

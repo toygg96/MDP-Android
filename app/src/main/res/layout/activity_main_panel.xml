@@ -20,16 +20,16 @@
         android:layout_width="180dp"
         android:layout_height="50dp"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="22dp"
+        android:layout_marginTop="10dp"
         android:maxWidth="120dp"
         app:layout_constraintStart_toEndOf="@id/mapView"
-        app:layout_constraintTop_toBottomOf="@+id/bluetoothConnectionTxtbox" />
+        app:layout_constraintTop_toBottomOf="@+id/F1Label" />
 
     <Button
         android:id="@+id/setF1btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:background="@drawable/btn_bg"
         android:text="@string/set_f1"
         android:textColor="#FFFFFF"
@@ -41,7 +41,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:background="@drawable/btn_bg"
         android:text="@string/f1btn"
         android:textColor="#FFFFFF"
@@ -52,16 +52,16 @@
         android:id="@+id/F2textBox"
         android:layout_width="180dp"
         android:layout_height="50dp"
-        android:layout_marginTop="7dp"
+        android:layout_marginTop="10dp"
         android:maxWidth="120dp"
         app:layout_constraintStart_toStartOf="@+id/setF1btn"
-        app:layout_constraintTop_toBottomOf="@id/setF1btn" />
+        app:layout_constraintTop_toBottomOf="@+id/F2Label" />
 
     <Button
         android:id="@+id/setF2btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:background="@drawable/btn_bg"
         android:text="Set F2"
         android:textColor="#FFFFFF"
@@ -73,7 +73,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:background="@drawable/btn_bg"
         android:text="@string/f2btn"
         android:textColor="#FFFFFF"
@@ -84,27 +84,28 @@
         android:id="@+id/mdfBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="68dp"
+        android:layout_marginTop="10dp"
         android:width="185dp"
         android:background="@drawable/btn_bg"
         android:text="@string/display_mdf"
         android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="@id/F2btn"
         app:layout_constraintStart_toStartOf="@id/setF2btn"
-        app:layout_constraintTop_toBottomOf="@+id/setF2btn" />
+        app:layout_constraintTop_toBottomOf="@+id/mapInfoLabel" />
 
     <Button
         android:id="@+id/imageBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="68dp"
+        android:layout_marginTop="10dp"
         android:width="185dp"
         android:background="@drawable/btn_bg"
         android:text="Display Image"
         android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="@+id/mapView"
         app:layout_constraintEnd_toEndOf="@id/F2btn"
         app:layout_constraintStart_toStartOf="@id/setF2btn"
-        app:layout_constraintTop_toBottomOf="@+id/mdfBtn" />
+        app:layout_constraintTop_toBottomOf="@+id/discoveredImgsLabel" />
 
     <TextView
         android:id="@+id/robotStatusLabel"
@@ -113,6 +114,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="10dp"
         android:text="@string/robot_status"
+        android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/updateSwitch"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -142,24 +144,25 @@
 
     <Button
         android:id="@+id/setWaypointBtn"
-        android:layout_width="wrap_content"
+        android:layout_width="105dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="24dp"
         android:background="@drawable/btn_bg"
         android:text="@string/set_waypoint"
         android:textColor="#FFFFFF"
-        app:layout_constraintEnd_toEndOf="@+id/mdfBtn"
+        app:layout_constraintEnd_toEndOf="@+id/imageBtn"
         app:layout_constraintTop_toBottomOf="@+id/mapView" />
 
     <Button
         android:id="@+id/fastestPathBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="46dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="25dp"
         android:background="@drawable/btn_bg"
         android:text="@string/fastest_path"
         android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="@+id/setOriginBtn"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/mapView" />
 
@@ -171,6 +174,7 @@
         android:background="@drawable/btn_bg"
         android:text="@string/start"
         android:textColor="#FFFFFF"
+        app:layout_constraintEnd_toEndOf="@+id/setOriginBtn"
         app:layout_constraintStart_toStartOf="@+id/setOriginBtn"
         app:layout_constraintTop_toBottomOf="@+id/setOriginBtn" />
 
@@ -189,14 +193,14 @@
 
     <Button
         android:id="@+id/explorationBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
+        android:layout_width="100dp"
+        android:layout_height="46dp"
         android:layout_marginTop="35dp"
         android:background="@drawable/btn_bg"
         android:text="@string/exploration"
         android:textColor="#FFFFFF"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/startBtn"
+        app:layout_constraintStart_toStartOf="@+id/fastestPathBtn"
         app:layout_constraintTop_toBottomOf="@+id/fastestPathBtn" />
 
     <Button
@@ -207,17 +211,19 @@
         android:background="@drawable/btn_bg"
         android:text="Reset Map"
         android:textColor="#FFFFFF"
+        app:layout_constraintEnd_toEndOf="@+id/startBtn"
         app:layout_constraintStart_toStartOf="@+id/startBtn"
         app:layout_constraintTop_toBottomOf="@+id/startBtn" />
 
     <Button
         android:id="@+id/imageRecogBtn"
-        android:layout_width="122dp"
-        android:layout_height="60dp"
+        android:layout_width="100dp"
+        android:layout_height="46dp"
         android:layout_marginTop="35dp"
         android:background="@drawable/btn_bg"
         android:text="Image\nRecognition"
         android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="@+id/resetMapBtn"
         app:layout_constraintStart_toStartOf="@+id/explorationBtn"
         app:layout_constraintTop_toBottomOf="@+id/explorationBtn" />
 
@@ -298,6 +304,60 @@
         android:scaleType="fitCenter"
         android:src="@drawable/message"
         app:layout_constraintEnd_toEndOf="@+id/micBtn"
+        app:layout_constraintTop_toBottomOf="@+id/setWaypointBtn" />
+
+    <TextView
+        android:id="@+id/F1Label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:text="@string/customisable_string_1"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/mapView"
+        app:layout_constraintTop_toTopOf="@+id/mapView" />
+
+
+    <TextView
+        android:id="@+id/F2Label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="15dp"
+        android:text="@string/customisable_string_2"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/mapView"
+        app:layout_constraintTop_toBottomOf="@+id/setF1btn" />
+
+    <TextView
+        android:id="@+id/mapInfoLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="18dp"
+        android:text="Arena Info"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/mapView"
+        app:layout_constraintTop_toBottomOf="@+id/setF2btn" />
+
+    <TextView
+        android:id="@+id/discoveredImgsLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="18dp"
+        android:text="Discovered Images"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/mapView"
+        app:layout_constraintTop_toBottomOf="@+id/mdfBtn" />
+
+    <TextView
+        android:id="@+id/manualCtlLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="@string/manual_controls"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/leftBtn"
         app:layout_constraintTop_toBottomOf="@+id/setWaypointBtn" />
 
 

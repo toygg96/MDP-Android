@@ -179,9 +179,7 @@ public class RobotPanelActivity extends AppCompatActivity {
 
         fastestPathBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View r) {
-                BluetoothController.sendCmd("FP|START");
-            }
+            public void onClick(View r) { BluetoothController.sendCmd("FP|START"); disableAllBtn(); }
         });
 
         explorationBtn.setOnClickListener(new View.OnClickListener() {
@@ -609,7 +607,22 @@ public class RobotPanelActivity extends AppCompatActivity {
         leftBtn.setEnabled(false);
         rightBtn.setEnabled(false);
         sendF1btn.setEnabled(false);
+        setF1btn.setEnabled(false);
         sendF2btn.setEnabled(false);
+        setF2btn.setEnabled(false);
+        mdfBtn.setEnabled(false);
+        imageStrBtn.setEnabled(false);
+        imageRecogBtn.setEnabled(false);
+        fastestPathBtn.setEnabled(false);
+        explorationBtn.setEnabled(false);
+        startBtn.setEnabled(false);
+        resetMapBtn.setEnabled(false);
+        micBtn.setEnabled(false);
+        setOriginBtn.setEnabled(false);
+        setWaypointBtn.setEnabled(false);
+        refreshBtn.setEnabled(false);
+        autoUpdateSwitch.setEnabled(false);
+
     }
 
     public void enableAllBtn(){
@@ -617,7 +630,21 @@ public class RobotPanelActivity extends AppCompatActivity {
         leftBtn.setEnabled(true);
         rightBtn.setEnabled(true);
         sendF1btn.setEnabled(true);
+        setF1btn.setEnabled(true);
         sendF2btn.setEnabled(true);
+        setF2btn.setEnabled(true);
+        mdfBtn.setEnabled(true);
+        imageStrBtn.setEnabled(true);
+        imageRecogBtn.setEnabled(true);
+        fastestPathBtn.setEnabled(true);
+        explorationBtn.setEnabled(true);
+        startBtn.setEnabled(true);
+        resetMapBtn.setEnabled(true);
+        micBtn.setEnabled(true);
+        setOriginBtn.setEnabled(true);
+        setWaypointBtn.setEnabled(true);
+        refreshBtn.setEnabled(true);
+        autoUpdateSwitch.setEnabled(true);
     }
 
     public void speak(){
