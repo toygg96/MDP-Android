@@ -32,6 +32,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.mdp.Model.hexToBinaryConverter;
 import com.example.mdp.Controller.BluetoothController;
 import com.example.mdp.R;
+import com.example.mdp.Controller.QueueController;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -51,6 +52,8 @@ public class RobotPanelActivity extends AppCompatActivity {
     private boolean updateFlag = true;
     private String mdfString1 = "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
     private String mdfString2 = "00000000000000000061f84000800100000003c00080000400084070f880800000000000080";
+    private QueueController qc;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +103,8 @@ public class RobotPanelActivity extends AppCompatActivity {
         F1txtbox.setText(F1text);
         F2txtbox.setText(F2text);
         BluetoothController.init(this, BluetoothAdapter.getDefaultAdapter(),BluetoothController.getAdapter());
+        qc = new QueueController(robotStatusTxtbox);
+        qc.start();
 
         //BluetoothController.sendCmd("S|");
 
@@ -151,11 +156,11 @@ public class RobotPanelActivity extends AppCompatActivity {
         leftBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View r) {
-                BluetoothController.sendCmd("L|");
+                BluetoothController.sendCmd("A|");
                 if (updateFlag)
-                    myMaze.updateMaze3("L",true);
+                    myMaze.updateMaze3("A",true);
                 else
-                    myMaze.updateMaze3("L",false);
+                    myMaze.updateMaze3("A",false);
                 robotStatusTxtbox.setText("Rotating left");
             }
         });
@@ -217,7 +222,7 @@ public class RobotPanelActivity extends AppCompatActivity {
         startBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View r) {
-                BluetoothController.sendCmd("ARD|AND|START|");
+                BluetoothController.sendCmd("START|");
             }
         });
 
@@ -432,22 +437,26 @@ public class RobotPanelActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             String log = BluetoothController.getMsgLog();
             String msg = intent.getStringExtra("receivingMsg");
+            qc.setMyMaze(myMaze);
             //Log.d("RobotPanelActivity",msg);
             if (msg.equalsIgnoreCase("R|")) {
-                robotStatusTxtbox.setText("Rotating Right");
-                myMaze.robotManualRotateRight(true);
-            } else if (msg.equalsIgnoreCase("L|")) {
-                robotStatusTxtbox.setText("Rotating Left");
-                myMaze.robotManualRotateLeft(true);
+//                robotStatusTxtbox.setText("Rotating Right");
+//                myMaze.robotManualRotateRight(true);
+                qc.addMessageToQueue(msg);
+            } else if (msg.equalsIgnoreCase("A|")) {
+//                robotStatusTxtbox.setText("Rotating Left");
+//                myMaze.robotManualRotateLeft(true);
+                qc.addMessageToQueue(msg);
             } else if (msg.charAt(0) == 'F')  {
-                robotStatusTxtbox.setText("Moving Forward");
-                Thread thread = new Thread() {
-                    @Override
-                    public void run() {
-                        myMaze.robotMoveForward2(robotStatusTxtbox, msg, true);
-                    }
-                };
-                thread.start();
+//                robotStatusTxtbox.setText("Moving Forward");
+//                Thread thread = new Thread() {
+//                    @Override
+//                    public void run() {
+//                        myMaze.robotMoveForward2(robotStatusTxtbox, msg, true);
+//                    }
+//                };
+//                thread.start();
+                qc.addMessageToQueue(msg);
             } else if (msg.equalsIgnoreCase("N")) {
                 robotStatusTxtbox.setText("Exploration completed");
             } else if (msg.equalsIgnoreCase("C")) {
@@ -467,7 +476,7 @@ public class RobotPanelActivity extends AppCompatActivity {
                     if (updateFlag)
                         myMaze.refreshMap();
                 } catch (Exception e) {
-                    Log.e(TAG,"Error: ", e);
+                    Log.e(TAG,"Error in receiving image status: ", e);
                 }
             }
             if (msg.toLowerCase().contains("mdf")) {
@@ -481,10 +490,14 @@ public class RobotPanelActivity extends AppCompatActivity {
                     Thread thread = new Thread() {
                         @Override
                         public void run() {
-                            if (updateFlag) {
-                                myMaze.updateMaze(convertedMDF1, convertedMDF2, true);
-                            } else {
-                                myMaze.updateMaze(convertedMDF1, convertedMDF2, false);
+                            try {
+                                if (updateFlag) {
+                                    myMaze.updateMaze(convertedMDF1, convertedMDF2, true);
+                                } else {
+                                    myMaze.updateMaze(convertedMDF1, convertedMDF2, false);
+                                }
+                            } catch (Exception e) {
+                                Log.e(TAG, "Error in multithread: ", e);
                             }
                         }
                     };
@@ -629,11 +642,11 @@ public class RobotPanelActivity extends AppCompatActivity {
                 if (resultCode == RESULT_OK && data != null) {
                     ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                     if (result.get(0).toLowerCase().contains("up") || result.get(0).toLowerCase().contains("forward"))
-                        BluetoothController.sendCmd("F01");
+                        BluetoothController.sendCmd("F01|");
                     else if (result.get(0).toLowerCase().contains("left"))
-                        BluetoothController.sendCmd("L");
+                        BluetoothController.sendCmd("A|");
                     else if (result.get(0).toLowerCase().contains("right"))
-                        BluetoothController.sendCmd("R");
+                        BluetoothController.sendCmd("R|");
                     else
                         Toast.makeText(this, "Cant understand your speech", Toast.LENGTH_SHORT).show();
                 }

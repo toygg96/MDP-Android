@@ -146,9 +146,7 @@ public class BluetoothController {
 
     public static void attemptConnection(BluetoothDevice deviceToConnectTo, boolean autoReconnectFlag){
         if (ct != null) {
-            //Log.d("LIMPEH VALUE",String.valueOf(bluetoothThread.isAlive()));
             ct.cancel();
-            //bluetoothThread.setFinishedFlag(false);
             ct = null;
         }
         device = deviceToConnectTo;

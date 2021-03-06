@@ -548,6 +548,7 @@ public class ArenaView extends View{
         return new int[] {wayPointCols, wayPointRow};
     }
 
+    // update the maze with the location of obstacles, explored/explored grids
     public void updateMaze(String mdfString1,String mdfString2, boolean autoUpdate){
 
         int counter = 0;
@@ -595,7 +596,7 @@ public class ArenaView extends View{
 
     }
 
-    // For fastest path string command (E.g P|F01|F01|L|F01) theres no $ to signify end of string
+    // For fastest path string command (E.g P|F01|F01|A|F01) theres no $ to signify end of string
     public void updateMaze2(String[] instructions, boolean autoUpdate, TextView robotStatusTxtbox){
 
         //robotCols = XCoord;
@@ -607,10 +608,10 @@ public class ArenaView extends View{
                 case "F01":
                     robotMoveForward(robotStatusTxtbox,autoUpdate);
                     break;
-                case "L":
+                case "A":
                     robotRotateLeft(robotStatusTxtbox,autoUpdate);
                     break;
-                case "L1":
+                case "A1":
                     robotRotateLeft(robotStatusTxtbox,autoUpdate);
                     robotMoveForward(robotStatusTxtbox,autoUpdate);
                     break;
@@ -625,6 +626,7 @@ public class ArenaView extends View{
         }
     }
 
+    // update maze in Manual Control Mode
     public void updateMaze3(String instruction, boolean autoUpdate){
 
         switch (instruction) {
@@ -653,7 +655,7 @@ public class ArenaView extends View{
                     refreshMap();
                     break;
                 }
-            case "L":
+            case "A":
                 robotManualRotateLeft(autoUpdate);
                 break;
             case "R":
@@ -756,27 +758,40 @@ public class ArenaView extends View{
 
     public void robotMoveForward2(TextView robotStatusTxtbox, String instructions, boolean autoUpdate){
         robotStatusTxtbox.setText("Moving forward");
-        Log.d(TAG,"Extracted string : " + instructions.substring(1,3));
         int numOfSteps = Integer.parseInt(instructions.substring(1,3));
-        Log.d(TAG,"Num of steps: " + numOfSteps);
         while (numOfSteps != 0) {
             Log.d(TAG,"Num of steps (before forward): " + numOfSteps);
-            if (robotDirection.equalsIgnoreCase("north")) {
-                robotRow -= 1;
-            } else if (robotDirection.equalsIgnoreCase("south")) {
-                robotRow += 1;
-            } else if (robotDirection.equalsIgnoreCase("east")) {
-                robotCols += 1;
-            } else if (robotDirection.equalsIgnoreCase("west")) {
-                robotCols -= 1;
-            }
+            if (robotDirection.equalsIgnoreCase("north"))
+                if((robotRow - 1)  < 1)
+                    Log.d(TAG,"INVALID MOVEMENT");
+                else
+                    robotRow -= 1;
+            else if (robotDirection.equalsIgnoreCase("south"))
+                if ((robotRow + 1) > 18)
+                    Log.d(TAG,"INVALID MOVEMENT");
+                else
+                    robotRow += 1;
+            else if (robotDirection.equalsIgnoreCase("east"))
+                if ((robotCols + 1)  > 13)
+                    Log.d(TAG,"INVALID MOVEMENT");
+                else
+                    robotCols += 1;
+            else if (robotDirection.equalsIgnoreCase("west"))
+                if((robotCols - 1) < 1)
+                    Log.d(TAG,"INVALID MOVEMENT");
+                else
+                    robotCols -= 1;
 
             if (autoUpdate) {
                 refreshMap();
+                if (robotRow == 1 && robotCols == 13) {
+                    robotStatusTxtbox.setText("Fastest Path Completed!");
+                    break;
+                }
             }
 
             try {
-                Thread.sleep(1000);
+                Thread.sleep(600);
             } catch (Exception e){
                 Log.e(TAG,"Error in waiting",e);
             }
