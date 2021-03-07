@@ -168,12 +168,12 @@
         app:layout_constraintTop_toBottomOf="@+id/mapView" />
 
     <Button
-        android:id="@+id/startBtn"
+        android:id="@+id/calibrateBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="35dp"
         android:background="@drawable/btn_bg"
-        android:text="@string/start"
+        android:text="@string/calibrate"
         android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="@+id/setOriginBtn"
         app:layout_constraintStart_toStartOf="@+id/setOriginBtn"
@@ -200,7 +200,7 @@
         android:background="@drawable/btn_bg"
         android:text="@string/exploration"
         android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="@+id/startBtn"
+        app:layout_constraintBottom_toBottomOf="@+id/calibrateBtn"
         app:layout_constraintStart_toStartOf="@+id/fastestPathBtn"
         app:layout_constraintTop_toBottomOf="@+id/fastestPathBtn" />
 
@@ -212,9 +212,9 @@
         android:background="@drawable/btn_bg"
         android:text="Reset Map"
         android:textColor="#FFFFFF"
-        app:layout_constraintEnd_toEndOf="@+id/startBtn"
-        app:layout_constraintStart_toStartOf="@+id/startBtn"
-        app:layout_constraintTop_toBottomOf="@+id/startBtn" />
+        app:layout_constraintEnd_toEndOf="@+id/calibrateBtn"
+        app:layout_constraintStart_toStartOf="@+id/calibrateBtn"
+        app:layout_constraintTop_toBottomOf="@+id/calibrateBtn" />
 
     <Button
         android:id="@+id/imageRecogBtn"

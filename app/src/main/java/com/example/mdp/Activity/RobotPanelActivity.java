@@ -39,7 +39,7 @@ import java.util.Locale;
 
 public class RobotPanelActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_SPEECH_INPUT = 1000;
-    private Button sendF1btn,sendF2btn,setF1btn,setF2btn, fastestPathBtn,explorationBtn, imageRecogBtn,setWaypointBtn,setOriginBtn,startBtn,resetMapBtn,mdfBtn, imageStrBtn;
+    private Button sendF1btn,sendF2btn,setF1btn,setF2btn, fastestPathBtn,explorationBtn, imageRecogBtn,setWaypointBtn,setOriginBtn,calibrateBtn,resetMapBtn,mdfBtn, imageStrBtn;
     private ImageButton upBtn,leftBtn,rightBtn, micBtn,refreshBtn, msgHistoryBtn;
     private TextView F1txtbox, F2txtbox,bluetoothConnectionTxtbox, robotStatusTxtbox;
     private Switch autoUpdateSwitch;
@@ -72,7 +72,7 @@ public class RobotPanelActivity extends AppCompatActivity {
         imageRecogBtn = (Button)findViewById(R.id.imageRecogBtn);
         setOriginBtn = (Button)findViewById(R.id.setOriginBtn);
         setWaypointBtn = (Button)findViewById(R.id.setWaypointBtn);
-        startBtn = (Button)findViewById(R.id.startBtn);
+        calibrateBtn = (Button)findViewById(R.id.calibrateBtn);
         resetMapBtn = (Button)findViewById(R.id.resetMapBtn);
         mdfBtn = (Button)findViewById(R.id.mdfBtn);
         imageStrBtn = (Button)findViewById(R.id.imageBtn);
@@ -217,10 +217,11 @@ public class RobotPanelActivity extends AppCompatActivity {
             }
         });
 
-        startBtn.setOnClickListener(new View.OnClickListener() {
+        calibrateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View r) {
-                BluetoothController.sendCmd("START|");
+                BluetoothController.sendCmd("S|");
+                robotStatusTxtbox.setText("Calibrating") ;
             }
         });
 
@@ -615,7 +616,7 @@ public class RobotPanelActivity extends AppCompatActivity {
         imageRecogBtn.setEnabled(false);
         fastestPathBtn.setEnabled(false);
         explorationBtn.setEnabled(false);
-        startBtn.setEnabled(false);
+        calibrateBtn.setEnabled(false);
         resetMapBtn.setEnabled(false);
         micBtn.setEnabled(false);
         setOriginBtn.setEnabled(false);
@@ -638,7 +639,7 @@ public class RobotPanelActivity extends AppCompatActivity {
         imageRecogBtn.setEnabled(true);
         fastestPathBtn.setEnabled(true);
         explorationBtn.setEnabled(true);
-        startBtn.setEnabled(true);
+        calibrateBtn.setEnabled(true);
         resetMapBtn.setEnabled(true);
         micBtn.setEnabled(true);
         setOriginBtn.setEnabled(true);

@@ -37,4 +37,5 @@
     <string name="manual_controls">Manual Controls</string>
     <string name="outgoing_connection_request">Outgoing Connection Request</string>
     <string name="yes">Yes</string>
+    <string name="calibrate">Calibrate</string>
 </resources>
