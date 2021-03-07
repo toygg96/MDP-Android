@@ -26,21 +26,24 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="40dp"
-        android:layout_marginTop="4dp"
-        android:text="Bluetooth: Turned on\nBluetooth Device Name:\nBluetooth Address:\nConnected to:"
+        android:text="Bluetooth Device Name:\nBluetooth Address:\nConnected to:"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/bluetoothSwitch" />
 
     <Switch
         android:id="@+id/bluetoothSwitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="35dp"
+        android:layout_marginStart="40dp"
         android:layout_marginTop="10dp"
         android:checked="true"
-        android:text="Bluetooth State"
-        app:layout_constraintStart_toEndOf="@+id/bluetoothConnectionStatus"
+        android:text="Bluetooth"
+        android:textStyle="bold"
+        android:textOff="Off"
+        android:textOn="On"
+        android:showText="true"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <TextView

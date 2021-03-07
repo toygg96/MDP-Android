@@ -280,6 +280,10 @@
         android:layout_marginTop="22dp"
         android:checked="true"
         android:text="Auto Update"
+        android:textStyle="bold"
+        android:textOff="Off"
+        android:textOn="On"
+        android:showText="true"
         app:layout_constraintStart_toEndOf="@+id/refreshBtn"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -333,7 +337,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="18dp"
+        android:layout_marginTop="15dp"
         android:text="Arena Info"
         android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/mapView"
@@ -344,7 +348,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="18dp"
+        android:layout_marginTop="15dp"
         android:text="Discovered Images"
         android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/mapView"

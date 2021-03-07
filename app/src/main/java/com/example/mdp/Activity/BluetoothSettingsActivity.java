@@ -20,6 +20,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
@@ -27,6 +28,8 @@ import static android.content.ContentValues.TAG;
 import com.example.mdp.Controller.BluetoothController;
 import com.example.mdp.Controller.DeviceListAdapter;
 import com.example.mdp.R;
+
+import org.w3c.dom.Text;
 
 public class BluetoothSettingsActivity extends AppCompatActivity {
     private Button makeVisibleBtn,listDeviceBtn,scanBtn,sendBtn;
@@ -138,38 +141,38 @@ public class BluetoothSettingsActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapter, View v, int position,
                                     long arg3)
             {
-                AlertDialog alert;
-                // based on the item clicked go to the relevant activity
                 BluetoothDevice device = (BluetoothDevice) adapter.getItemAtPosition(position);
-//                Log.d(TAG,"selected address :  " + device.getAddress());
-//                Log.d(TAG,String.valueOf(v.getContext()));
-                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-                //Uncomment the below code to Set the message and title from the strings.xml file
-                builder.setMessage("Do you want to connect to this device?" + device.getName() +"\n" + device.getAddress()).setTitle("Outgoing bluetooth connection request");
+                AlertDialog dialogBuilder = new AlertDialog.Builder(v.getContext()).create();
+                LayoutInflater inflater = getLayoutInflater();
+                View dialogView = inflater.inflate(R.layout.connection_dialog, null);
 
-                //Setting message manually and performing action on button click
-                builder.setCancelable(true)
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                boolean result = true;
-                                if (!BluetoothController.isDevicePaired(device))
-                                        result = device.createBond();
-                                else
-                                    BluetoothController.attemptConnection(device,false);
-                                dialog.dismiss();
-                            }
-                        })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                //  Action for 'NO' Button
-                                dialog.cancel();
-                                Toast.makeText(getApplicationContext(),"Operation cancelled!",
-                                        Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                //Creating dialog box
-                alert = builder.create();
-                alert.show();
+                TextView connectionTV = (TextView) dialogView.findViewById(R.id.connectionTV);
+                Button yesBtn = (Button) dialogView.findViewById(R.id.yesBtn);
+                Button cancelBtn = (Button) dialogView.findViewById(R.id.cancelBtn2);
+                String connectionReqTxt = "Do you want to connect to this device?\nDevice name: \n" + device.getName() + "\nDevice Address: \n" + device.getAddress();
+                connectionTV.setText(connectionReqTxt);
+                yesBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        boolean result = true;
+                        if (!BluetoothController.isDevicePaired(device))
+                            result = device.createBond();
+                        else
+                            BluetoothController.attemptConnection(device,false);
+                        dialogBuilder.dismiss();
+                    }
+                });
+                cancelBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        // DO SOMETHINGS
+                        dialogBuilder.cancel();
+                        Toast.makeText(getApplicationContext(),"Operation cancelled!",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+                dialogBuilder.setView(dialogView);
+                dialogBuilder.show();
             }
         });
 

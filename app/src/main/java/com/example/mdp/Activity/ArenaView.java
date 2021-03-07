@@ -343,7 +343,17 @@ public class ArenaView extends View{
 
     private void drawWayPoint(Canvas canvas) {
         if(wayPointRow != -1 && wayPointCols != -1) {
-            canvas.drawRect(cells[wayPointCols][wayPointRow].startX, cells[wayPointCols][wayPointRow].startY, cells[wayPointCols][wayPointRow].endX, cells[wayPointCols][wayPointRow].endY, waypointPaint);
+            Bitmap wp = BitmapFactory.decodeResource(
+                    getContext().getResources(),
+                    R.drawable.flag
+            );
+
+            int xCoord = (int) cells[wayPointCols][wayPointRow].startX;
+            int yCoord = (int) cells[wayPointCols][wayPointRow].startY;
+            int x2Coord = (int) cells[wayPointCols][wayPointRow].endX;
+            int y2Coord = (int) cells[wayPointCols][wayPointRow].endY;
+            Rect rec = new Rect(xCoord, yCoord,x2Coord,y2Coord);
+            canvas.drawBitmap(wp, null, rec, null);
         }
     }
 
@@ -760,7 +770,7 @@ public class ArenaView extends View{
         robotStatusTxtbox.setText("Moving forward");
         int numOfSteps = Integer.parseInt(instructions.substring(1,3));
         while (numOfSteps != 0) {
-            Log.d(TAG,"Num of steps (before forward): " + numOfSteps);
+            //Log.d(TAG,"Num of steps (before forward): " + numOfSteps);
             if (robotDirection.equalsIgnoreCase("north"))
                 if((robotRow - 1)  < 1)
                     Log.d(TAG,"INVALID MOVEMENT");
@@ -796,7 +806,7 @@ public class ArenaView extends View{
                 Log.e(TAG,"Error in waiting",e);
             }
             numOfSteps -= 1;
-            Log.d(TAG,"Num of steps (after forward): " + numOfSteps);
+            //Log.d(TAG,"Num of steps (after forward): " + numOfSteps);
         }
     }
 

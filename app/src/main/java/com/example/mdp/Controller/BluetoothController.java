@@ -40,8 +40,7 @@ public class BluetoothController {
     public static DeviceListAdapter getAdapter() { return adapter; }
 
     public static String getBluetoothStatus(){
-        return("Bluetooth: Turned " + getBluetoothState() +"\nBluetooth Device Name: " + BA.getName() + "\nBluetooth Address: " + getAddress(BA.getName()) + "\nConnected to: " + connectedDevice);
-
+        return("Bluetooth Device Name: " + BA.getName() + "\nBluetooth Address: " + getAddress(BA.getName()) + "\nConnected to: " + connectedDevice);
     }
 
     public static void startBluetoothServer(){
@@ -63,11 +62,11 @@ public class BluetoothController {
             Toast.makeText(v.getContext(), "Turned on",Toast.LENGTH_SHORT).show();
             Boolean result = BA.enable();
             String status = (result) ? "On" : "Off";
-           return("Bluetooth: Turned " + status +"\nBluetooth Device Name: " + BA.getName() + "\nBluetooth Address: " + getAddress(BA.getName()) + "\nConnected to: " + connectedDevice);
+           return("Bluetooth Device Name: " + BA.getName() + "\nBluetooth Address: " + getAddress(BA.getName()) + "\nConnected to: " + connectedDevice);
         } else {
             Toast.makeText(v.getContext(), "Bluetooth already turned on", Toast.LENGTH_SHORT).show();
         }
-        return("Bluetooth: Turned " + getBluetoothState() +"\nBluetooth Device Name: " + BA.getName() + "\nBluetooth Address: " + getAddress(BA.getName()) + "\nConnected to: " + connectedDevice);
+        return("Bluetooth Device Name: " + BA.getName() + "\nBluetooth Address: " + getAddress(BA.getName()) + "\nConnected to: " + connectedDevice);
     }
 
     public static String offBluetooth(View v){
@@ -78,7 +77,7 @@ public class BluetoothController {
             ct.cancel();
         adapter.clear();
         setConnectedDevice("");
-        return("Bluetooth: Turned " + status +"\nBluetooth Device Name: " + BA.getName() + "\nBluetooth Address: " + getAddress(BA.getName()) + "\nConnected to: " + connectedDevice);
+        return("Bluetooth Device Name: " + BA.getName() + "\nBluetooth Address: " + getAddress(BA.getName()) + "\nConnected to: " + connectedDevice);
     }
 
     public static String getBluetoothState(){
