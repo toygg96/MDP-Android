@@ -9,7 +9,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class QueueController extends Thread {
+public class
+QueueController extends Thread {
     private static final String TAG = "QueueController" ;
     private List <String> list;
     private TextView robotStatusTxtbox;

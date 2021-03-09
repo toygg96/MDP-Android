@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.media.Image;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.text.method.ScrollingMovementMethod;
@@ -34,14 +33,16 @@ import com.example.mdp.Controller.BluetoothController;
 import com.example.mdp.R;
 import com.example.mdp.Controller.QueueController;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Locale;
 
 public class RobotPanelActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_SPEECH_INPUT = 1000;
     private Button sendF1btn,sendF2btn,setF1btn,setF2btn, fastestPathBtn,explorationBtn, imageRecogBtn,setWaypointBtn,setOriginBtn,calibrateBtn,resetMapBtn,mdfBtn, imageStrBtn;
     private ImageButton upBtn,leftBtn,rightBtn, micBtn,refreshBtn, msgHistoryBtn;
-    private TextView F1txtbox, F2txtbox,bluetoothConnectionTxtbox, robotStatusTxtbox;
+    private TextView F1txtbox, F2txtbox,bluetoothConnectionTxtbox, robotStatusTxtbox, msgLogTV;
     private Switch autoUpdateSwitch;
     private String F1text, F2text;
     private SharedPreferences sharedpreferences;
@@ -397,25 +398,29 @@ public class RobotPanelActivity extends AppCompatActivity {
     }
 
     public void onClickMsgHistoryLogic(View v){
-        AlertDialog dialogBuilder = new AlertDialog.Builder(v.getContext()).create();
-        LayoutInflater inflater = getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.message_chat_dialog, null);
+        try {
+            AlertDialog dialogBuilder = new AlertDialog.Builder(v.getContext()).create();
+            LayoutInflater inflater = getLayoutInflater();
+            View dialogView = inflater.inflate(R.layout.message_chat_dialog, null);
 
-        TextView msgLogTV = (TextView) dialogView.findViewById(R.id.msgLogTV);
-        Button closeBtn = (Button) dialogView.findViewById(R.id.okDialogBtn3);
-        msgLogTV.setText(BluetoothController.getMsgLog());
-        msgLogTV.setScroller(new Scroller(this));
-        msgLogTV.setVerticalScrollBarEnabled(true);
-        msgLogTV.setMovementMethod(new ScrollingMovementMethod());
-        closeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // DO SOMETHINGS
-                dialogBuilder.cancel();
-            }
-        });
-        dialogBuilder.setView(dialogView);
-        dialogBuilder.show();
+            Button closeBtn = (Button) dialogView.findViewById(R.id.okDialogBtn3);
+            msgLogTV = (TextView)dialogView.findViewById(R.id.msgLogTV);
+            msgLogTV.setText(BluetoothController.getMsgLog());
+            msgLogTV.setScroller(new Scroller(this));
+            msgLogTV.setVerticalScrollBarEnabled(true);
+            msgLogTV.setMovementMethod(new ScrollingMovementMethod());
+            closeBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // DO SOMETHINGS
+                    dialogBuilder.cancel();
+                }
+            });
+            dialogBuilder.setView(dialogView);
+            dialogBuilder.show();
+        } catch (Exception e) {
+            Log.e(TAG,"Error in msg history: ", e);
+        }
     }
 
     @Override
@@ -434,6 +439,7 @@ public class RobotPanelActivity extends AppCompatActivity {
     public BroadcastReceiver incomingMsgReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            try{
             String log = BluetoothController.getMsgLog();
             String msg = intent.getStringExtra("receivingMsg");
             qc.setMyMaze(myMaze);
@@ -572,7 +578,13 @@ public class RobotPanelActivity extends AppCompatActivity {
                     Log.e(TAG,"Error: ",e);
                 }
             }
-            BluetoothController.saveMsgLog(log + "\n" + msg);
+            String timeStamp = new SimpleDateFormat("HH:mm:ss").format(new Date());
+            BluetoothController.saveMsgLog(log + "\n" + timeStamp + "\t" + msg);
+            if(msgLogTV != null)
+                msgLogTV.setText(BluetoothController.getMsgLog());
+            } catch (Exception e) {
+                Log.e(TAG,"Error in receiving message", e);
+            }
         }
     };
 
