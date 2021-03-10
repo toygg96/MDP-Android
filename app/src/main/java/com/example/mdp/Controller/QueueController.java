@@ -9,7 +9,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class QueueController extends Thread {
+public class
+QueueController extends Thread {
     private static final String TAG = "QueueController" ;
     private List <String> list;
     private TextView robotStatusTxtbox;
@@ -22,28 +23,32 @@ public class QueueController extends Thread {
 
     public void run() {
         while (true) {
-            if (list.size() != 0) {
-                //Log.d(TAG, "Synchronized list size after adding: " + String.valueOf(list.size()));
-                String cmd = list.get(0);
-                Log.d(TAG,"Executing " + cmd);
-                if (cmd.equalsIgnoreCase("R|\n") ) {
-                    robotStatusTxtbox.setText("Rotating Right");
-                    myMaze.robotManualRotateRight(true);
-                    rotateSleep();
-                } else if (cmd.equalsIgnoreCase("A|\n")) {
-                    robotStatusTxtbox.setText("Rotating Left");
-                    myMaze.robotManualRotateLeft(true);
-                    rotateSleep();
-                } else if (cmd.charAt(0) == 'F') {
-                    try {
-                        robotStatusTxtbox.setText("Moving Forward");
-                        myMaze.robotMoveForward2(robotStatusTxtbox, cmd, true);
-                    } catch (Exception e) {
-                        Log.e(TAG,"Move forward error." , e);
+            try {
+                if (list.size() != 0) {
+                    //Log.d(TAG, "Synchronized list size after adding: " + String.valueOf(list.size()));
+                    String cmd = list.get(0);
+                    Log.d(TAG, "Executing " + cmd);
+                    if (cmd.equalsIgnoreCase("R|")) {
+                        robotStatusTxtbox.setText("Rotating Right");
+                        myMaze.robotManualRotateRight(true);
+                        rotateSleep();
+                    } else if (cmd.equalsIgnoreCase("A|")) {
+                        robotStatusTxtbox.setText("Rotating Left");
+                        myMaze.robotManualRotateLeft(true);
+                        rotateSleep();
+                    } else if (cmd.charAt(0) == 'F') {
+                        try {
+                            robotStatusTxtbox.setText("Moving Forward");
+                            myMaze.robotMoveForward2(robotStatusTxtbox, cmd, true);
+                        } catch (Exception e) {
+                            Log.e(TAG, "Move forward error.", e);
+                        }
                     }
+                    list.remove(0);
+                    //Log.d(TAG, "Synchronized list size after adding: " + String.valueOf(list.size()));
                 }
-                list.remove(0);
-                //Log.d(TAG, "Synchronized list size after adding: " + String.valueOf(list.size()));
+            } catch (Exception e) {
+                Log.e(TAG,"Error in queue system",e);
             }
         }
     }
