@@ -44,7 +44,7 @@ public class ArenaView extends View{
     private static int imgXCoord = -1,imgYCoord= -1;
     private String mdfString1 = "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
     private String mdfString2 = "00000000000000000061f84000800100000003c00080000400084070f880800000000000080";
-    private static boolean startFlag = true;
+    private static boolean startFlag = true; 
 
     //CONSTRUCTOR
     public ArenaView(Context context, @Nullable AttributeSet attrs) {
@@ -801,7 +801,7 @@ public class ArenaView extends View{
             }
 
             try {
-                Thread.sleep(600);
+                Thread.sleep(450);
             } catch (Exception e){
                 Log.e(TAG,"Error in waiting",e);
             }
@@ -823,7 +823,7 @@ public class ArenaView extends View{
         if (autoUpdate) {
             refreshMap();
             try {
-                Thread.sleep(1000);
+                Thread.sleep(50);
             } catch (Exception e){
                 Log.e(TAG,"Error in waiting",e);
             }
@@ -843,7 +843,7 @@ public class ArenaView extends View{
         if (autoUpdate) {
             refreshMap();
             try {
-                Thread.sleep(1000);
+                Thread.sleep(50);
             } catch (Exception e){
                 Log.e(TAG,"Error in waiting",e);
             }
