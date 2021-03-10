@@ -28,11 +28,11 @@ QueueController extends Thread {
                     //Log.d(TAG, "Synchronized list size after adding: " + String.valueOf(list.size()));
                     String cmd = list.get(0);
                     Log.d(TAG, "Executing " + cmd);
-                    if (cmd.equalsIgnoreCase("R|")) {
+                    if (cmd.equalsIgnoreCase("R|\n")) {
                         robotStatusTxtbox.setText("Rotating Right");
                         myMaze.robotManualRotateRight(true);
                         rotateSleep();
-                    } else if (cmd.equalsIgnoreCase("A|")) {
+                    } else if (cmd.equalsIgnoreCase("A|\n")) {
                         robotStatusTxtbox.setText("Rotating Left");
                         myMaze.robotManualRotateLeft(true);
                         rotateSleep();

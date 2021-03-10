@@ -43,7 +43,13 @@ public class ArenaView extends View{
     private static boolean createCellStatus = false;
     private static int imgXCoord = -1,imgYCoord= -1;
     private String mdfString1 = "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
-    private String mdfString2 = "00000000000000000061f84000800100000003c00080000400084070f880800000000000080";
+    private String mdfString2 = "00000000000000000061f84000800100000003c00080000400084070f880800000000000080"; // map3.txt
+    //private String mdfString2 = "01000000000000F00000000000400007E0000000000000001F80000780000000000004000800"; // arena1.txt
+    //private String mdfString2 = "000000000000010042038400000000000000030C000000000000021F84000800000000000400"; // arena2.txt
+    //private String mdfString2 = "0000000000000400080010C000F0000000000000007E00FC0000000180000100020004000800"; // arena3.txt
+    //private String mdfString2 = "00400080010000000000003F000000000000400100040F000000000380000000080010002000"; // arena4.txt
+    //private String mdfString2 = "0700000000000001C00002000400080010202040408001000200040000380000000020004200"; // arena5.txt
+
     private static boolean startFlag = true; 
 
     //CONSTRUCTOR
@@ -228,14 +234,25 @@ public class ArenaView extends View{
     }
 
     private void drawEndPoint(Canvas canvas) {
-        for (int x = 12; x < COLS; x++) {
-            for (int y = 0; y < 3; y++) {
+//        for (int x = 12; x < COLS; x++) {
+//            for (int y = 0; y < 3; y++) {
+//
+//                //DRAW EACH INDIVIDUAL CELL
+//                canvas.drawRect(cells[x][y].startX,cells[x][y].startY,cells[x][y].endX,cells[x][y].endY,endPointPaint);
+//
+//            }
+//        }
+        Bitmap gs = BitmapFactory.decodeResource(
+                getContext().getResources(),
+                R.drawable.goalstate
+        );
 
-                //DRAW EACH INDIVIDUAL CELL
-                canvas.drawRect(cells[x][y].startX,cells[x][y].startY,cells[x][y].endX,cells[x][y].endY,endPointPaint);
-
-            }
-        }
+        int xCoord = (int) cells[12][0].startX;
+        int yCoord = (int) cells[12][0].startY;
+        int x2Coord = (int) cells[14][2].endX;
+        int y2Coord = (int) cells[14][2].endY;
+        Rect rec = new Rect(xCoord, yCoord,x2Coord,y2Coord);
+        canvas.drawBitmap(gs, null, rec, null);
     }
 
     private void drawCell(Canvas canvas){
@@ -570,6 +587,8 @@ public class ArenaView extends View{
                     if (tmp == '1') {
                         cells[x][getInverseYCoord(y)].setPaint(exploredPaint);
                         //Log.d(TAG,"(" + String.valueOf(x) + "," + String.valueOf(y) + ")");
+                    } else if (tmp == '0') {
+                        cells[x][getInverseYCoord(y)].setPaint(unexploredPaint);
                     }
                     counter++;
                 }
@@ -741,6 +760,7 @@ public class ArenaView extends View{
         robotRow = 18;
         wayPointCols = -1;
         wayPointRow = -1;
+        robotDirection = "north";
         refreshMap();
     }
 

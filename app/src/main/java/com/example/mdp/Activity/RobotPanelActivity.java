@@ -447,12 +447,12 @@ public class RobotPanelActivity extends AppCompatActivity {
             if (msg.equalsIgnoreCase("R|\n")) {
 //                robotStatusTxtbox.setText("Rotating Right");
 //                myMaze.robotManualRotateRight(true);
-                //Log.d(TAG,"Entering if R|");
+//                Log.d(TAG,"Entering if R|");
                 qc.addMessageToQueue(msg);
             } else if (msg.equalsIgnoreCase("A|\n")) {
 //                robotStatusTxtbox.setText("Rotating Left");
 //                myMaze.robotManualRotateLeft(true);
-                //Log.d(TAG,"Entering if A|");
+//                Log.d(TAG,"Entering if A|");
                 qc.addMessageToQueue(msg);
             } else if (msg.charAt(0) == 'F')  {
 //                robotStatusTxtbox.setText("Moving Forward");
@@ -464,9 +464,9 @@ public class RobotPanelActivity extends AppCompatActivity {
 //                };
 //                thread.start();
                 qc.addMessageToQueue(msg);
-            } else if (msg.equalsIgnoreCase("N")) {
+            } else if (msg.equalsIgnoreCase("N\n")) {
                 robotStatusTxtbox.setText("Exploration completed");
-            } else if (msg.equalsIgnoreCase("C")) {
+            } else if (msg.equalsIgnoreCase("C\n")) {
                 robotStatusTxtbox.setText("Taking Picture");
             } else if (msg.toLowerCase().contains("img")) {
                 try {
