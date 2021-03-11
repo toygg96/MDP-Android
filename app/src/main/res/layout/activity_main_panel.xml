@@ -163,6 +163,7 @@
         android:background="@drawable/btn_bg"
         android:text="@string/fastest_path"
         android:textColor="#FFFFFF"
+        android:focusable="true"
         app:layout_constraintBottom_toBottomOf="@+id/setOriginBtn"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/mapView" />

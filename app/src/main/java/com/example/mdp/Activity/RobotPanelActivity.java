@@ -180,7 +180,12 @@ public class RobotPanelActivity extends AppCompatActivity {
 
         fastestPathBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View r) { BluetoothController.sendCmd("FP|START"); disableAllBtn(); }
+            public void onClick(View r) {
+                Log.d(TAG,"it came here");
+                BluetoothController.sendCmd("FP|START");
+                Toast.makeText(r.getContext(), "Starting Fastest Path!",Toast.LENGTH_SHORT).show();
+                disableAllBtn();
+            }
         });
 
         explorationBtn.setOnClickListener(new View.OnClickListener() {
