@@ -38,7 +38,7 @@ public class ArenaView extends View{
     private static float cellSizeX,cellSizeY, hMargin, vMargin;
     private static Paint wallPaint, robotPaint, waypointPaint, directionPaint,  emptyPaint, virtualWallPaint, obstaclePaint, unexploredPaint, ftpPaint, endPointPaint, gridNumberPaint, exploredPaint;
     private static int robotRow = 18, robotCols = 1, wayPointRow =-1, wayPointCols=-1;
-    private static String robotDirection = "north";
+    private static String robotDirection = "south";
     private static boolean setRobotPostition = false, setWayPointPosition = false;
     private static boolean createCellStatus = false;
     private static int imgXCoord = -1,imgYCoord= -1;
@@ -195,7 +195,7 @@ public class ArenaView extends View{
 
         // Explored paint
         exploredPaint = new Paint();
-        exploredPaint.setColor(Color.WHITE);
+        exploredPaint.setColor(Color.GRAY);
 
     }
 
@@ -320,43 +320,44 @@ public class ArenaView extends View{
     }
 
     private void drawDirectionArrow(Canvas canvas) {
+        try {
+            float halfWidth = (cells[robotCols][robotRow - 1].endX - cells[robotCols][robotRow - 1].startX) / 2;
+            //TRIANGLE FOR ROBOT DIRECTION
+            Path path = new Path();
+            switch (robotDirection){
+                case "north":
+                    path.moveTo(cells[robotCols][robotRow - 1].startX + halfWidth, cells[robotCols][robotRow - 1].startY); // Top
+                    path.lineTo(cells[robotCols][robotRow - 1].startX, cells[robotCols][robotRow - 1].endY); // Bottom left
+                    path.lineTo(cells[robotCols][robotRow - 1].endX, cells[robotCols][robotRow - 1].endY); // Bottom right
+                    path.lineTo(cells[robotCols][robotRow - 1].startX + halfWidth, cells[robotCols][robotRow - 1].startY); // Back to Top
+                    break;
 
-        float halfWidth = (cells[robotCols][robotRow - 1].endX - cells[robotCols][robotRow - 1].startX) / 2;
+                case "south":
+                    path.moveTo(cells[robotCols][robotRow + 1].endX - halfWidth, cells[robotCols][robotRow + 1].endY); // Top
+                    path.lineTo(cells[robotCols][robotRow + 1].startX, cells[robotCols][robotRow + 1].startY); // Bottom left
+                    path.lineTo(cells[robotCols + 1][robotRow + 1].startX, cells[robotCols +1][robotRow + 1].startY); // Bottom right
+                    path.lineTo(cells[robotCols][robotRow + 1].endX - halfWidth, cells[robotCols][robotRow + 1].endY); // Back to Top
+                    break;
 
-        //TRIANGLE FOR ROBOT DIRECTION
-        Path path = new Path();
+                case "east":
+                    path.moveTo(cells[robotCols+1][robotRow].startX + (2*halfWidth), cells[robotCols][robotRow].startY + halfWidth); // Top
+                    path.lineTo(cells[robotCols+1][robotRow].startX, cells[robotCols+1][robotRow].startY); // Bottom left
+                    path.lineTo(cells[robotCols+1][robotRow+1].startX, cells[robotCols+1][robotRow+1].startY); // Bottom right
+                    path.lineTo(cells[robotCols+1][robotRow].startX + (2*halfWidth) , cells[robotCols][robotRow].startY + halfWidth); // Back to Top
+                    break;
 
-        switch (robotDirection){
-            case "north":
-                path.moveTo(cells[robotCols][robotRow - 1].startX + halfWidth, cells[robotCols][robotRow - 1].startY); // Top
-                path.lineTo(cells[robotCols][robotRow - 1].startX, cells[robotCols][robotRow - 1].endY); // Bottom left
-                path.lineTo(cells[robotCols][robotRow - 1].endX, cells[robotCols][robotRow - 1].endY); // Bottom right
-                path.lineTo(cells[robotCols][robotRow - 1].startX + halfWidth, cells[robotCols][robotRow - 1].startY); // Back to Top
-                break;
-
-            case "south":
-                path.moveTo(cells[robotCols][robotRow + 1].endX - halfWidth, cells[robotCols][robotRow + 1].endY); // Top
-                path.lineTo(cells[robotCols][robotRow + 1].startX, cells[robotCols][robotRow + 1].startY); // Bottom left
-                path.lineTo(cells[robotCols + 1][robotRow + 1].startX, cells[robotCols +1][robotRow + 1].startY); // Bottom right
-                path.lineTo(cells[robotCols][robotRow + 1].endX - halfWidth, cells[robotCols][robotRow + 1].endY); // Back to Top
-                break;
-
-            case "east":
-                path.moveTo(cells[robotCols+1][robotRow].startX + (2*halfWidth), cells[robotCols][robotRow].startY + halfWidth); // Top
-                path.lineTo(cells[robotCols+1][robotRow].startX, cells[robotCols+1][robotRow].startY); // Bottom left
-                path.lineTo(cells[robotCols+1][robotRow+1].startX, cells[robotCols+1][robotRow+1].startY); // Bottom right
-                path.lineTo(cells[robotCols+1][robotRow].startX + (2*halfWidth) , cells[robotCols][robotRow].startY + halfWidth); // Back to Top
-                break;
-
-            case "west":
-                path.moveTo(cells[robotCols-1][robotRow].startX, cells[robotCols][robotRow].startY + halfWidth); // Top
-                path.lineTo(cells[robotCols][robotRow].startX, cells[robotCols][robotRow].startY); // Bottom left
-                path.lineTo(cells[robotCols][robotRow + 1].startX, cells[robotCols][robotRow  +1].startY); // Bottom right
-                path.lineTo(cells[robotCols-1][robotRow].startX, cells[robotCols][robotRow].startY + halfWidth); // Back to Top
-                break;
+                case "west":
+                    path.moveTo(cells[robotCols-1][robotRow].startX, cells[robotCols][robotRow].startY + halfWidth); // Top
+                    path.lineTo(cells[robotCols][robotRow].startX, cells[robotCols][robotRow].startY); // Bottom left
+                    path.lineTo(cells[robotCols][robotRow + 1].startX, cells[robotCols][robotRow  +1].startY); // Bottom right
+                    path.lineTo(cells[robotCols-1][robotRow].startX, cells[robotCols][robotRow].startY + halfWidth); // Back to Top
+                    break;
+            }
+            path.close();
+            canvas.drawPath(path, directionPaint);
+        } catch (Exception e){
+            Log.d(TAG,"WRONG X " + robotCols + " WRONG Y " + robotRow);
         }
-        path.close();
-        canvas.drawPath(path, directionPaint);
     }
 
     private void drawWayPoint(Canvas canvas) {
@@ -597,6 +598,7 @@ public class ArenaView extends View{
             }
 
         counter = 0;
+            //Log.d(TAG,mdfString2);
             for (int y = 0; y < ROWS; y++) {
                 for (int x = 0; x < COLS; x++) {
                     Paint tmpPaint = cells[x][getInverseYCoord(y)].getPaint();
@@ -615,7 +617,7 @@ public class ArenaView extends View{
 
             }
         } catch (Exception e) {
-            Log.e(TAG,"Error: " ,e);
+            Log.e(TAG,"Counter Error: " + counter ,e);
         }
 
         //ENSURE AUTO UPDATE TOGGLE BUTTON IS ON
@@ -746,7 +748,7 @@ public class ArenaView extends View{
     public void setRobotLocationAndDirection(int XCoord, int YCoord, String facingDirection,boolean autoUpdate){
         robotCols = XCoord;
         robotRow = getInverseYCoord(YCoord);
-        robotDirection = facingDirection.toLowerCase();
+        robotDirection = facingDirection.toLowerCase().replace("\n","");
         if (autoUpdate)
             refreshMap();
     }

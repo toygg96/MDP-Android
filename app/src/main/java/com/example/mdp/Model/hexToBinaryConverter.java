@@ -7,6 +7,8 @@ import java.util.HashMap;
 public class hexToBinaryConverter {
 
     public static String hexToBinary(String hex,boolean isMDFString1) {
+        if(!isMDFString1)
+            hex = hex.replace("\n","");
 
         // variable to store the converted
         // Binary Sequence
