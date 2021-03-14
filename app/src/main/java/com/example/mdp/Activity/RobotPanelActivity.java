@@ -477,8 +477,10 @@ public class RobotPanelActivity extends AppCompatActivity {
                     qc.addMessageToQueue(msg);
                 } else if (msg.equalsIgnoreCase("N\n")) {
                     robotStatusTxtbox.setText("Exploration completed");
+                    qc.addMessageToQueue(msg);
                 } else if (msg.equalsIgnoreCase("C\n")) {
                     robotStatusTxtbox.setText("Taking Picture");
+                    qc.addMessageToQueue(msg);
                 } else if (msg.toLowerCase().contains("img")) {
 //                    try {
 //                        String[] arrOfStr = msg.split("\\|");

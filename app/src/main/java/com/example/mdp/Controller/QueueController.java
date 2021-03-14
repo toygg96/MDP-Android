@@ -47,18 +47,23 @@ QueueController extends Thread {
                         //} catch (Exception e) {
                         //    Log.e(TAG, "Move forward error.", e);
                         //}
+                    } else if (cmd.equalsIgnoreCase("N\n")) {
+                        robotStatusTxtbox.setText("Exploration completed");
+                    } else if (cmd.equalsIgnoreCase("C\n")) {
+                        robotStatusTxtbox.setText("Taking Picture");
                     } else if (cmd.toLowerCase().contains("img")) {
                         try {
                             String[] arrOfStr = cmd.split("\\|");
                             //                Log.d(TAG,arrOfStr[2]);
-                            BluetoothController.addImgString(arrOfStr[2]);
-                            arrOfStr[2] = arrOfStr[2].replace("(", "");
-                            arrOfStr[2] = arrOfStr[2].replace(")", "");
-                            String[] strippedMsg = arrOfStr[2].split(",");
+                            BluetoothController.addImgString(arrOfStr[1]);
+                            arrOfStr[1] = arrOfStr[1].replace("(", "");
+                            arrOfStr[1] = arrOfStr[1].replace(")", "");
+                            arrOfStr[1] = arrOfStr[1].replace("\n", "");
+                            String[] strippedMsg = arrOfStr[1].split(",");
                             //                Log.d(TAG,strippedMsg[0]);
                             //                Log.d(TAG,strippedMsg[1]);
                             //                Log.d(TAG,strippedMsg[2]);
-                            myMaze.setDiscoveredImgOnCell(Integer.parseInt(strippedMsg[0]), Integer.parseInt(strippedMsg[1]), Integer.parseInt(strippedMsg[2]));
+                            myMaze.setDiscoveredImgOnCell(Integer.parseInt(strippedMsg[0]), Integer.parseInt(strippedMsg[2]), Integer.parseInt(strippedMsg[1]));
                             if (updateFlag)
                                 myMaze.refreshMap();
                         } catch (Exception e) {
