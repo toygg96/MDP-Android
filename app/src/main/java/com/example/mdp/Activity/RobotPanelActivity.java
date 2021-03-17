@@ -452,7 +452,7 @@ public class RobotPanelActivity extends AppCompatActivity {
                 String log = BluetoothController.getMsgLog();
                 String msg = intent.getStringExtra("receivingMsg");
                 qc.setMyMaze(myMaze);
-//                Log.d("RobotPanelActivity",msg);
+                Log.d("RobotPanelActivity",msg);
                 if (msg.equalsIgnoreCase("R|\n")) {
 //                    Log.d(TAG,"RIGHT DETECTED");
 //                    robotStatusTxtbox.setText("Rotating Right");
@@ -475,11 +475,11 @@ public class RobotPanelActivity extends AppCompatActivity {
 //                    };
 //                    thread.start();
                     qc.addMessageToQueue(msg);
-                } else if (msg.equalsIgnoreCase("N\n")) {
-                    robotStatusTxtbox.setText("Exploration completed");
+                } else if (msg.equalsIgnoreCase("N|\n")) {
+                    //robotStatusTxtbox.setText("Exploration completed");
                     qc.addMessageToQueue(msg);
-                } else if (msg.equalsIgnoreCase("C\n")) {
-                    robotStatusTxtbox.setText("Taking Picture");
+                } else if (msg.equalsIgnoreCase("C|\n")) {
+                    //robotStatusTxtbox.setText("Taking Picture");
                     qc.addMessageToQueue(msg);
                 } else if (msg.toLowerCase().contains("img")) {
 //                    try {

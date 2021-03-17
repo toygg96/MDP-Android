@@ -32,7 +32,7 @@ QueueController extends Thread {
                     //Log.d(TAG, "Synchronized list size after adding: " + String.valueOf(list.size()));
                     String cmd = list.get(0);
                     Log.d(TAG, "Executing " + cmd);
-                    if (cmd.equalsIgnoreCase("R| ]\n")) {
+                    if (cmd.equalsIgnoreCase("R|\n")) {
                         robotStatusTxtbox.setText("Rotating Right");
                         //myMaze.robotManualRotateRight(true);
                        // rotateSleep();
@@ -47,9 +47,9 @@ QueueController extends Thread {
                         //} catch (Exception e) {
                         //    Log.e(TAG, "Move forward error.", e);
                         //}
-                    } else if (cmd.equalsIgnoreCase("N\n")) {
+                    } else if (cmd.equalsIgnoreCase("N|\n")) {
                         robotStatusTxtbox.setText("Exploration completed");
-                    } else if (cmd.equalsIgnoreCase("C\n")) {
+                    } else if (cmd.equalsIgnoreCase("C|\n")) {
                         robotStatusTxtbox.setText("Taking Picture");
                     } else if (cmd.toLowerCase().contains("img")) {
                         try {
