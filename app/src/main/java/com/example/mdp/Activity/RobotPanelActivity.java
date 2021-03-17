@@ -453,13 +453,13 @@ public class RobotPanelActivity extends AppCompatActivity {
                 String msg = intent.getStringExtra("receivingMsg");
                 qc.setMyMaze(myMaze);
 //                Log.d("RobotPanelActivity",msg);
-                if (msg.equalsIgnoreCase("R\n")) {
+                if (msg.equalsIgnoreCase("R|\n")) {
 //                    Log.d(TAG,"RIGHT DETECTED");
 //                    robotStatusTxtbox.setText("Rotating Right");
                     //myMaze.robotManualRotateRight(true);
     //                Log.d(TAG,"Entering if R|");
                     qc.addMessageToQueue(msg);
-                } else if (msg.equalsIgnoreCase("A\n")) {
+                } else if (msg.equalsIgnoreCase("A|\n")) {
 //                    Log.d(TAG,"LEFT DETECTED");
 //                    robotStatusTxtbox.setText("Rotating Left");
                     //myMaze.robotManualRotateLeft(true);
