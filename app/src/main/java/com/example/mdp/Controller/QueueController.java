@@ -55,7 +55,6 @@ QueueController extends Thread {
                         try {
                             String[] arrOfStr = cmd.split("\\|");
                             //                Log.d(TAG,arrOfStr[2]);
-                            BluetoothController.addImgString(arrOfStr[1]);
                             arrOfStr[1] = arrOfStr[1].replace("(", "");
                             arrOfStr[1] = arrOfStr[1].replace(")", "");
                             arrOfStr[1] = arrOfStr[1].replace("\n", "");
@@ -64,6 +63,8 @@ QueueController extends Thread {
                             //                Log.d(TAG,strippedMsg[1]);
                             //                Log.d(TAG,strippedMsg[2]);
                             myMaze.setDiscoveredImgOnCell(Integer.parseInt(strippedMsg[0]), Integer.parseInt(strippedMsg[2]), Integer.parseInt(strippedMsg[1]));
+                            String flippedImgString = "(" + strippedMsg[0] + "," + strippedMsg[2] + "," + strippedMsg[1] + ")";
+                            BluetoothController.addImgString(flippedImgString);
                             if (updateFlag)
                                 myMaze.refreshMap();
                         } catch (Exception e) {

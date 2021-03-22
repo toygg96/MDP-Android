@@ -55,7 +55,7 @@ public class bluetoothConnectionThread {
             if (autoReconnectFlag) {
                 while (true) {
                     try {
-                        Thread.sleep(2800);
+                        Thread.sleep(4000);
                         // Connect to the remote device through the socket. This call blocks
                         // until it succeeds or throws an exception.
                         mmSocket.connect();

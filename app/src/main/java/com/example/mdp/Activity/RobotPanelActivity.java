@@ -594,7 +594,7 @@ public class RobotPanelActivity extends AppCompatActivity {
         sendF2btn.setEnabled(false);
         setF2btn.setEnabled(false);
         mdfBtn.setEnabled(false);
-        imageStrBtn.setEnabled(false);
+        //imageStrBtn.setEnabled(false);
         imageRecogBtn.setEnabled(false);
         fastestPathBtn.setEnabled(false);
         explorationBtn.setEnabled(false);
