@@ -104,6 +104,8 @@ QueueController extends Thread {
                 }
             } catch (Exception e) {
                 Log.e(TAG,"Error in queue system",e);
+                list.remove(0);
+                continue;
             }
         }
     }

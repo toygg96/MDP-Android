@@ -2,6 +2,8 @@ package com.example.mdp.Activity;
 
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -193,6 +195,8 @@ public class RobotPanelActivity extends AppCompatActivity {
             @Override
             public void onClick(View r) {
                 BluetoothController.sendCmd("EX|START");
+                Toast.makeText(r.getContext(), "Starting Exploration!",Toast.LENGTH_SHORT).show();
+                disableAllBtn();
             }
         });
 
@@ -200,6 +204,8 @@ public class RobotPanelActivity extends AppCompatActivity {
             @Override
             public void onClick(View r) {
                 BluetoothController.sendCmd("IMG|START");
+                Toast.makeText(r.getContext(), "Starting Image Recognition!",Toast.LENGTH_SHORT).show();
+                disableAllBtn();
             }
         });
 
@@ -370,21 +376,48 @@ public class RobotPanelActivity extends AppCompatActivity {
         AlertDialog dialogBuilder = new AlertDialog.Builder(v.getContext()).create();
         LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.nice_mdf_dialog, null);
+        try {
 
-        TextView mdfTxtview = (TextView) dialogView.findViewById(R.id.mdfTV);
-        TextView mdfTxtview2 = (TextView) dialogView.findViewById(R.id.mdfTV2);
-        Button closeBtn = (Button) dialogView.findViewById(R.id.okDialogBtn);
-        mdfTxtview.setText(BluetoothController.getMdfString());
-        mdfTxtview2.setText(BluetoothController.getMdfString2());
-        closeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // DO SOMETHINGS
-                dialogBuilder.cancel();
-            }
-        });
-        dialogBuilder.setView(dialogView);
-        dialogBuilder.show();
+            TextView mdfTxtview = (TextView) dialogView.findViewById(R.id.mdfTV);
+            TextView mdfTxtview2 = (TextView) dialogView.findViewById(R.id.mdfTV2);
+            Button closeBtn = (Button) dialogView.findViewById(R.id.okDialogBtn);
+            ImageButton copyMDF1 = (ImageButton) dialogView.findViewById(R.id.copyMDF1);
+            ImageButton copyMDF2 = (ImageButton) dialogView.findViewById(R.id.copyMDF2);
+            mdfTxtview.setText(BluetoothController.getMdfString());
+            mdfTxtview2.setText(BluetoothController.getMdfString2());
+            closeBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // DO SOMETHING
+                    dialogBuilder.cancel();
+                }
+            });
+            copyMDF1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // DO SOMETHING
+                    ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                    ClipData clip = ClipData.newPlainText("MDF1", mdfTxtview.getText());
+                    clipboard.setPrimaryClip(clip);
+                    Toast.makeText(v.getContext(),"Copied MDF String 1", Toast.LENGTH_SHORT).show();
+                }
+            });
+            copyMDF2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // DO SOMETHING
+                    ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                    ClipData clip = ClipData.newPlainText("MDF2", mdfTxtview2.getText());
+                    clipboard.setPrimaryClip(clip);
+                    Toast.makeText(v.getContext(),"Copied MDF String 2", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            dialogBuilder.setView(dialogView);
+            dialogBuilder.show();
+        } catch (Exception e) {
+            Log.e(TAG,"Error in MDF Dialog",e);
+        }
     }
 
     public void onClickImageStrLogic(View v){
@@ -593,7 +626,7 @@ public class RobotPanelActivity extends AppCompatActivity {
         setF1btn.setEnabled(false);
         sendF2btn.setEnabled(false);
         setF2btn.setEnabled(false);
-        mdfBtn.setEnabled(false);
+        //mdfBtn.setEnabled(false);
         //imageStrBtn.setEnabled(false);
         imageRecogBtn.setEnabled(false);
         fastestPathBtn.setEnabled(false);

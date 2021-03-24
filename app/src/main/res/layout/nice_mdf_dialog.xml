@@ -42,11 +42,13 @@
 
         <TextView
             android:id="@+id/mdfLabel"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginTop="18dp"
+            android:width="150dp"
             android:height="30dp"
+            android:maxWidth="150dp"
             android:text="@string/mdf_string_1"
             android:textColor="@color/colorTextPrimary"
             android:textSize="16dp"
@@ -54,19 +56,42 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/mdflabelTitle" />
 
+        <ImageButton
+            android:id="@+id/copyMDF1"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="18dp"
+            android:background="@drawable/copy"
+            android:scaleType="fitCenter"
+            app:layout_constraintStart_toEndOf="@+id/mdfLabel"
+            app:layout_constraintTop_toBottomOf="@+id/mdflabelTitle" />
+
         <TextView
             android:id="@+id/mdfLabel2"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="18dp"
+            android:width="150dp"
             android:height="30dp"
+            android:maxWidth="150dp"
             android:text="@string/mdf_string_2"
             android:textColor="@color/colorTextPrimary"
             android:textSize="16dp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/mdfTV" />
+
+        <ImageButton
+            android:id="@+id/copyMDF2"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="18dp"
+            android:background="@drawable/copy"
+            android:scaleType="fitCenter"
+            app:layout_constraintStart_toEndOf="@+id/mdfLabel2"
             app:layout_constraintTop_toBottomOf="@+id/mdfTV" />
 
         <TextView
