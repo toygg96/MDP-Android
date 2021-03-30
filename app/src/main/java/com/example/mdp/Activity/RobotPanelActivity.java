@@ -184,28 +184,39 @@ public class RobotPanelActivity extends AppCompatActivity {
         fastestPathBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View r) {
-                Log.d(TAG,"it came here");
-                BluetoothController.sendCmd("FP|START");
-                Toast.makeText(r.getContext(), "Starting Fastest Path!",Toast.LENGTH_SHORT).show();
-                disableAllBtn();
+                if ((!myMaze.getSCFlag()) && (!myMaze.getWPFlag()))
+                    Toast.makeText(r.getContext(),"Starting Coordinates and Waypoint are not set", Toast.LENGTH_SHORT).show();
+                else {
+                    BluetoothController.sendCmd("FP|START");
+                    Toast.makeText(r.getContext(), "Starting Fastest Path!", Toast.LENGTH_SHORT).show();
+                    disableAllBtn();
+                }
             }
         });
 
         explorationBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View r) {
-                BluetoothController.sendCmd("EX|START");
-                Toast.makeText(r.getContext(), "Starting Exploration!",Toast.LENGTH_SHORT).show();
-                disableAllBtn();
+                if (!myMaze.getSCFlag())
+                    Toast.makeText(r.getContext(),"Starting Coordinates is not set", Toast.LENGTH_SHORT).show();
+                else {
+                    BluetoothController.sendCmd("EX|START");
+                    Toast.makeText(r.getContext(), "Starting Exploration!", Toast.LENGTH_SHORT).show();
+                    disableAllBtn();
+                }
             }
         });
 
         imageRecogBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View r) {
-                BluetoothController.sendCmd("IMG|START");
-                Toast.makeText(r.getContext(), "Starting Image Recognition!",Toast.LENGTH_SHORT).show();
-                disableAllBtn();
+                if (!myMaze.getSCFlag())
+                    Toast.makeText(r.getContext(),"Starting Coordinates is not set", Toast.LENGTH_SHORT).show();
+                else {
+                    BluetoothController.sendCmd("IMG|START");
+                    Toast.makeText(r.getContext(), "Starting Image Recognition!", Toast.LENGTH_SHORT).show();
+                    disableAllBtn();
+                }
             }
         });
 
@@ -684,13 +695,19 @@ public class RobotPanelActivity extends AppCompatActivity {
             case REQUEST_CODE_SPEECH_INPUT:{
                 if (resultCode == RESULT_OK && data != null) {
                     ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                    if (result.get(0).toLowerCase().contains("up") || result.get(0).toLowerCase().contains("forward"))
+                    if (result.get(0).toLowerCase().contains("up") || result.get(0).toLowerCase().contains("forward")) {
                         BluetoothController.sendCmd("F01|");
-                    else if (result.get(0).toLowerCase().contains("left"))
+                        myMaze.robotMoveForward2(robotStatusTxtbox, "F01", true);
+                        Toast.makeText(this,"Sending Forward to the robot!",Toast.LENGTH_SHORT).show();
+                    } else if (result.get(0).toLowerCase().contains("left")) {
                         BluetoothController.sendCmd("A|");
-                    else if (result.get(0).toLowerCase().contains("right"))
+                        myMaze.robotManualRotateLeft(true);
+                        Toast.makeText(this,"Sending Rotate Left to the robot!",Toast.LENGTH_SHORT).show();
+                    }else if (result.get(0).toLowerCase().contains("right")) {
                         BluetoothController.sendCmd("R|");
-                    else
+                        myMaze.robotManualRotateRight(true);
+                        Toast.makeText(this,"Sending Rotate Right to the robot!",Toast.LENGTH_SHORT).show();
+                    }  else
                         Toast.makeText(this, "Cant understand your speech", Toast.LENGTH_SHORT).show();
                 }
                 break;

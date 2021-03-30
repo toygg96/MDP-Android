@@ -38,10 +38,12 @@ public class ArenaView extends View{
     private static float cellSizeX,cellSizeY, hMargin, vMargin;
     private static Paint wallPaint, robotPaint, waypointPaint, directionPaint,  emptyPaint, virtualWallPaint, obstaclePaint, unexploredPaint, ftpPaint, endPointPaint, gridNumberPaint, exploredPaint;
     private static int robotRow = 18, robotCols = 1, wayPointRow =-1, wayPointCols=-1;
-    private static String robotDirection = "south";
+    private static String robotDirection = "north";
     private static boolean setRobotPostition = false, setWayPointPosition = false;
     private static boolean createCellStatus = false;
     private static int imgXCoord = -1,imgYCoord= -1;
+    private static boolean scFlag  = false;
+    private static boolean wpFlag = false;
     //private String mdfString1 = "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
     //private String mdfString2 = "00000000000000000061f84000800100000003c00080000400084070f880800000000000080"; // map3.txt
     //private String mdfString2 = "01000000000000F00000000000400007E0000000000000001F80000780000000000004000800"; // arena1.txt
@@ -120,24 +122,26 @@ public class ArenaView extends View{
 
                 //ENSURE COORDINATES IS NOT THE FIRST OR LAST ROW/COLS AS THE ROBOT IS PLOT BASED ON THE CENTER COORDINATES
                 if ((coordinates[0] != 0 && coordinates[0] != 14) && (coordinates[1] != 0 && coordinates[1] != 19)) {
+                    scFlag = true;
                     robotCols = coordinates[0];
                     robotRow = getInverseYCoord(coordinates[1]);
                     refreshMap();
                     BluetoothController.sendCmd("SC|(" + String.valueOf(coordinates[0]) + "," + String.valueOf(coordinates[1]) + ")");
                     setRobotPostition = false;
-
+                    Toast.makeText(super.getContext(), "SC|(" + String.valueOf(coordinates[0]) + "," + String.valueOf(coordinates[1]) + ") to Algo", Toast.LENGTH_SHORT).show();
                 }
             }
         } else if (setWayPointPosition) {
 
             //ENSURE ONTOUCH IS WITHIN THE MAZE
             if (coordinates[0] != -1 && coordinates[1] != -1) {
-
+                wpFlag = true;
                 wayPointCols = coordinates[0];
                 wayPointRow = getInverseYCoord(coordinates[1]);
                 refreshMap();
                 BluetoothController.sendCmd("WP|(" + String.valueOf(coordinates[0]) + "," + String.valueOf(coordinates[1]) + ")");
                 setWayPointPosition = false;
+                Toast.makeText(super.getContext(), "WP|(" + String.valueOf(coordinates[0]) + "," + String.valueOf(coordinates[1]) + ") to Algo", Toast.LENGTH_SHORT).show();
 
             }
         }
@@ -575,6 +579,14 @@ public class ArenaView extends View{
 
     public int[] getWaypoint(){
         return new int[] {wayPointCols, wayPointRow};
+    }
+
+    public boolean getSCFlag(){
+        return scFlag;
+    }
+
+    public boolean getWPFlag(){
+        return wpFlag;
     }
 
     // update the maze with the location of obstacles, explored/explored grids
