@@ -23,6 +23,9 @@ Features:
 13) Manual refresh the map
 14) Message history
 
+Tech Stack:
+1) Native Android Java
+
 ![Screenshot_20210301-210148](https://user-images.githubusercontent.com/16291759/154525953-b97d1ca8-9ec9-49ca-a7ff-ceab3b96efd3.jpg)
 ![Screenshot_20210301-210200](https://user-images.githubusercontent.com/16291759/154525982-d941eabc-f2bf-4eb7-b925-bc57f7ee169b.jpg)
 ![Screenshot_20210301-210203](https://user-images.githubusercontent.com/16291759/154525991-f1093c93-bc27-4abc-b030-8afdd74689d5.jpg)
